@@ -1,0 +1,133 @@
+<!doctype html>
+<html lang="de">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Reservierung | Alles Saniert</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="icon" type="image/svg+xml" href="../favicon.svg" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/remixicon/3.5.0/remixicon.css" />
+    <link rel="stylesheet" href="../styles.css" />
+  </head>
+  <body class="shop-page">
+    <header class="header">
+      <nav class="nav container">
+        <a class="brand-logo" href="../index.html" aria-label="Alles Saniert Startseite">
+          <span class="brand-text">
+            <strong>ALLES SANIERT</strong>
+            <small>SCHR&Ouml;DER GESNBR</small>
+          </span>
+        </a>
+        <div class="nav-menu" data-nav-menu>
+          <ul class="nav-list">
+            <li><a class="nav-link active" href="index.html">Sortiment</a></li>
+            <li><a class="nav-link" href="../forestry-work/index.html">Forstarbeiten</a></li>
+            <li><a class="nav-link" href="../about-us/index.html">&Uuml;ber uns</a></li>
+            <li><a class="nav-link" href="../contact/index.html">Kontakt</a></li>
+          </ul>
+          <button class="icon-btn nav-close" type="button" data-close-menu aria-label="Men&uuml; schlie&szlig;en">
+            <i class="ri-close-line"></i>
+          </button>
+        </div>
+        <div class="nav-actions">
+          <button class="icon-btn nav-search-toggle" type="button" data-open-search aria-label="Suche &ouml;ffnen">
+            <i class="ri-search-line"></i>
+          </button>
+          <button class="icon-btn nav-menu-toggle" type="button" data-open-menu aria-label="Men&uuml; &ouml;ffnen">
+            <i class="ri-menu-line"></i>
+          </button>
+        </div>
+      </nav>
+    </header>
+
+    <div class="search" data-search>
+      <form class="search-form">
+        <i class="ri-search-line"></i>
+        <input class="search-input" type="search" placeholder="Werkzeuge suchen..." />
+      </form>
+      <button class="icon-btn search-close" type="button" data-close-search aria-label="Suche schlie&szlig;en">
+        <i class="ri-close-line"></i>
+      </button>
+    </div>
+
+    <main class="shop-main">
+      <section class="container reservation-wrap">
+        <nav class="shop-breadcrumb" aria-label="Breadcrumb">
+          <a href="../index.html">Startseite</a>
+          <i class="ri-arrow-right-s-line"></i>
+          <a href="index.html">Sortiment</a>
+          <i class="ri-arrow-right-s-line"></i>
+          <a href="produkt-hilti-sf-6-a22.html">Schrauben &amp; Bohren</a>
+          <i class="ri-arrow-right-s-line"></i>
+          <span>Reservierung</span>
+        </nav>
+
+        <div class="reservation-steps">
+          <article><h2>Ihre Auswahl</h2><i class="ri-check-line"></i></article>
+          <article><h2>Verf&uuml;gbarkeit pr&uuml;fen</h2><i class="ri-check-line"></i></article>
+          <article><h2>Ihre Daten</h2><i class="ri-check-line"></i></article>
+        </div>
+
+        <div class="reservation-grid">
+          <article class="reservation-delivery">
+            <h3>Art der Lieferung</h3>
+            <label class="delivery-option active">
+              <input type="radio" name="delivery" checked />
+              <span class="icon"><i class="ri-truck-line"></i></span>
+              <span>Lieferung</span>
+            </label>
+            <label class="delivery-option">
+              <input type="radio" name="delivery" />
+              <span class="icon"><i class="ri-store-2-line"></i></span>
+              <span>Abholung</span>
+            </label>
+            <div class="reservation-actions">
+              <button class="btn-primary" type="button">Best&auml;tigen</button>
+              <a class="btn-secondary" href="produkt-hilti-sf-6-a22.html">Zur&uuml;ck</a>
+            </div>
+          </article>
+
+          <aside class="reservation-summary">
+            <h3>Zusammenfassung</h3>
+            <div class="summary-product">
+              <img src="../assets/images/aboutUsTwo.jpg" alt="HILTI SF 6-A22" />
+              <div>
+                <strong>HILTI SF 6-A22</strong>
+                <p>Akku-Bohrschrauber</p>
+              </div>
+            </div>
+            <dl>
+              <div><dt>Start</dt><dd>Heute, 24. Okt</dd></div>
+              <div><dt>Ende</dt><dd>Morgen, 25. Okt</dd></div>
+              <div><dt>Dauer</dt><dd>1 Tag</dd></div>
+              <div><dt>Preis</dt><dd>49,90&euro;</dd></div>
+            </dl>
+            <p class="summary-note">Hinweis: Dies ist eine Vorlagen-Seite. Die finale Reservierungslogik folgt in der n&auml;chsten Phase.</p>
+          </aside>
+        </div>
+      </section>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <div class="footer-grid">
+          <div class="footer-col"><h3 class="footer-brand-title">Alles Saniert</h3><div class="footer-brand-sub">Schr&ouml;der Gesnbr</div><p class="footer-brand-text">Ihr zuverl&auml;ssiger Partner f&uuml;r professionellen Werkzeugverleih im Piestingtal.</p></div>
+          <div class="footer-col"><h3>Service</h3><ul class="footer-list"><li><a href="../index.html#rentInstructions">Mieten: so geht's</a></li><li><a href="#">FAQ</a></li><li><a href="#">Lieferung &amp; Abholung</a></li><li><a href="#">Kundenkonto</a></li></ul></div>
+          <div class="footer-col"><h3>Rechtliches</h3><ul class="footer-list"><li><button type="button" data-open-dialog="impressum">Impressum</button></li><li><button type="button" data-open-dialog="datenschutz">Datenschutzerkl&auml;rung</button></li><li><a href="#">AGB</a></li><li><a href="#">Widerrufsrecht</a></li></ul></div>
+          <div class="footer-col"><h3>Kontakt</h3><ul class="footer-list"><li class="footer-contact-item"><i class="ri-map-pin-2-fill"></i><span>Musterstra&szlig;e 12<br />2753 Markt Piesting</span></li><li class="footer-contact-item"><i class="ri-phone-fill"></i><a href="tel:+43123456789">+43 123 456 789</a></li><li class="footer-contact-item"><i class="ri-mail-fill"></i><a href="mailto:info@allessaniert.at">info@allessaniert.at</a></li></ul></div>
+        </div>
+        <div class="footer-bottom"><p>&copy; 2026 Alles Saniert Schr&ouml;der Gesnbr. Alle Rechte vorbehalten.</p></div>
+      </div>
+    </footer>
+
+    <div id="impressum" class="dialog" aria-hidden="true"><div class="dialog-card"><h4>Impressum</h4><p><strong>Verantwortlicher (iS der DSGVO) ist:</strong></p><p>Florian Schr&ouml;der<br />Erlachgasse 63/16, 1100 Wien</p><button class="btn-primary dialog-close" type="button" data-close-dialog>Schlie&szlig;en</button></div></div>
+    <div id="datenschutz" class="dialog" aria-hidden="true"><div class="dialog-card"><h4>Datenschutzerkl&auml;rung</h4><p>Informationen zur Datenverarbeitung gem&auml;&szlig; DSGVO finden Sie hier als Platzhalter f&uuml;r den Shop.</p><button class="btn-primary dialog-close" type="button" data-close-dialog>Schlie&szlig;en</button></div></div>
+
+    <script src="../script.js"></script>
+  </body>
+</html>
