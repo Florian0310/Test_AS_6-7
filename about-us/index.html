@@ -1,13 +1,13 @@
-<!doctype html>
+﻿<!doctype html>
 <html lang="de">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Über Uns | Alles Saniert</title>
+    <title>&Uuml;ber uns | Alles Saniert</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
       rel="stylesheet"
     />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/remixicon/3.5.0/remixicon.css" />
@@ -16,22 +16,27 @@
   <body>
     <header class="header">
       <nav class="nav container">
-        <a href="../index.html"><img class="logo" src="../assets/images/logo.jpg" alt="Alles Saniert" /></a>
+        <a class="brand-logo" href="../index.html" aria-label="Alles Saniert Startseite">
+          <span class="brand-text">
+            <strong>ALLES SANIERT</strong>
+            <small>SCHR&Ouml;DER GESNBR</small>
+          </span>
+        </a>
         <div class="nav-menu" data-nav-menu>
           <ul class="nav-list">
             <li><a class="nav-link" href="../forestry-work/index.html">Forstarbeiten</a></li>
-            <li><a class="nav-link active" href="index.html">Über uns</a></li>
+            <li><a class="nav-link active" href="index.html">&Uuml;ber uns</a></li>
             <li><a class="nav-link" href="../contact/index.html">Kontakt</a></li>
           </ul>
-          <button class="icon-btn nav-close" type="button" data-close-menu aria-label="Menü schließen">
+          <button class="icon-btn nav-close" type="button" data-close-menu aria-label="Men&uuml; schlie&szlig;en">
             <i class="ri-close-line"></i>
           </button>
         </div>
         <div class="nav-actions">
-          <button class="icon-btn" type="button" data-open-search aria-label="Suche öffnen">
+          <button class="icon-btn nav-search-toggle" type="button" data-open-search aria-label="Suche &ouml;ffnen">
             <i class="ri-search-line"></i>
           </button>
-          <button class="icon-btn" type="button" data-open-menu aria-label="Menü öffnen">
+          <button class="icon-btn nav-menu-toggle" type="button" data-open-menu aria-label="Men&uuml; &ouml;ffnen">
             <i class="ri-menu-line"></i>
           </button>
         </div>
@@ -43,113 +48,70 @@
         <i class="ri-search-line"></i>
         <input class="search-input" type="search" placeholder="Wonach suchen Sie?" />
       </form>
-      <button class="icon-btn search-close" type="button" data-close-search aria-label="Suche schließen">
+      <button class="icon-btn search-close" type="button" data-close-search aria-label="Suche schlie&szlig;en">
         <i class="ri-close-line"></i>
       </button>
     </div>
 
-    <main class="about">
-      <h1>Über Uns</h1>
-
-      <section>
-        <h2>Unsere Geschichte <em>vom Eigenheim zum Unternehmen</em></h2>
-        <div class="about-row">
-          <div class="about-text">
-            <p>
-              1980 begann Willy Schröder die Lehre als Elektromechaniker und Maschinenbauers. Schon damals war die
-              Liebe zum Qualitätswerkzeug entdeckt.
-            </p>
-            <p>
-              Die Unternehmensgeschichte nahm 2004 als Familienbetrieb ihren Anfang. Im Zuge unseres erfolgreichen
-              Projektes „Hausbau im Piestingtal“ begann unsere Leidenschaft für hochwertiges Werkzeug. Erkenntnis:
-              Sonderangebotsware aus dem Supermarkt führt nicht immer zum gewünschten Erfolg.
-            </p>
-            <p>
-              Was als Suche nach den besten Werkzeugen für unser Heimprojekt begann, verwandelte sich schnell in die
-              Vision, diese Qualität mit anderen zu teilen und hochwertiges Werkzeug zu vermieten. So entstand 2008
-              „Alles Saniert“.
-            </p>
-            <p>
-              Wir setzen auf Nachhaltigkeit, indem wir Werkzeuge zum Ausleihen anbieten, wodurch unsere Kunden nicht
-              nur sparen. Durch das Mieten bekommt man Qualitätswerkzeuge zum vernünftigen Preis und man spart auch
-              wertvollen Platz im eigenen Heim.
-            </p>
-            <p>Ein wichtiger Nebeneffekt: durch Mieten leisten Sie einen Beitrag zur Schonung der Umwelt.</p>
-            <p>
-              2015 erweiterten wir unser Angebot um den Baustoffhandel, um die Nachfrage nach professionellen
-              Materialien zu erfüllen.
-            </p>
-            <p>
-              2024 öffneten wir das digitale Tor zu „Alles Saniert“ mit einer neuen Online-Präsenz, um unser Service
-              noch zugänglicher zu machen.
-            </p>
-            <p class="motto">Unser Motto:</p>
-            <p class="motto">Werkzeug muss arbeiten und nicht in der Werkstatt, Keller oder Garage verstauben!</p>
-          </div>
-          <div class="about-image"><img src="../assets/images/aboutUsOne.jpg" alt="Unsere Geschichte" /></div>
+    <main>
+      <section class="page-hero">
+        <div class="container">
+          <h1>&Uuml;ber uns</h1>
+          <p>Vom Eigenheimprojekt zum regionalen Werkzeugpartner mit Handschlagqualit&auml;t.</p>
         </div>
       </section>
 
-      <section>
-        <h2>Unsere Leistungen <em>Ihr zuverlässiger Partner für Haus und Garten</em></h2>
-        <div class="about-row row-normal">
-          <div class="about-image"><img src="../assets/images/aboutUsTwo.jpg" alt="Unsere Leistungen" /></div>
-          <div class="about-text">
-            <p>
-              Wir bieten Ihnen eine Vielzahl an Dienstleistungen, die genau auf Ihre Bedürfnisse rund um Haus, Garten
-              und Forst abgestimmt sind:
-            </p>
-            <p>
-              <a class="inline-link" href="#">Werkzeugverleih:</a> Von Heimwerkerprojekten bis zur Gartenpflege - bei
-              uns finden Sie das passende Werkzeug für drinnen und draußen. Einfach und unkompliziert mieten.
-            </p>
-            <p>
-              <a class="inline-link" href="#">Baustoffe:</a> Wir beraten Sie fachkundig und bieten eine Auswahl an
-              hochwertigen Baustoffen, damit Ihr Projekt stabil und langlebig wird.
-            </p>
-            <p>
-              <a class="inline-link" href="#">Arbeiten rund ums Haus:</a> Egal ob handwerkliche Tätigkeiten oder
-              Unterstützung bei Arbeiten, bei denen Sie zusätzliche Hilfe benötigen - wir stehen Ihnen zur Seite.
-            </p>
-            <p>
-              <a class="inline-link" href="../forestry-work/index.html">Forstarbeiten:</a> Ob ein kleiner Wald oder der
-              Garten - wir kümmern uns um die Pflege und Durchforstung sowie um den fachgerechten Rückschnitt von
-              Bäumen und Sträuchern.
-            </p>
-            <p>
-              <a class="inline-link" href="#">Holzkunst für den Garten:</a> Sie träumen von einer individuellen
-              Holzskulptur? Wir erschaffen Kunstwerke mit der Motorsäge oder bieten Ihnen bereits fertige
-              Holzschnitzereien an.
-            </p>
-            <p>Zögern Sie nicht, uns bei Fragen zu kontaktieren - wir freuen uns darauf, Ihnen weiterzuhelfen!</p>
+      <section class="page-wrap">
+        <article class="content-card">
+          <h2>Unsere Geschichte</h2>
+          <div class="about-row">
+            <div class="about-text">
+              <p>
+                1980 begann Willy Schr&ouml;der die Lehre als Elektromechaniker und Maschinenbauer. Schon damals war die
+                Liebe zum Qualit&auml;tswerkzeug entdeckt.
+              </p>
+              <p>
+                Die Unternehmensgeschichte nahm 2004 als Familienbetrieb ihren Anfang. Im Zuge des Projekts
+                &bdquo;Hausbau im Piestingtal&ldquo; entstand unsere Leidenschaft f&uuml;r hochwertige Werkzeuge.
+              </p>
+              <p>
+                2008 wurde daraus &bdquo;Alles Saniert&ldquo;: die Idee, Qualit&auml;t nicht zu lagern, sondern zu nutzen und
+                mit anderen zu teilen.
+              </p>
+              <p>
+                Wir setzen auf Nachhaltigkeit durch Mieten statt Kaufen. Das spart Platz, reduziert Kosten und schont
+                Ressourcen.
+              </p>
+              <p class="motto">Werkzeug muss arbeiten und nicht in Werkstatt, Keller oder Garage verstauben.</p>
+            </div>
+            <div class="about-image"><img src="../assets/images/aboutUsOne.jpg" alt="Unsere Geschichte" /></div>
           </div>
-        </div>
-      </section>
+        </article>
 
-      <section>
-        <h2>Unser Team</h2>
-        <div class="about-row">
-          <div class="about-text">
-            <p>
-              Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut
-              labore et dolore magna aliquyam erat, sed diam voluptua.
-            </p>
-            <p>
-              At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata
-              sanctus est Lorem ipsum dolor sit amet.
-            </p>
-            <p>
-              Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut
-              labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et
-              ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.
-            </p>
-            <p>
-              At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata
-              sanctus est Lorem ipsum dolor sit amet.
-            </p>
+        <article class="content-card">
+          <h2>Unsere Leistungen</h2>
+          <div class="about-row row-normal">
+            <div class="about-image"><img src="../assets/images/aboutUsTwo.jpg" alt="Unsere Leistungen" /></div>
+            <div class="about-text">
+              <p>
+                Wir bieten Dienstleistungen rund um Haus, Garten und Forst: Werkzeugverleih, Beratung und praktische
+                Unterst&uuml;tzung f&uuml;r kleine und gro&szlig;e Projekte.
+              </p>
+              <p>
+                <a class="inline-link" href="#">Werkzeugverleih:</a> Passende Ger&auml;te f&uuml;r drinnen und drau&szlig;en,
+                einfach mieten statt kaufen.
+              </p>
+              <p>
+                <a class="inline-link" href="#">Baustoffe:</a> Fachkundige Beratung und hochwertige Materialien f&uuml;r
+                stabile Ergebnisse.
+              </p>
+              <p>
+                <a class="inline-link" href="../forestry-work/index.html">Forstarbeiten:</a> Pflege, Durchforstung und
+                fachgerechter R&uuml;ckschnitt.
+              </p>
+            </div>
           </div>
-          <div class="about-image"><img src="../assets/images/forestryWorkBackground.jpg" alt="Unser Team" /></div>
-        </div>
+        </article>
       </section>
     </main>
 
@@ -158,14 +120,14 @@
         <div class="footer-col">
           <h3>Hilfreiches</h3>
           <a href="../index.html#rentInstructions">Mieten: so geht's</a>
-          <a href="#">Häufig gestellte Fragen</a>
-          <a href="../index.html#whyRentFromUs">Warum bei uns Mieten</a>
+          <a href="#">H&auml;ufig gestellte Fragen</a>
+          <a href="../index.html#whyRentFromUs">Warum bei uns mieten</a>
         </div>
         <div class="footer-col">
           <h3>Kontaktieren Sie uns</h3>
           <a href="../contact/index.html">Kontakt</a>
           <button type="button" data-open-dialog="impressum">Impressum</button>
-          <button type="button" data-open-dialog="datenschutz">Datenschutzerklärung</button>
+          <button type="button" data-open-dialog="datenschutz">Datenschutzerkl&auml;rung</button>
         </div>
       </div>
     </footer>
@@ -174,20 +136,21 @@
       <div class="dialog-card">
         <h4>Impressum</h4>
         <p>Alles Saniert</p>
-        <p>Piestingtal, Österreich</p>
+        <p>Piestingtal, &Ouml;sterreich</p>
         <p>Diese Nachbildung dient nur zu Demonstrationszwecken.</p>
-        <button class="btn-primary dialog-close" type="button" data-close-dialog>Schließen</button>
+        <button class="btn-primary dialog-close" type="button" data-close-dialog>Schlie&szlig;en</button>
       </div>
     </div>
 
     <div id="datenschutz" class="dialog" aria-hidden="true">
       <div class="dialog-card">
-        <h4>Datenschutzerklärung</h4>
+        <h4>Datenschutzerkl&auml;rung</h4>
         <p>Es werden in dieser statischen Demo keine personenbezogenen Daten verarbeitet.</p>
-        <button class="btn-primary dialog-close" type="button" data-close-dialog>Schließen</button>
+        <button class="btn-primary dialog-close" type="button" data-close-dialog>Schlie&szlig;en</button>
       </div>
     </div>
 
     <script src="../script.js"></script>
   </body>
 </html>
+

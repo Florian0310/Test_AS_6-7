@@ -1,4 +1,4 @@
-<!doctype html>
+﻿<!doctype html>
 <html lang="de">
   <head>
     <meta charset="utf-8" />
@@ -7,31 +7,36 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
       rel="stylesheet"
     />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/remixicon/3.5.0/remixicon.css" />
     <link rel="stylesheet" href="styles.css" />
   </head>
-  <body>
+  <body class="home-page">
     <header class="header">
       <nav class="nav container">
-        <a href="index.html"><img class="logo" src="assets/images/logo.jpg" alt="Alles Saniert" /></a>
+        <a class="brand-logo" href="index.html" aria-label="Alles Saniert Startseite">
+          <span class="brand-text">
+            <strong>ALLES SANIERT</strong>
+            <small>SCHR&Ouml;DER GESNBR</small>
+          </span>
+        </a>
         <div class="nav-menu" data-nav-menu>
           <ul class="nav-list">
             <li><a class="nav-link" href="forestry-work/index.html">Forstarbeiten</a></li>
-            <li><a class="nav-link" href="about-us/index.html">Über uns</a></li>
+            <li><a class="nav-link" href="about-us/index.html">&Uuml;ber uns</a></li>
             <li><a class="nav-link" href="contact/index.html">Kontakt</a></li>
           </ul>
-          <button class="icon-btn nav-close" type="button" data-close-menu aria-label="Menü schließen">
+          <button class="icon-btn nav-close" type="button" data-close-menu aria-label="Men&uuml; schlie&szlig;en">
             <i class="ri-close-line"></i>
           </button>
         </div>
         <div class="nav-actions">
-          <button class="icon-btn" type="button" data-open-search aria-label="Suche öffnen">
+          <button class="icon-btn nav-search-toggle" type="button" data-open-search aria-label="Suche &ouml;ffnen">
             <i class="ri-search-line"></i>
           </button>
-          <button class="icon-btn" type="button" data-open-menu aria-label="Menü öffnen">
+          <button class="icon-btn nav-menu-toggle" type="button" data-open-menu aria-label="Men&uuml; &ouml;ffnen">
             <i class="ri-menu-line"></i>
           </button>
         </div>
@@ -43,7 +48,7 @@
         <i class="ri-search-line"></i>
         <input class="search-input" type="search" placeholder="Wonach suchen Sie?" />
       </form>
-      <button class="icon-btn search-close" type="button" data-close-search aria-label="Suche schließen">
+      <button class="icon-btn search-close" type="button" data-close-search aria-label="Suche schlie&szlig;en">
         <i class="ri-close-line"></i>
       </button>
     </div>
@@ -51,35 +56,128 @@
     <main>
       <section class="hero">
         <div class="hero-content container">
-          <h1>Ihr <strong>Werzeugverleih</strong> im Piestingtal</h1>
-          <p>Finden Sie die Werkzeuge, die Sie brauchen</p>
+          <span class="hero-badge">Im Piestingtal</span>
+          <h1>Ihr Werkzeugverleih <strong>professionell und einfach.</strong></h1>
+          <p>
+            Finden Sie die Werkzeuge, die Sie f&uuml;r Ihr Projekt brauchen. Hochwertig, gewartet und sofort
+            verf&uuml;gbar.
+          </p>
+          <div class="hero-actions">
+            <a class="btn-primary btn-hero" href="#popularTools">
+              Sortiment entdecken
+              <i class="ri-arrow-right-line"></i>
+            </a>
+            <a class="btn-ghost" href="#rentInstructions">
+              <i class="ri-play-circle-line"></i>
+              So funktioniert's
+            </a>
+          </div>
+        </div>
+        <div class="hero-scroll-hint"><i class="ri-arrow-down-s-line"></i></div>
+      </section>
+
+      <section id="popularTools" class="section section-soft">
+        <div class="container">
+          <div class="section-head">
+            <div>
+              <h2 class="section-title text-left">Beliebte Produkte</h2>
+              <p class="section-subtitle">Die Favoriten unserer Kunden diese Woche.</p>
+            </div>
+          </div>
+          <div class="product-row">
+            <article class="product-card">
+              <div class="product-image-wrap">
+                <img src="assets/images/aboutUsTwo.jpg" alt="Hilti SF 6-A22" />
+              </div>
+              <div class="product-content">
+                <span class="product-category">Bohren &amp; Schrauben</span>
+                <h3>Hilti SF 6-A22</h3>
+                <p>Leistungsstarker Akku-Bohrschrauber f&uuml;r universelle Anwendungen in Holz und Metall.</p>
+                <div class="product-footer">
+                  <div><small>Tagesmiete ab</small><strong>49,90&euro;</strong></div>
+                  <button class="product-cart" type="button" aria-label="In den Warenkorb">
+                    <i class="ri-shopping-cart-2-line"></i>
+                  </button>
+                </div>
+              </div>
+            </article>
+            <article class="product-card">
+              <div class="product-image-wrap">
+                <img src="assets/images/forestryWorkBackground.jpg" alt="Stihl MS 261" />
+              </div>
+              <div class="product-content">
+                <span class="product-category">Garten &amp; Forst</span>
+                <h3>Stihl MS 261</h3>
+                <p>Profi-Kettens&auml;ge f&uuml;r Forstarbeiten. Leicht, handlich und kraftvoll.</p>
+                <div class="product-footer">
+                  <div><small>Tagesmiete ab</small><strong>65,00&euro;</strong></div>
+                  <button class="product-cart" type="button" aria-label="In den Warenkorb">
+                    <i class="ri-shopping-cart-2-line"></i>
+                  </button>
+                </div>
+              </div>
+            </article>
+            <article class="product-card">
+              <div class="product-image-wrap">
+                <img src="assets/images/aboutUsOne.jpg" alt="Festool Rotex RO 150" />
+              </div>
+              <div class="product-content">
+                <span class="product-category">Schleifen</span>
+                <h3>Festool Rotex RO 150</h3>
+                <p>3-in-1 Getriebe-Exzenterschleifer f&uuml;r Grob-, Feinschliff und Polieren.</p>
+                <div class="product-footer">
+                  <div><small>Tagesmiete ab</small><strong>42,00&euro;</strong></div>
+                  <button class="product-cart" type="button" aria-label="In den Warenkorb">
+                    <i class="ri-shopping-cart-2-line"></i>
+                  </button>
+                </div>
+              </div>
+            </article>
+          </div>
         </div>
       </section>
 
       <section id="rentInstructions" class="section container">
         <h2 class="section-title">So einfach geht's</h2>
-        <div class="steps">
-          <div class="step"><span class="step-number">1</span><span class="step-label">Aussuchen</span></div>
-          <div class="step"><span class="step-number">2</span><span class="step-label">Ausleihen</span></div>
-          <div class="step"><span class="step-number">3</span><span class="step-label">Nutzen</span></div>
-          <div class="step"><span class="step-number">4</span><span class="step-label">Zurückgeben</span></div>
+        <p class="section-subtitle center">Mieten Sie professionelles Werkzeug in nur wenigen Schritten.</p>
+        <div class="steps cards">
+          <article class="step-card">
+            <span class="step-number">1</span>
+            <h3 class="step-label">Aussuchen</h3>
+            <p>Passendes Werkzeug w&auml;hlen und Verf&uuml;gbarkeit pr&uuml;fen.</p>
+          </article>
+          <article class="step-card">
+            <span class="step-number">2</span>
+            <h3 class="step-label">Ausleihen</h3>
+            <p>Online reservieren und vor Ort abholen.</p>
+          </article>
+          <article class="step-card">
+            <span class="step-number">3</span>
+            <h3 class="step-label">Nutzen</h3>
+            <p>Projekt mit professionellen Markenwerkzeugen umsetzen.</p>
+          </article>
+          <article class="step-card">
+            <span class="step-number">4</span>
+            <h3 class="step-label">Zur&uuml;ckgeben</h3>
+            <p>Einfach retour bringen, wir &uuml;bernehmen Service und Wartung.</p>
+          </article>
         </div>
       </section>
 
       <section id="whyRentFromUs" class="section container">
         <h2 class="section-title">Warum bei uns mieten?</h2>
-        <div class="benefits">
+        <div class="benefits modern">
           <article class="benefit">
             <img src="assets/images/awardIcon.png" alt="Auszeichnung" />
-            <span>Werkzeuge von führenden Marken</span>
+            <span>Werkzeuge von f&uuml;hrenden Marken</span>
           </article>
           <article class="benefit">
-            <img src="assets/images/ecoFriendlyIcon.png" alt="Ökologisch" />
-            <span>Regional &amp; ökologisch</span>
+            <img src="assets/images/ecoFriendlyIcon.png" alt="&Ouml;kologisch" />
+            <span>Regional &amp; &ouml;kologisch</span>
           </article>
           <article class="benefit">
             <img src="assets/images/handshakeIcon.png" alt="Beratung" />
-            <span>Fachmännische Beratung</span>
+            <span>Fachm&auml;nnische Beratung</span>
           </article>
           <article class="benefit">
             <img src="assets/images/currencyIcon.png" alt="Preise" />
@@ -94,14 +192,14 @@
         <div class="footer-col">
           <h3>Hilfreiches</h3>
           <a href="#rentInstructions">Mieten: so geht's</a>
-          <a href="#">Häufig gestellte Fragen</a>
-          <a href="#whyRentFromUs">Warum bei uns Mieten</a>
+          <a href="#">H&auml;ufig gestellte Fragen</a>
+          <a href="#whyRentFromUs">Warum bei uns mieten</a>
         </div>
         <div class="footer-col">
           <h3>Kontaktieren Sie uns</h3>
           <a href="contact/index.html">Kontakt</a>
           <button type="button" data-open-dialog="impressum">Impressum</button>
-          <button type="button" data-open-dialog="datenschutz">Datenschutzerklärung</button>
+          <button type="button" data-open-dialog="datenschutz">Datenschutzerkl&auml;rung</button>
         </div>
       </div>
     </footer>
@@ -110,20 +208,21 @@
       <div class="dialog-card">
         <h4>Impressum</h4>
         <p>Alles Saniert</p>
-        <p>Piestingtal, Österreich</p>
+        <p>Piestingtal, &Ouml;sterreich</p>
         <p>Diese Nachbildung dient nur zu Demonstrationszwecken.</p>
-        <button class="btn-primary dialog-close" type="button" data-close-dialog>Schließen</button>
+        <button class="btn-primary dialog-close" type="button" data-close-dialog>Schlie&szlig;en</button>
       </div>
     </div>
 
     <div id="datenschutz" class="dialog" aria-hidden="true">
       <div class="dialog-card">
-        <h4>Datenschutzerklärung</h4>
+        <h4>Datenschutzerkl&auml;rung</h4>
         <p>Es werden in dieser statischen Demo keine personenbezogenen Daten verarbeitet.</p>
-        <button class="btn-primary dialog-close" type="button" data-close-dialog>Schließen</button>
+        <button class="btn-primary dialog-close" type="button" data-close-dialog>Schlie&szlig;en</button>
       </div>
     </div>
 
     <script src="script.js"></script>
   </body>
 </html>
+

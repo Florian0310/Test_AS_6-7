@@ -1,4 +1,4 @@
-<!doctype html>
+﻿<!doctype html>
 <html lang="de">
   <head>
     <meta charset="utf-8" />
@@ -7,7 +7,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
       rel="stylesheet"
     />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/remixicon/3.5.0/remixicon.css" />
@@ -16,22 +16,27 @@
   <body>
     <header class="header">
       <nav class="nav container">
-        <a href="../index.html"><img class="logo" src="../assets/images/logo.jpg" alt="Alles Saniert" /></a>
+        <a class="brand-logo" href="../index.html" aria-label="Alles Saniert Startseite">
+          <span class="brand-text">
+            <strong>ALLES SANIERT</strong>
+            <small>SCHR&Ouml;DER GESNBR</small>
+          </span>
+        </a>
         <div class="nav-menu" data-nav-menu>
           <ul class="nav-list">
             <li><a class="nav-link" href="../forestry-work/index.html">Forstarbeiten</a></li>
-            <li><a class="nav-link" href="../about-us/index.html">Über uns</a></li>
+            <li><a class="nav-link" href="../about-us/index.html">&Uuml;ber uns</a></li>
             <li><a class="nav-link active" href="index.html">Kontakt</a></li>
           </ul>
-          <button class="icon-btn nav-close" type="button" data-close-menu aria-label="Menü schließen">
+          <button class="icon-btn nav-close" type="button" data-close-menu aria-label="Men&uuml; schlie&szlig;en">
             <i class="ri-close-line"></i>
           </button>
         </div>
         <div class="nav-actions">
-          <button class="icon-btn" type="button" data-open-search aria-label="Suche öffnen">
+          <button class="icon-btn nav-search-toggle" type="button" data-open-search aria-label="Suche &ouml;ffnen">
             <i class="ri-search-line"></i>
           </button>
-          <button class="icon-btn" type="button" data-open-menu aria-label="Menü öffnen">
+          <button class="icon-btn nav-menu-toggle" type="button" data-open-menu aria-label="Men&uuml; &ouml;ffnen">
             <i class="ri-menu-line"></i>
           </button>
         </div>
@@ -43,13 +48,57 @@
         <i class="ri-search-line"></i>
         <input class="search-input" type="search" placeholder="Wonach suchen Sie?" />
       </form>
-      <button class="icon-btn search-close" type="button" data-close-search aria-label="Suche schließen">
+      <button class="icon-btn search-close" type="button" data-close-search aria-label="Suche schlie&szlig;en">
         <i class="ri-close-line"></i>
       </button>
     </div>
 
-    <main class="contact">
-      <img src="../assets/images/contactCard.jpg" alt="Kontaktkarte" />
+    <main>
+      <section class="page-hero">
+        <div class="container">
+          <h1>Kontakt</h1>
+          <p>Direkt, pers&ouml;nlich und schnell: Wir helfen Ihnen bei Werkzeugwahl, Verf&uuml;gbarkeit und Anfrage.</p>
+        </div>
+      </section>
+
+      <section class="page-wrap">
+        <div class="contact-grid">
+          <article class="content-card contact-intro">
+            <h2>Schreiben oder rufen Sie uns an</h2>
+            <p>
+              Ob kleines Heimprojekt oder gr&ouml;&szlig;ere Forstarbeit: Wir beraten Sie ehrlich, regional und
+              praxiserprobt.
+            </p>
+            <div class="meta-item">
+              <h3>Adresse</h3>
+              <p>Markt Piesting, Nieder&ouml;sterreich</p>
+            </div>
+            <div class="contact-actions">
+              <a class="btn-primary" href="mailto:info@alles-saniert.at">E-Mail senden</a>
+              <a class="btn-secondary" href="tel:+43000000000">+43 000 000 000</a>
+            </div>
+          </article>
+
+          <aside class="contact-meta">
+            <article class="meta-item">
+              <h3>&Ouml;ffnungszeiten</h3>
+              <p>Mo-Fr: 08:00 - 17:00 Uhr</p>
+            </article>
+            <article class="meta-item">
+              <h3>E-Mail</h3>
+              <p>info@alles-saniert.at</p>
+            </article>
+            <article class="meta-item">
+              <h3>Telefon</h3>
+              <p>+43 000 000 000</p>
+            </article>
+            <article class="meta-item">
+              <h3>Hinweis</h3>
+              <p>Gerne nach Terminvereinbarung auch au&szlig;erhalb der Standardzeiten.</p>
+            </article>
+          </aside>
+        </div>
+      </section>
     </main>
 
     <footer class="footer">
@@ -57,14 +106,14 @@
         <div class="footer-col">
           <h3>Hilfreiches</h3>
           <a href="../index.html#rentInstructions">Mieten: so geht's</a>
-          <a href="#">Häufig gestellte Fragen</a>
-          <a href="../index.html#whyRentFromUs">Warum bei uns Mieten</a>
+          <a href="#">H&auml;ufig gestellte Fragen</a>
+          <a href="../index.html#whyRentFromUs">Warum bei uns mieten</a>
         </div>
         <div class="footer-col">
           <h3>Kontaktieren Sie uns</h3>
           <a href="index.html">Kontakt</a>
           <button type="button" data-open-dialog="impressum">Impressum</button>
-          <button type="button" data-open-dialog="datenschutz">Datenschutzerklärung</button>
+          <button type="button" data-open-dialog="datenschutz">Datenschutzerkl&auml;rung</button>
         </div>
       </div>
     </footer>
@@ -73,20 +122,21 @@
       <div class="dialog-card">
         <h4>Impressum</h4>
         <p>Alles Saniert</p>
-        <p>Piestingtal, Österreich</p>
+        <p>Piestingtal, &Ouml;sterreich</p>
         <p>Diese Nachbildung dient nur zu Demonstrationszwecken.</p>
-        <button class="btn-primary dialog-close" type="button" data-close-dialog>Schließen</button>
+        <button class="btn-primary dialog-close" type="button" data-close-dialog>Schlie&szlig;en</button>
       </div>
     </div>
 
     <div id="datenschutz" class="dialog" aria-hidden="true">
       <div class="dialog-card">
-        <h4>Datenschutzerklärung</h4>
+        <h4>Datenschutzerkl&auml;rung</h4>
         <p>Es werden in dieser statischen Demo keine personenbezogenen Daten verarbeitet.</p>
-        <button class="btn-primary dialog-close" type="button" data-close-dialog>Schließen</button>
+        <button class="btn-primary dialog-close" type="button" data-close-dialog>Schlie&szlig;en</button>
       </div>
     </div>
 
     <script src="../script.js"></script>
   </body>
 </html>
+

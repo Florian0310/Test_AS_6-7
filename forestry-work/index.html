@@ -1,4 +1,4 @@
-<!doctype html>
+﻿<!doctype html>
 <html lang="de">
   <head>
     <meta charset="utf-8" />
@@ -7,7 +7,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
       rel="stylesheet"
     />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/remixicon/3.5.0/remixicon.css" />
@@ -16,22 +16,27 @@
   <body>
     <header class="header">
       <nav class="nav container">
-        <a href="../index.html"><img class="logo" src="../assets/images/logo.jpg" alt="Alles Saniert" /></a>
+        <a class="brand-logo" href="../index.html" aria-label="Alles Saniert Startseite">
+          <span class="brand-text">
+            <strong>ALLES SANIERT</strong>
+            <small>SCHR&Ouml;DER GESNBR</small>
+          </span>
+        </a>
         <div class="nav-menu" data-nav-menu>
           <ul class="nav-list">
             <li><a class="nav-link active" href="index.html">Forstarbeiten</a></li>
-            <li><a class="nav-link" href="../about-us/index.html">Über uns</a></li>
+            <li><a class="nav-link" href="../about-us/index.html">&Uuml;ber uns</a></li>
             <li><a class="nav-link" href="../contact/index.html">Kontakt</a></li>
           </ul>
-          <button class="icon-btn nav-close" type="button" data-close-menu aria-label="Menü schließen">
+          <button class="icon-btn nav-close" type="button" data-close-menu aria-label="Men&uuml; schlie&szlig;en">
             <i class="ri-close-line"></i>
           </button>
         </div>
         <div class="nav-actions">
-          <button class="icon-btn" type="button" data-open-search aria-label="Suche öffnen">
+          <button class="icon-btn nav-search-toggle" type="button" data-open-search aria-label="Suche &ouml;ffnen">
             <i class="ri-search-line"></i>
           </button>
-          <button class="icon-btn" type="button" data-open-menu aria-label="Menü öffnen">
+          <button class="icon-btn nav-menu-toggle" type="button" data-open-menu aria-label="Men&uuml; &ouml;ffnen">
             <i class="ri-menu-line"></i>
           </button>
         </div>
@@ -43,57 +48,55 @@
         <i class="ri-search-line"></i>
         <input class="search-input" type="search" placeholder="Wonach suchen Sie?" />
       </form>
-      <button class="icon-btn search-close" type="button" data-close-search aria-label="Suche schließen">
+      <button class="icon-btn search-close" type="button" data-close-search aria-label="Suche schlie&szlig;en">
         <i class="ri-close-line"></i>
       </button>
     </div>
 
-    <main class="forestry-hero">
-      <div class="forestry-inner">
-        <h1>Forstarbeiten</h1>
-        <div class="forestry-grid">
-          <div class="forestry-col-left">
-            <article class="service-item">
-              <h3>Baumabtragung</h3>
-              <p>
-                Wir übernehmen die sichere und fachgerechte Abtragung von Bäumen im kleinen Umfang - ideal für Gärten
-                oder kleinere Waldstücke.
-              </p>
-            </article>
-            <article class="service-item">
-              <h3>Holzernte im kleinen Bereich</h3>
-              <p>
-                Mit modernem Equipment ernten wir Holz effizient in kleinem Umfang, perfekt für private Wälder oder
-                kleinere Projekte.
-              </p>
-            </article>
-            <article class="service-item">
-              <h3>Aufforstung</h3>
-              <p>
-                Gemeinsam mit Ihnen wählen wir die passenden Baumsorten für Ihren Standort aus und sorgen für eine
-                nachhaltige Bepflanzung.
-              </p>
-            </article>
-          </div>
-          <div class="forestry-col-right">
-            <article class="service-item">
-              <h3>Schädlingsbekämpfung und Jungbestandspflege</h3>
-              <p>
-                Wir unterstützen Sie bei der Pflege Ihres Jungbestandes und bieten effektive Lösungen zur
-                Schädlingsbekämpfung, um den gesunden Wuchs Ihrer Pflanzen sicherzustellen.
-              </p>
-            </article>
-            <article class="service-item">
-              <h3>Baumpflege</h3>
-              <p>
-                Vom präzisen Hecken- bis zum Obstbaumschnitt - wir kümmern uns um die Pflege Ihrer Gehölze, damit
-                diese gesund und gepflegt bleiben.
-              </p>
-            </article>
-          </div>
+    <main>
+      <section class="page-hero">
+        <div class="container">
+          <h1>Forstarbeiten</h1>
+          <p>Moderne Forstpflege f&uuml;r private Fl&auml;chen, G&auml;rten und kleine Waldst&uuml;cke im Piestingtal.</p>
         </div>
-        <button class="btn-primary" type="button">Anfragen</button>
-      </div>
+      </section>
+
+      <section class="page-wrap">
+        <article class="content-card">
+          <h2>Unsere Leistungen auf einen Blick</h2>
+          <div class="forestry-services">
+            <article class="service-card">
+              <div class="service-icon"><i class="ri-scissors-cut-line"></i></div>
+              <h3>Baumabtragung</h3>
+              <p>Wir &uuml;bernehmen die sichere und fachgerechte Abtragung von B&auml;umen im kleinen Umfang.</p>
+            </article>
+            <article class="service-card">
+              <div class="service-icon"><i class="ri-plant-line"></i></div>
+              <h3>Aufforstung</h3>
+              <p>Gemeinsam mit Ihnen w&auml;hlen wir passende Baumsorten f&uuml;r Ihren Standort aus.</p>
+            </article>
+            <article class="service-card">
+              <div class="service-icon"><i class="ri-shield-check-line"></i></div>
+              <h3>Jungbestand &amp; Schutz</h3>
+              <p>Pflege von Jungbest&auml;nden und gezielte Ma&szlig;nahmen zur Sch&auml;dlingsbek&auml;mpfung.</p>
+            </article>
+            <article class="service-card">
+              <div class="service-icon"><i class="ri-leaf-line"></i></div>
+              <h3>Baum- und Geh&ouml;lzpflege</h3>
+              <p>Vom Heckenschnitt bis zum Obstbaumschnitt f&uuml;r gesunde und gepflegte Geh&ouml;lze.</p>
+            </article>
+            <article class="service-card">
+              <div class="service-icon"><i class="ri-hammer-line"></i></div>
+              <h3>Holzernte im kleinen Bereich</h3>
+              <p>Effiziente Holzernte mit modernem Equipment, perfekt f&uuml;r private W&auml;lder und Projekte.</p>
+            </article>
+          </div>
+          <div class="contact-actions" style="margin-top: 18px;">
+            <button class="btn-primary" type="button">Unverbindlich anfragen</button>
+            <a class="btn-secondary" href="../contact/index.html">Kontakt aufnehmen</a>
+          </div>
+        </article>
+      </section>
     </main>
 
     <footer class="footer">
@@ -101,14 +104,14 @@
         <div class="footer-col">
           <h3>Hilfreiches</h3>
           <a href="../index.html#rentInstructions">Mieten: so geht's</a>
-          <a href="#">Häufig gestellte Fragen</a>
-          <a href="../index.html#whyRentFromUs">Warum bei uns Mieten</a>
+          <a href="#">H&auml;ufig gestellte Fragen</a>
+          <a href="../index.html#whyRentFromUs">Warum bei uns mieten</a>
         </div>
         <div class="footer-col">
           <h3>Kontaktieren Sie uns</h3>
           <a href="../contact/index.html">Kontakt</a>
           <button type="button" data-open-dialog="impressum">Impressum</button>
-          <button type="button" data-open-dialog="datenschutz">Datenschutzerklärung</button>
+          <button type="button" data-open-dialog="datenschutz">Datenschutzerkl&auml;rung</button>
         </div>
       </div>
     </footer>
@@ -117,20 +120,21 @@
       <div class="dialog-card">
         <h4>Impressum</h4>
         <p>Alles Saniert</p>
-        <p>Piestingtal, Österreich</p>
+        <p>Piestingtal, &Ouml;sterreich</p>
         <p>Diese Nachbildung dient nur zu Demonstrationszwecken.</p>
-        <button class="btn-primary dialog-close" type="button" data-close-dialog>Schließen</button>
+        <button class="btn-primary dialog-close" type="button" data-close-dialog>Schlie&szlig;en</button>
       </div>
     </div>
 
     <div id="datenschutz" class="dialog" aria-hidden="true">
       <div class="dialog-card">
-        <h4>Datenschutzerklärung</h4>
+        <h4>Datenschutzerkl&auml;rung</h4>
         <p>Es werden in dieser statischen Demo keine personenbezogenen Daten verarbeitet.</p>
-        <button class="btn-primary dialog-close" type="button" data-close-dialog>Schließen</button>
+        <button class="btn-primary dialog-close" type="button" data-close-dialog>Schlie&szlig;en</button>
       </div>
     </div>
 
     <script src="../script.js"></script>
   </body>
 </html>
+
