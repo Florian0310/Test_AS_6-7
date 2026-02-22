@@ -5,6 +5,7 @@
   --text-muted: #505050;
   --bg-light: #f5f5f5;
   --white: #ffffff;
+  color-scheme: light dark;
 }
 
 * {
@@ -1963,6 +1964,245 @@ img {
   font-size: 0.92rem;
 }
 
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg-light: #0b1220;
+    --text-dark: #e5e7eb;
+    --text-muted: #9aa8bd;
+  }
+
+  body {
+    background: #0b1220;
+    color: #e5e7eb;
+  }
+
+  .header {
+    background: rgba(8, 12, 22, 0.88);
+    border-bottom-color: rgba(71, 85, 105, 0.45);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4);
+  }
+
+  .icon-btn {
+    color: #e5e7eb;
+  }
+
+  .icon-btn:hover {
+    background: rgba(226, 232, 240, 0.12);
+  }
+
+  .nav-link {
+    color: #e5e7eb;
+  }
+
+  .search {
+    background-color: rgba(2, 6, 23, 0.54);
+  }
+
+  .search-form {
+    background: #111c31;
+    border: 1px solid #32425f;
+  }
+
+  .search-form i,
+  .search-input {
+    color: #e2e8f0;
+  }
+
+  .search-input::placeholder {
+    color: #90a1bc;
+  }
+
+  .section-soft {
+    background: linear-gradient(180deg, #111a2d 0%, #0b1220 100%);
+  }
+
+  .section-subtitle,
+  .section-subtitle.center,
+  .shop-breadcrumb,
+  .shop-head p,
+  .about-text p,
+  .contact-intro p,
+  .product-content p,
+  .step-card p,
+  .meta-item p,
+  .product-summary-card > p,
+  .summary-note,
+  .reservation-summary dt,
+  .contact-form-wrap > p {
+    color: #9db0c8;
+  }
+
+  .content-card,
+  .meta-item,
+  .product-card,
+  .step-card,
+  .benefit,
+  .shop-categories,
+  .shop-strip,
+  .shop-products-wrap,
+  .shop-product-card,
+  .product-gallery-card,
+  .product-summary-card,
+  .rent-box,
+  .related-grid article,
+  .reservation-steps,
+  .reservation-delivery,
+  .reservation-summary,
+  .dialog-card {
+    background: #111a2d;
+    border-color: #2e3c55;
+    box-shadow: 0 12px 28px rgba(0, 0, 0, 0.32);
+    color: #e5e7eb;
+  }
+
+  .product-image-wrap,
+  .shop-product-image,
+  .shop-mini-grid article,
+  .product-main-image,
+  .product-spec-grid article,
+  .rent-date-grid div,
+  .delivery-option .icon,
+  .view360 {
+    background: #0f1729;
+    border-color: #334155;
+    color: #e5e7eb;
+  }
+
+  .product-category,
+  .shop-product-card dt,
+  .shop-product-card h3 a,
+  .shop-back-link,
+  .product-summary-card h1,
+  .product-data-grid h2,
+  .shop-categories h2,
+  .forestry-panel h2,
+  .inline-link,
+  .consent-link {
+    color: #93b5ff;
+  }
+
+  .product-footer small,
+  .shop-product-card dd,
+  .shop-mini-grid span,
+  .shop-categories li,
+  .product-summary-card h1 span,
+  .product-rating,
+  .product-spec-grid small,
+  .rent-box-head small,
+  .product-tabs a,
+  .reservation-steps h2 {
+    color: #a9b7ca;
+  }
+
+  .product-footer strong,
+  .shop-strip-head h2,
+  .shop-head h1,
+  .shop-product-card p,
+  .related-grid h3,
+  .reservation-delivery h3,
+  .reservation-summary h3,
+  .content-card h2,
+  .about h1,
+  .about h2,
+  .service-card h3,
+  .field span {
+    color: #e5e7eb;
+  }
+
+  .product-cart {
+    background: #1f325d;
+  }
+
+  .field input,
+  .field textarea,
+  .field select {
+    background: #0f1729;
+    border-color: #3a4a67;
+    color: #e5e7eb;
+  }
+
+  .field input::placeholder,
+  .field textarea::placeholder {
+    color: #8fa0bb;
+  }
+
+  .btn-secondary {
+    background: #17253e;
+    color: #dbe6f6;
+    border-color: #3a4a67;
+  }
+
+  .btn-secondary:hover {
+    background: #213250;
+  }
+
+  .shop-categories li.active,
+  .shop-categories li:hover,
+  .delivery-option.active {
+    background: rgba(147, 181, 255, 0.12);
+    border-color: rgba(147, 181, 255, 0.5);
+    color: #dbe7ff;
+  }
+
+  .product-tabs {
+    border-bottom-color: #334155;
+  }
+
+  .product-tabs a.active {
+    color: #dbe7ff;
+  }
+
+  .product-data-grid dl div,
+  .reservation-summary dl div,
+  .reservation-steps article,
+  .shop-product-card,
+  .delivery-option {
+    border-color: #324055;
+  }
+
+  .service-card {
+    background: linear-gradient(180deg, #122038 0%, #0f1a2f 100%);
+    border-color: #30425d;
+  }
+
+  .service-card .service-icon {
+    background: rgba(147, 181, 255, 0.2);
+    color: #b4caff;
+  }
+
+  .service-card p {
+    color: #a9b7ca;
+  }
+
+  .forestry-panel {
+    border-color: #30425d;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.45);
+  }
+
+  .benefit img {
+    filter: brightness(0) invert(1) saturate(0) contrast(1.05);
+  }
+
+  .dialog {
+    background: rgba(1, 4, 11, 0.68);
+  }
+
+  .dialog-card {
+    background: #101a2c;
+    border: 1px solid #334155;
+  }
+
+  .dialog-card h4,
+  .dialog-card p {
+    color: #e5e7eb;
+  }
+
+  .dialog-close {
+    background: var(--brand-orange);
+    color: #fff;
+  }
+}
+
 @media (max-width: 1320px) {
   .about {
     width: min(80%, 1100px);
@@ -2364,5 +2604,22 @@ img {
 
   .reservation-actions {
     flex-direction: column;
+  }
+}
+
+@media (prefers-color-scheme: dark) and (max-width: 1023px) {
+  .nav-menu {
+    background: #0f1729;
+    border-top: 1px solid #334155;
+  }
+
+  .nav-link,
+  .nav-link:hover,
+  .nav-link.active {
+    color: #e5e7eb;
+  }
+
+  .nav-close {
+    color: #e5e7eb;
   }
 }
