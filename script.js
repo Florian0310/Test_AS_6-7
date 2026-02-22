@@ -7,6 +7,7 @@ function setupPage() {
   const closeSearchBtn = document.querySelector('[data-close-search]');
   const dialogButtons = document.querySelectorAll('[data-open-dialog]');
   const dialogs = document.querySelectorAll('.dialog');
+  const contactForm = document.querySelector('[data-contact-form]');
   const pageBody = document.body;
 
   const setBodyLock = () => {
@@ -105,6 +106,31 @@ function setupPage() {
       setBodyLock();
     }
   });
+
+  if (contactForm) {
+    contactForm.addEventListener('submit', (event) => {
+      event.preventDefault();
+
+      const formData = new FormData(contactForm);
+      const firstName = String(formData.get('first_name') || '').trim();
+      const lastName = String(formData.get('last_name') || '').trim();
+      const fallbackName = String(formData.get('name') || '').trim();
+      const name = [firstName, lastName].filter(Boolean).join(' ') || fallbackName;
+      const email = String(formData.get('email') || '').trim();
+      const phone = String(formData.get('phone') || '').trim();
+      const selectedSubject = String(formData.get('subject') || '').trim();
+      const message = String(formData.get('message') || '').trim();
+
+      const subject = encodeURIComponent(
+        `${selectedSubject || 'Kontaktanfrage'} - ${name || 'Website'}`
+      );
+      const body = encodeURIComponent(
+        `Name: ${name}\nE-Mail: ${email}\nTelefon: ${phone}\n\nNachricht:\n${message}`
+      );
+
+      window.location.href = `mailto:test@test.at?subject=${subject}&body=${body}`;
+    });
+  }
 }
 
 document.addEventListener('DOMContentLoaded', setupPage);
