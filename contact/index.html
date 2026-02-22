@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="de">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Kontakt | Alles Saniert</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/remixicon/3.5.0/remixicon.css" />
+    <link rel="stylesheet" href="../styles.css" />
+  </head>
+  <body>
+    <header class="header">
+      <nav class="nav container">
+        <a href="../index.html"><img class="logo" src="../assets/images/logo.jpg" alt="Alles Saniert" /></a>
+        <div class="nav-menu" data-nav-menu>
+          <ul class="nav-list">
+            <li><a class="nav-link" href="../forestry-work/index.html">Forstarbeiten</a></li>
+            <li><a class="nav-link" href="../about-us/index.html">Über uns</a></li>
+            <li><a class="nav-link active" href="index.html">Kontakt</a></li>
+          </ul>
+          <button class="icon-btn nav-close" type="button" data-close-menu aria-label="Menü schließen">
+            <i class="ri-close-line"></i>
+          </button>
+        </div>
+        <div class="nav-actions">
+          <button class="icon-btn" type="button" data-open-search aria-label="Suche öffnen">
+            <i class="ri-search-line"></i>
+          </button>
+          <button class="icon-btn" type="button" data-open-menu aria-label="Menü öffnen">
+            <i class="ri-menu-line"></i>
+          </button>
+        </div>
+      </nav>
+    </header>
+
+    <div class="search" data-search>
+      <form class="search-form">
+        <i class="ri-search-line"></i>
+        <input class="search-input" type="search" placeholder="Wonach suchen Sie?" />
+      </form>
+      <button class="icon-btn search-close" type="button" data-close-search aria-label="Suche schließen">
+        <i class="ri-close-line"></i>
+      </button>
+    </div>
+
+    <main class="contact">
+      <img src="../assets/images/contactCard.jpg" alt="Kontaktkarte" />
+    </main>
+
+    <footer class="footer">
+      <div class="footer-grid container">
+        <div class="footer-col">
+          <h3>Hilfreiches</h3>
+          <a href="../index.html#rentInstructions">Mieten: so geht's</a>
+          <a href="#">Häufig gestellte Fragen</a>
+          <a href="../index.html#whyRentFromUs">Warum bei uns Mieten</a>
+        </div>
+        <div class="footer-col">
+          <h3>Kontaktieren Sie uns</h3>
+          <a href="index.html">Kontakt</a>
+          <button type="button" data-open-dialog="impressum">Impressum</button>
+          <button type="button" data-open-dialog="datenschutz">Datenschutzerklärung</button>
+        </div>
+      </div>
+    </footer>
+
+    <div id="impressum" class="dialog" aria-hidden="true">
+      <div class="dialog-card">
+        <h4>Impressum</h4>
+        <p>Alles Saniert</p>
+        <p>Piestingtal, Österreich</p>
+        <p>Diese Nachbildung dient nur zu Demonstrationszwecken.</p>
+        <button class="btn-primary dialog-close" type="button" data-close-dialog>Schließen</button>
+      </div>
+    </div>
+
+    <div id="datenschutz" class="dialog" aria-hidden="true">
+      <div class="dialog-card">
+        <h4>Datenschutzerklärung</h4>
+        <p>Es werden in dieser statischen Demo keine personenbezogenen Daten verarbeitet.</p>
+        <button class="btn-primary dialog-close" type="button" data-close-dialog>Schließen</button>
+      </div>
+    </div>
+
+    <script src="../script.js"></script>
+  </body>
+</html>
