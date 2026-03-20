@@ -1,0 +1,28 @@
+{
+    "name":  "allessaniert-backend",
+    "version":  "1.0.0",
+    "private":  true,
+    "description":  "Strapi Backend fuer Alles Saniert Werkzeugverleih",
+    "scripts":  {
+                    "develop":  "strapi develop",
+                    "start":  "strapi start",
+                    "build":  "strapi build",
+                    "strapi":  "strapi",
+                    "test":  "node --test tests/**/*.test.js"
+                },
+    "dependencies":  {
+                         "@strapi/plugin-users-permissions":  "^5.0.0",
+                         "@strapi/strapi":  "^5.0.0",
+                         "better-sqlite3":  "^11.3.0",
+                         "esbuild":  "^0.25.11",
+                         "react":  "^18.3.1",
+                         "react-dom":  "^18.3.1",
+                         "react-router-dom":  "^6.30.3",
+                         "styled-components":  "^6.3.11"
+                     },
+    "engines":  {
+                    "node":  "\u003e=20.0.0 \u003c=22.x.x",
+                    "npm":  "\u003e=8.0.0"
+                },
+    "license":  "MIT"
+}

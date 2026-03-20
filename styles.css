@@ -1238,6 +1238,33 @@ img {
   color: #64748b;
 }
 
+.shop-search-form {
+  margin-top: 14px;
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 10px;
+}
+
+.shop-search-form input {
+  min-height: 42px;
+  border-radius: 10px;
+  border: 1px solid #d8e1ef;
+  padding: 8px 12px;
+  font: inherit;
+  color: #0f172a;
+  background: #fff;
+}
+
+.shop-search-form input::placeholder {
+  color: #7b8798;
+}
+
+.shop-search-form input:focus {
+  outline: none;
+  border-color: #8aa5e6;
+  box-shadow: 0 0 0 3px rgba(0, 20, 137, 0.08);
+}
+
 .shop-breadcrumb {
   display: flex;
   align-items: center;
@@ -1290,6 +1317,29 @@ img {
   color: #334155;
 }
 
+.category-btn {
+  border: 0;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
+  text-align: left;
+  width: 100%;
+  padding: 0;
+}
+
+.category-meta {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.category-meta small {
+  color: #64748b;
+  font-size: 0.78rem;
+  font-weight: 700;
+}
+
 .shop-categories li.active,
 .shop-categories li:hover {
   background: #f4f8ff;
@@ -1323,6 +1373,11 @@ img {
   color: #0f172a;
   font-size: 1.78rem;
   line-height: 1.15;
+}
+
+.shop-feedback {
+  margin: 0 0 10px;
+  font-size: 0.95rem;
 }
 
 .btn-filter {
@@ -1431,6 +1486,12 @@ img {
 .shop-product-card dd {
   margin: 0;
   color: #334155;
+}
+
+.tool-empty {
+  margin: 0;
+  padding: 10px;
+  color: #64748b;
 }
 
 .btn-price {
@@ -1594,6 +1655,10 @@ img {
   font-weight: 600;
 }
 
+.availability.is-out {
+  color: #dc2626;
+}
+
 .product-summary-card > p {
   color: #334155;
   margin: 14px 0 16px;
@@ -1704,6 +1769,70 @@ img {
   margin-top: 8px;
   width: 100%;
   gap: 8px;
+}
+
+.rent-form {
+  margin-top: 12px;
+  display: grid;
+  gap: 10px;
+}
+
+.rent-form-row {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(150px, 1fr));
+  gap: 8px;
+}
+
+.field-inline {
+  display: grid;
+  gap: 6px;
+}
+
+.field-inline span {
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: #475569;
+}
+
+.field-inline input,
+.field-inline textarea {
+  width: 100%;
+  border: 1px solid #d9e3f4;
+  border-radius: 10px;
+  padding: 9px 10px;
+  font: inherit;
+  color: #0f172a;
+  background: #fff;
+}
+
+.field-inline input:focus,
+.field-inline textarea:focus {
+  outline: none;
+  border-color: #8aa5e6;
+  box-shadow: 0 0 0 3px rgba(0, 20, 137, 0.08);
+}
+
+.field-inline-small {
+  max-width: 130px;
+}
+
+.rent-availability,
+.rent-feedback {
+  margin: 0;
+  align-self: end;
+  font-size: 0.88rem;
+}
+
+.is-info {
+  color: #475569;
+}
+
+.is-success {
+  color: #15803d;
+}
+
+.is-error {
+  color: #dc2626;
 }
 
 .rent-meta {
@@ -2012,6 +2141,16 @@ img {
     color: #90a1bc;
   }
 
+  .shop-search-form input {
+    background: #0f1729;
+    border-color: #334155;
+    color: #e2e8f0;
+  }
+
+  .shop-search-form input::placeholder {
+    color: #90a1bc;
+  }
+
   .section-soft {
     background: linear-gradient(180deg, #111a2d 0%, #0b1220 100%);
   }
@@ -2085,6 +2224,7 @@ img {
   .shop-product-card dd,
   .shop-mini-grid span,
   .shop-categories li,
+  .category-meta small,
   .product-summary-card h1 span,
   .product-rating,
   .product-spec-grid small,
@@ -2121,8 +2261,21 @@ img {
     color: #e5e7eb;
   }
 
+  .field-inline span {
+    color: #b6c5d9;
+  }
+
+  .field-inline input,
+  .field-inline textarea {
+    background: #0f1729;
+    border-color: #3a4a67;
+    color: #e5e7eb;
+  }
+
   .field input::placeholder,
-  .field textarea::placeholder {
+  .field textarea::placeholder,
+  .field-inline input::placeholder,
+  .field-inline textarea::placeholder {
     color: #8fa0bb;
   }
 
@@ -2201,6 +2354,26 @@ img {
     background: var(--brand-orange);
     color: #fff;
   }
+
+  .tool-empty,
+  .shop-feedback.is-info,
+  .rent-availability.is-info,
+  .rent-feedback.is-info {
+    color: #9db0c8;
+  }
+
+  .shop-feedback.is-success,
+  .rent-availability.is-success,
+  .rent-feedback.is-success {
+    color: #22c55e;
+  }
+
+  .shop-feedback.is-error,
+  .rent-availability.is-error,
+  .rent-feedback.is-error,
+  .availability.is-out {
+    color: #f87171;
+  }
 }
 
 @media (max-width: 1320px) {
@@ -2247,6 +2420,14 @@ img {
   .shop-products-grid,
   .related-grid {
     grid-template-columns: repeat(2, minmax(200px, 1fr));
+  }
+
+  .rent-form-row {
+    grid-template-columns: 1fr;
+  }
+
+  .field-inline-small {
+    max-width: 100%;
   }
 
   .product-detail-grid {
@@ -2570,6 +2751,10 @@ img {
 
   .shop-strip-head h2 {
     font-size: 1.38rem;
+  }
+
+  .shop-search-form {
+    grid-template-columns: 1fr;
   }
 
   .shop-mini-grid {

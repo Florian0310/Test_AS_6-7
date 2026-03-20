@@ -1,0 +1,21 @@
+{
+  "collectionName": "components_shared_legals",
+  "info": {
+    "displayName": "Rechtliches",
+    "description": "Texte fuer Impressum, Datenschutz und AGB"
+  },
+  "options": {},
+  "attributes": {
+    "imprint": {
+      "type": "richtext",
+      "required": true
+    },
+    "privacy": {
+      "type": "richtext",
+      "required": true
+    },
+    "terms": {
+      "type": "richtext"
+    }
+  }
+}

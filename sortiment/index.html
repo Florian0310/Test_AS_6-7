@@ -14,7 +14,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/remixicon/3.5.0/remixicon.css" />
     <link rel="stylesheet" href="../styles.css" />
   </head>
-  <body class="shop-page">
+  <body class="shop-page" data-shop-page>
     <header class="header">
       <nav class="nav container">
         <a class="brand-logo" href="../index.html" aria-label="Alles Saniert Startseite">
@@ -63,48 +63,31 @@
           <span>Sortiment</span>
         </nav>
         <h1>Werkzeuge &amp; Maschinen</h1>
-        <p>Shop-Vorlage vorbereitet. Produkte, Kategorien und Reservierungsflow sind als Frontend-Template angelegt.</p>
+        <p>Alle Inhalte werden aus Strapi geladen. Sie koennen direkt nach Kategorien und Begriffen filtern.</p>
+        <form class="shop-search-form" data-tools-search-form>
+          <input type="search" placeholder="Werkzeug suchen..." data-tools-search />
+          <button type="submit" class="btn-filter">Suchen</button>
+        </form>
       </section>
 
       <section class="container shop-layout">
         <aside class="shop-categories">
           <h2>Kategorien</h2>
-          <ul>
-            <li class="active"><a href="#">Bohren &amp; Schrauben</a><i class="ri-arrow-right-s-line"></i></li>
-            <li><a href="#">S&auml;gen &amp; Schleifen</a><i class="ri-arrow-right-s-line"></i></li>
-            <li><a href="#">Reinigung</a><i class="ri-arrow-right-s-line"></i></li>
-            <li><a href="#">Messtechnik</a><i class="ri-arrow-right-s-line"></i></li>
-            <li><a href="#">Drucklufttechnik</a><i class="ri-arrow-right-s-line"></i></li>
-            <li><a href="#">Alle Produkte</a><i class="ri-arrow-right-s-line"></i></li>
+          <ul data-categories-list>
+            <li class="active"><button type="button" class="category-btn" data-category="">Alle Produkte</button><i class="ri-arrow-right-s-line"></i></li>
           </ul>
         </aside>
 
         <div class="shop-content">
           <section class="shop-strip">
             <div class="shop-strip-head">
-              <h2>Bohren &amp; Schrauben</h2>
-              <button type="button" class="btn-filter">Alle</button>
+              <h2 data-shop-current-category>Alle Kategorien</h2>
+              <button type="button" class="btn-filter" data-reset-filter>Filter reset</button>
             </div>
-            <div class="shop-mini-grid">
+            <div class="shop-mini-grid" data-tools-mini>
               <article>
-                <img src="../assets/images/aboutUsTwo.jpg" alt="Akkuschrauber" />
-                <span>Akkuschrauber</span>
-              </article>
-              <article>
-                <img src="../assets/images/aboutUsTwo.jpg" alt="Akkuschrauber" />
-                <span>Akkuschrauber</span>
-              </article>
-              <article>
-                <img src="../assets/images/aboutUsOne.jpg" alt="Akkubohrer" />
-                <span>Akkubohrer</span>
-              </article>
-              <article>
-                <img src="../assets/images/aboutUsTwo.jpg" alt="Akkuschrauber" />
-                <span>Akkuschrauber</span>
-              </article>
-              <article>
-                <img src="../assets/images/aboutUsOne.jpg" alt="Akkubohrer" />
-                <span>Akkubohrer</span>
+                <img src="../assets/images/aboutUsTwo.jpg" alt="Werkzeugplatzhalter" />
+                <span>Lade Daten...</span>
               </article>
             </div>
           </section>
@@ -113,7 +96,8 @@
             <div class="shop-strip-head">
               <h2>Beliebt</h2>
             </div>
-            <div class="shop-products-grid">
+            <p class="shop-feedback is-info" data-shop-feedback>Lade Daten...</p>
+            <div class="shop-products-grid" data-tools-grid>
               <article class="shop-product-card">
                 <a class="shop-product-image" href="produkt-hilti-sf-6-a22.html">
                   <img src="../assets/images/aboutUsTwo.jpg" alt="HILTI SF 6-A22" />
@@ -244,6 +228,8 @@
       </div>
     </div>
 
+    <script src="../app-config.js"></script>
     <script src="../script.js"></script>
+    <script src="../shop.js"></script>
   </body>
 </html>

@@ -14,7 +14,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/remixicon/3.5.0/remixicon.css" />
     <link rel="stylesheet" href="../styles.css" />
   </head>
-  <body class="shop-page">
+  <body class="shop-page" data-tool-page data-default-slug="hilti-sf-6-a22">
     <header class="header">
       <nav class="nav container">
         <a class="brand-logo" href="../index.html" aria-label="Alles Saniert Startseite">
@@ -62,11 +62,14 @@
           <i class="ri-arrow-right-s-line"></i>
           <a href="index.html">Sortiment</a>
           <i class="ri-arrow-right-s-line"></i>
-          <a href="index.html">Schrauben &amp; Bohren</a>
+          <a href="index.html" data-tool-category>Schrauben &amp; Bohren</a>
           <i class="ri-arrow-right-s-line"></i>
-          <span>HILTI SF 6-A22</span>
+          <span data-breadcrumb-tool-name>HILTI SF 6-A22</span>
         </nav>
         <a class="shop-back-link" href="index.html"><i class="ri-arrow-left-line"></i> Zur&uuml;ck zur &Uuml;bersicht</a>
+      </section>
+      <section class="container">
+        <p class="shop-feedback is-info" data-tool-feedback>Lade Werkzeug...</p>
       </section>
 
       <section class="container product-detail-grid">
@@ -76,51 +79,82 @@
               <span>Top Seller</span>
               <span class="green">Akku</span>
             </div>
-            <img src="../assets/images/aboutUsTwo.jpg" alt="HILTI SF 6-A22 Akku-Bohrschrauber" />
+            <img src="../assets/images/aboutUsTwo.jpg" alt="Werkzeugbild" data-tool-main-image />
             <div class="view360"><i class="ri-360-view"></i> 360&deg; Ansicht</div>
           </div>
-          <div class="product-thumbs">
+          <div class="product-thumbs" data-tool-thumbs>
             <button class="active" type="button"><img src="../assets/images/aboutUsTwo.jpg" alt="Ansicht 1" /></button>
-            <button type="button"><img src="../assets/images/aboutUsOne.jpg" alt="Ansicht 2" /></button>
-            <button type="button"><img src="../assets/images/bannerBackground.jpg" alt="Ansicht 3" /></button>
           </div>
         </article>
 
         <aside class="product-summary-card">
-          <h1>HILTI SF 6-A22 <span>Akku-Bohrschrauber</span></h1>
+          <h1><span data-tool-name>HILTI SF 6-A22</span><span data-tool-subtitle>Akku-Bohrschrauber</span></h1>
           <div class="product-rating">
             <div class="stars"><i class="ri-star-fill"></i><i class="ri-star-fill"></i><i class="ri-star-fill"></i><i class="ri-star-fill"></i><i class="ri-star-half-fill"></i></div>
             <span>4.8 (124 Bewertungen)</span>
-            <span class="availability"><i class="ri-checkbox-circle-fill"></i> Verf&uuml;gbar ab heute</span>
+            <span class="availability" data-tool-availability><i class="ri-checkbox-circle-fill"></i> Verf&uuml;gbar ab heute</span>
           </div>
 
-          <p>
+          <p data-tool-description>
             Leistungsstarker 22V Akku-Bohrschrauber mit aktiver Drehmomentsteuerung und elektronischer Rutschkupplung
             f&uuml;r universellen Einsatz in Holz, Metall und anderen Werkstoffen.
           </p>
 
           <div class="product-spec-grid">
-            <article><small>Drehmoment (weich/hart)</small><strong>84 / 150 Nm</strong></article>
-            <article><small>Gewicht</small><strong>2,5 kg</strong></article>
-            <article><small>Drehzahl (max)</small><strong>2.200 min&#8315;&sup1;</strong></article>
-            <article><small>Bohrfutter</small><strong>13 mm</strong></article>
+            <article><small>Drehmoment (weich/hart)</small><strong data-spec-torque>-</strong></article>
+            <article><small>Gewicht</small><strong data-spec-weight>-</strong></article>
+            <article><small>Drehzahl (max)</small><strong data-spec-speed>-</strong></article>
+            <article><small>Bohrfutter</small><strong data-spec-chuck>-</strong></article>
           </div>
 
           <div class="rent-box">
             <div class="rent-box-head">
               <div>
                 <small>Tagesmietpreis</small>
-                <p><strong>49,90&euro;</strong> / Tag</p>
+                <p><strong data-tool-price>49,90&euro;</strong> / Tag</p>
               </div>
-              <span>-15% ab 3 Tagen</span>
+              <span>Automatisch berechnet</span>
             </div>
-            <div class="rent-date-grid">
-              <div>Heute, 24. Okt</div>
-              <i class="ri-arrow-right-line"></i>
-              <div>Morgen, 25. Okt</div>
-            </div>
-            <a class="btn-primary rent-action" href="reservierung.html"><i class="ri-shopping-cart-2-line"></i> Jetzt mieten</a>
-            <button class="btn-secondary rent-save" type="button"><i class="ri-bookmark-line"></i> Auf die Merkliste</button>
+
+            <form class="rent-form" data-rental-form>
+              <div class="rent-form-row">
+                <label class="field-inline">
+                  <span>Startdatum</span>
+                  <input type="date" name="startDate" required />
+                </label>
+                <label class="field-inline">
+                  <span>Enddatum</span>
+                  <input type="date" name="endDate" required />
+                </label>
+              </div>
+              <div class="rent-form-row">
+                <label class="field-inline field-inline-small">
+                  <span>Menge</span>
+                  <input type="number" name="quantity" min="1" step="1" value="1" required />
+                </label>
+                <p class="rent-availability is-info" data-availability-status>Bitte Zeitraum waehlen.</p>
+              </div>
+              <div class="rent-form-row">
+                <label class="field-inline">
+                  <span>Name</span>
+                  <input type="text" name="customerName" placeholder="Max Mustermann" required />
+                </label>
+                <label class="field-inline">
+                  <span>E-Mail</span>
+                  <input type="email" name="customerEmail" placeholder="max@beispiel.at" required />
+                </label>
+              </div>
+              <label class="field-inline">
+                <span>Telefon</span>
+                <input type="tel" name="customerPhone" placeholder="+43 ..." />
+              </label>
+              <label class="field-inline">
+                <span>Notizen</span>
+                <textarea name="notes" rows="3" placeholder="Optional: weitere Infos zur Anfrage"></textarea>
+              </label>
+              <button class="btn-primary rent-action" type="submit"><i class="ri-mail-send-line"></i> Anfrage senden</button>
+            </form>
+            <p class="rent-feedback is-info" data-rental-feedback>Sie erhalten eine Rueckmeldung, sobald die Anfrage geprueft wurde.</p>
             <div class="rent-meta"><span><i class="ri-check-line"></i> Sofort abholbereit</span><span><i class="ri-check-line"></i> Profi-Wartung inkl.</span></div>
           </div>
         </aside>
@@ -161,7 +195,7 @@
           <h2>H&auml;ufig zusammen gemietet</h2>
           <a href="index.html">Alle ansehen <i class="ri-arrow-right-line"></i></a>
         </div>
-        <div class="related-grid">
+        <div class="related-grid" data-related-tools>
           <article><img src="../assets/images/aboutUsOne.jpg" alt="Bohrer Set" /><h3>Hilti Bohrer-Set TE-CX</h3><p>ab 9,90&euro;</p></article>
           <article><img src="../assets/images/aboutUsTwo.jpg" alt="Zusatz Akku" /><h3>Zusatz-Akku B22</h3><p>ab 5,50&euro;</p></article>
           <article><img src="../assets/images/forestryWorkBackground.jpg" alt="Sicherheitsset" /><h3>Sicherheits-Set Basic</h3><p>ab 4,90&euro;</p></article>
@@ -189,6 +223,8 @@
     <div id="impressum" class="dialog" aria-hidden="true"><div class="dialog-card"><h4>Impressum</h4><p><strong>Verantwortlicher (iS der DSGVO) ist:</strong></p><p>Florian Schr&ouml;der<br />Erlachgasse 63/16, 1100 Wien</p><button class="btn-primary dialog-close" type="button" data-close-dialog>Schlie&szlig;en</button></div></div>
     <div id="datenschutz" class="dialog" aria-hidden="true"><div class="dialog-card"><h4>Datenschutzerkl&auml;rung</h4><p>Informationen zur Datenverarbeitung gem&auml;&szlig; DSGVO finden Sie hier als Platzhalter f&uuml;r den Shop.</p><button class="btn-primary dialog-close" type="button" data-close-dialog>Schlie&szlig;en</button></div></div>
 
+    <script src="../app-config.js"></script>
     <script src="../script.js"></script>
+    <script src="../shop.js"></script>
   </body>
 </html>

@@ -1,0 +1,75 @@
+{
+  "kind": "collectionType",
+  "collectionName": "rental_requests",
+  "info": {
+    "singularName": "rental-request",
+    "pluralName": "rental-requests",
+    "displayName": "Anfrage",
+    "description": "Reservierungs- und Mietanfragen"
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "tool": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::tool.tool",
+      "required": true,
+      "description": "Ausgewaehltes Werkzeug"
+    },
+    "customerName": {
+      "type": "string",
+      "required": true,
+      "description": "Vor- und Nachname"
+    },
+    "customerEmail": {
+      "type": "email",
+      "required": true,
+      "description": "Kontakt-E-Mail"
+    },
+    "customerPhone": {
+      "type": "string",
+      "description": "Telefonnummer"
+    },
+    "startDate": {
+      "type": "date",
+      "required": true,
+      "description": "Startdatum der Miete"
+    },
+    "endDate": {
+      "type": "date",
+      "required": true,
+      "description": "Enddatum der Miete"
+    },
+    "quantity": {
+      "type": "integer",
+      "required": true,
+      "min": 1,
+      "description": "Gewuenschte Anzahl"
+    },
+    "status": {
+      "type": "enumeration",
+      "enum": [
+        "pending",
+        "confirmed",
+        "rejected",
+        "cancelled",
+        "completed"
+      ],
+      "default": "pending",
+      "required": true,
+      "description": "Bearbeitungsstatus"
+    },
+    "notes": {
+      "type": "text",
+      "description": "Freitext/Notizen"
+    },
+    "totalPrice": {
+      "type": "decimal",
+      "min": 0,
+      "description": "Gesamtpreis (serverseitig berechnet)"
+    }
+  }
+}
