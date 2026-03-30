@@ -27,6 +27,25 @@ const frontendURL = process.env.FRONTEND_PUBLIC_URL || 'http://localhost:8000'
 const adminEmail = process.env.PAYLOAD_ADMIN_EMAIL || 'admin@example.com'
 const adminPassword = process.env.PAYLOAD_ADMIN_PASSWORD || 'ChangeMe123!'
 
+const normalizedEnvOrigins = (process.env.FRONTEND_ALLOWED_ORIGINS || '')
+  .split(',')
+  .map((origin) => origin.trim())
+  .filter(Boolean)
+
+const devOrigins = [
+  'http://localhost:3000',
+  'http://localhost:5500',
+  'http://localhost:8000',
+  'http://127.0.0.1:3000',
+  'http://127.0.0.1:5500',
+  'http://127.0.0.1:8000',
+  'null',
+]
+
+const allowedFrontendOrigins = Array.from(
+  new Set([frontendURL, ...devOrigins, ...normalizedEnvOrigins].filter(Boolean)),
+)
+
 export default buildConfig({
   secret: process.env.PAYLOAD_SECRET || 'change-me-in-production',
   serverURL: process.env.PAYLOAD_PUBLIC_SERVER_URL || 'http://localhost:3001',
@@ -44,8 +63,8 @@ export default buildConfig({
     api: '/api',
     admin: '/admin',
   },
-  cors: [frontendURL, 'http://localhost:3000', 'http://localhost:8000'],
-  csrf: [frontendURL, 'http://localhost:3000', 'http://localhost:8000'],
+  cors: allowedFrontendOrigins,
+  csrf: allowedFrontendOrigins,
   admin: {
     user: Users.slug,
     importMap: {

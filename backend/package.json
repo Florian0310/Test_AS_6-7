@@ -21,7 +21,7 @@
     "@payloadcms/next": "^3.80.0",
     "@payloadcms/richtext-lexical": "^3.80.0",
     "dotenv": "^16.4.5",
-    "next": "15.4.11",
+    "next": "16.2.1",
     "nodemailer": "^6.10.0",
     "payload": "^3.80.0",
     "react": "^19.1.1",
@@ -37,6 +37,9 @@
     "tsx": "^4.19.2",
     "typescript": "^5.6.3",
     "vitest": "^4.1.2"
+  },
+  "overrides": {
+    "next": "16.2.1"
   },
   "engines": {
     "node": ">=20.0.0"

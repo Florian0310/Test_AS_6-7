@@ -1,6 +1,6 @@
 import type { Metadata } from 'next'
 import { RootPage, generatePageMetadata } from '@payloadcms/next/views'
-import config from '../../../../../payload.config'
+import config from '../../../../payload.config'
 import { importMap } from '../importMap'
 
 type PageArgs = {
@@ -16,14 +16,14 @@ export const dynamic = 'force-dynamic'
 
 export const generateMetadata = ({ params, searchParams }: PageArgs): Promise<Metadata> =>
   generatePageMetadata({
-    config,
+    config: Promise.resolve(config),
     params,
     searchParams,
   })
 
 const Page = ({ params, searchParams }: PageArgs) =>
   RootPage({
-    config,
+    config: Promise.resolve(config),
     importMap,
     params,
     searchParams,
