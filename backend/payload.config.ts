@@ -1,0 +1,95 @@
+﻿import 'dotenv/config'
+
+import path from 'node:path'
+import { fileURLToPath } from 'node:url'
+import { mkdirSync } from 'node:fs'
+import { buildConfig } from 'payload'
+import { sqliteAdapter } from '@payloadcms/db-sqlite'
+import { lexicalEditor } from '@payloadcms/richtext-lexical'
+import sharp from 'sharp'
+
+import { Users } from './src/collections/Users'
+import { Media } from './src/collections/Media'
+import { Categories } from './src/collections/Categories'
+import { Products } from './src/collections/Products'
+import { Requests } from './src/collections/Requests'
+import { RentalSettings } from './src/globals/RentalSettings'
+import { publicEndpoints } from './src/endpoints/publicEndpoints'
+
+const filename = fileURLToPath(import.meta.url)
+const dirname = path.dirname(filename)
+
+const dataDir = path.resolve(dirname, 'data')
+mkdirSync(dataDir, { recursive: true })
+
+const databaseURL = process.env.DATABASE_URI || 'file:./data/payload.sqlite'
+const frontendURL = process.env.FRONTEND_PUBLIC_URL || 'http://localhost:8000'
+const adminEmail = process.env.PAYLOAD_ADMIN_EMAIL || 'admin@example.com'
+const adminPassword = process.env.PAYLOAD_ADMIN_PASSWORD || 'ChangeMe123!'
+
+export default buildConfig({
+  secret: process.env.PAYLOAD_SECRET || 'change-me-in-production',
+  serverURL: process.env.PAYLOAD_PUBLIC_SERVER_URL || 'http://localhost:3001',
+  sharp,
+  editor: lexicalEditor(),
+  db: sqliteAdapter({
+    client: {
+      url: databaseURL,
+    },
+  }),
+  collections: [Users, Media, Categories, Products, Requests],
+  globals: [RentalSettings],
+  endpoints: publicEndpoints,
+  routes: {
+    api: '/api',
+    admin: '/admin',
+  },
+  cors: [frontendURL, 'http://localhost:3000', 'http://localhost:8000'],
+  csrf: [frontendURL, 'http://localhost:3000', 'http://localhost:8000'],
+  admin: {
+    user: Users.slug,
+    importMap: {
+      baseDir: path.resolve(dirname, 'src'),
+    },
+    meta: {
+      titleSuffix: ' | Alles Saniert',
+    },
+  },
+  typescript: {
+    outputFile: path.resolve(dirname, 'src/payload-types.ts'),
+  },
+  onInit: async (payload) => {
+    const existing = await payload.find({
+      collection: 'users',
+      where: {
+        email: {
+          equals: adminEmail,
+        },
+      },
+      limit: 1,
+      overrideAccess: true,
+    })
+
+    if (!existing.docs.length) {
+      await payload.create({
+        collection: 'users',
+        overrideAccess: true,
+        data: {
+          email: adminEmail,
+          password: adminPassword,
+          name: 'Admin',
+        },
+      })
+      payload.logger.info(`Admin-Benutzer erstellt: ${adminEmail}`)
+    }
+
+    await payload.updateGlobal({
+      slug: 'rental-settings',
+      overrideAccess: true,
+      data: {
+        requestNotificationEmail:
+          process.env.REQUEST_NOTIFICATION_EMAIL || 'anfragen@allessaniert.at',
+      },
+    })
+  },
+})

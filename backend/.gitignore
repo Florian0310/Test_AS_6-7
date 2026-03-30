@@ -1,6 +1,9 @@
-node_modules/
-.cache/
-.tmp/
-build/
+node_modules
 .env
-*.log
+.next
+.next/**
+dist
+.payload
+*.sqlite
+*.db
+coverage

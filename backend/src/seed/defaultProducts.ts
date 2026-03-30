@@ -1,0 +1,36 @@
+export const defaultProducts = [
+  {
+    articleNumber: 'AS-1001',
+    title: 'Hilti SF 6-A22',
+    slug: 'hilti-sf-6-a22',
+    categorySlug: 'bohren-stemmen',
+    shortDescription: 'Akku-Bohrschrauber fuer professionelle Anwendungen in Holz und Metall.',
+    availabilityStatus: 'available',
+    pricing: {
+      dailyPrice: 49.9,
+      threeDayPrice: 129.9,
+      weeklyPrice: 249.9,
+      minimumRentalDays: 1,
+      deposit: 150,
+      cleaningFee: 0,
+      insuranceRequired: true,
+    },
+  },
+  {
+    articleNumber: 'AS-2001',
+    title: 'Bautrockner 50L',
+    slug: 'bautrockner-50l',
+    categorySlug: 'reinigung',
+    shortDescription: 'Leistungsstarker Bautrockner fuer Baustellen, Keller und Sanierungsprojekte.',
+    availabilityStatus: 'limited',
+    pricing: {
+      dailyPrice: 39,
+      threeDayPrice: 99,
+      weeklyPrice: 199,
+      minimumRentalDays: 2,
+      deposit: 120,
+      cleaningFee: 15,
+      insuranceRequired: true,
+    },
+  },
+] as const

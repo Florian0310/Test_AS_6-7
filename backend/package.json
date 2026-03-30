@@ -1,28 +1,44 @@
 {
-    "name":  "allessaniert-backend",
-    "version":  "1.0.0",
-    "private":  true,
-    "description":  "Strapi Backend fuer Alles Saniert Werkzeugverleih",
-    "scripts":  {
-                    "develop":  "strapi develop",
-                    "start":  "strapi start",
-                    "build":  "strapi build",
-                    "strapi":  "strapi",
-                    "test":  "node --test tests/**/*.test.js"
-                },
-    "dependencies":  {
-                         "@strapi/plugin-users-permissions":  "^5.0.0",
-                         "@strapi/strapi":  "^5.0.0",
-                         "better-sqlite3":  "^11.3.0",
-                         "esbuild":  "^0.25.11",
-                         "react":  "^18.3.1",
-                         "react-dom":  "^18.3.1",
-                         "react-router-dom":  "^6.30.3",
-                         "styled-components":  "^6.3.11"
-                     },
-    "engines":  {
-                    "node":  "\u003e=20.0.0 \u003c=22.x.x",
-                    "npm":  "\u003e=8.0.0"
-                },
-    "license":  "MIT"
+  "name": "allessaniert-backend",
+  "version": "2.0.0",
+  "private": true,
+  "description": "Payload CMS Backend fuer Alles Saniert Werkzeugverleih",
+  "type": "module",
+  "scripts": {
+    "dev": "next dev -p 3001",
+    "build": "next build",
+    "start": "next start -p 3001",
+    "generate:types": "payload generate:types",
+    "generate:importmap": "payload generate:importmap",
+    "migrate": "payload migrate",
+    "migrate:fresh": "payload migrate:fresh",
+    "seed": "tsx src/seed/runSeed.ts",
+    "test": "vitest run",
+    "test:watch": "vitest"
+  },
+  "dependencies": {
+    "@payloadcms/db-sqlite": "^3.80.0",
+    "@payloadcms/next": "^3.80.0",
+    "@payloadcms/richtext-lexical": "^3.80.0",
+    "dotenv": "^16.4.5",
+    "next": "15.4.11",
+    "nodemailer": "^6.10.0",
+    "payload": "^3.80.0",
+    "react": "^19.1.1",
+    "react-dom": "^19.1.1",
+    "sharp": "^0.34.4",
+    "slugify": "^1.6.6",
+    "zod": "^3.24.2"
+  },
+  "devDependencies": {
+    "@types/node": "^22.7.5",
+    "@types/nodemailer": "^6.4.16",
+    "supertest": "^7.0.0",
+    "tsx": "^4.19.2",
+    "typescript": "^5.6.3",
+    "vitest": "^4.1.2"
+  },
+  "engines": {
+    "node": ">=20.0.0"
+  }
 }

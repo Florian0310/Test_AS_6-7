@@ -42,11 +42,21 @@ h3,
 h4,
 p {
   text-wrap: pretty;
+  overflow-wrap: break-word;
 }
 
 a {
   color: inherit;
   text-decoration: none;
+}
+
+a:focus-visible,
+button:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible {
+  outline: 3px solid #8fb5ff;
+  outline-offset: 2px;
 }
 
 img {
@@ -169,8 +179,8 @@ img {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 38px;
-  height: 38px;
+  width: 42px;
+  height: 42px;
   border-radius: 999px;
   color: #0f172a;
 }
@@ -212,6 +222,10 @@ img {
   gap: 10px;
   transform: translateY(-14px);
   transition: transform 0.35s ease;
+}
+
+.search-form:focus-within {
+  box-shadow: 0 0 0 3px rgba(0, 20, 137, 0.2);
 }
 
 .search.active .search-form {
@@ -1812,6 +1826,26 @@ img {
   box-shadow: 0 0 0 3px rgba(0, 20, 137, 0.08);
 }
 
+.icon-btn:focus-visible,
+.nav-link:focus-visible,
+.category-btn:focus-visible,
+.btn-primary:focus-visible,
+.btn-filter:focus-visible,
+.btn-price:focus-visible,
+.product-cart:focus-visible,
+.btn-secondary:focus-visible,
+.consent-link:focus-visible,
+.field input:focus-visible,
+.field textarea:focus-visible,
+.field select:focus-visible,
+.field-inline input:focus-visible,
+.field-inline textarea:focus-visible,
+.search-input:focus-visible,
+.shop-search-form input:focus-visible {
+  outline: 3px solid #8fb5ff;
+  outline-offset: 2px;
+}
+
 .field-inline-small {
   max-width: 130px;
 }
@@ -2093,6 +2127,17 @@ img {
   font-size: 0.92rem;
 }
 
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
 @media (prefers-color-scheme: dark) {
   :root {
     --bg-light: #0b1220;
@@ -2194,6 +2239,10 @@ img {
     color: #e5e7eb;
   }
 
+  .contact-right {
+    background: #111a2d;
+  }
+
   .product-image-wrap,
   .shop-product-image,
   .shop-mini-grid article,
@@ -2230,7 +2279,11 @@ img {
   .product-spec-grid small,
   .rent-box-head small,
   .product-tabs a,
-  .reservation-steps h2 {
+  .reservation-steps h2,
+  .consent,
+  .consent span,
+  .contact-info-item span,
+  .contact-info-item small {
     color: #a9b7ca;
   }
 
@@ -2245,7 +2298,9 @@ img {
   .about h1,
   .about h2,
   .service-card h3,
-  .field span {
+  .field span,
+  .contact-form-wrap h2,
+  .contact-info-item strong {
     color: #e5e7eb;
   }
 
@@ -2461,7 +2516,7 @@ img {
 
   .brand-text small {
     margin-top: 4px;
-    font-size: 0.5rem;
+    font-size: 0.58rem;
     letter-spacing: 0.16em;
   }
 
@@ -2470,6 +2525,7 @@ img {
     top: 0;
     left: 0;
     width: 100%;
+    min-height: 100vh;
     min-height: 100dvh;
     background: #ffffff;
     box-shadow: 0 8px 16px rgba(20, 41, 143, 0.15);
@@ -2587,8 +2643,8 @@ img {
 
   .icon-btn {
     color: #0f172a;
-    width: 36px;
-    height: 36px;
+    width: 44px;
+    height: 44px;
   }
 
   .icon-btn.nav-menu-toggle {
@@ -2732,7 +2788,7 @@ img {
   }
 
   .brand-text small {
-    font-size: 0.47rem;
+    font-size: 0.56rem;
   }
 
   .shop-main {
@@ -2796,6 +2852,14 @@ img {
   .nav-menu {
     background: #0f1729;
     border-top: 1px solid #334155;
+  }
+
+  .icon-btn {
+    color: #e5e7eb;
+  }
+
+  .icon-btn:hover {
+    background: rgba(226, 232, 240, 0.12);
   }
 
   .nav-link,

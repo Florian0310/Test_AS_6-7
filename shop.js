@@ -1,20 +1,71 @@
 (function () {
   const appConfig = window.APP_CONFIG || {};
-  const STRAPI_URL = String(appConfig.STRAPI_URL || 'http://localhost:1337').replace(/\/$/, '');
-  const STRAPI_API_PREFIX = String(appConfig.STRAPI_API_PREFIX || '/api');
-  const API_BASE = `${STRAPI_URL}${STRAPI_API_PREFIX.startsWith('/') ? STRAPI_API_PREFIX : `/${STRAPI_API_PREFIX}`}`;
+  const PAYLOAD_URL = String(appConfig.PAYLOAD_URL || 'http://localhost:3001').replace(/\/$/, '');
+  const PAYLOAD_API_PREFIX = String(appConfig.PAYLOAD_API_PREFIX || '/api');
+  const API_BASE = `${PAYLOAD_URL}${PAYLOAD_API_PREFIX.startsWith('/') ? PAYLOAD_API_PREFIX : `/${PAYLOAD_API_PREFIX}`}`;
   const FALLBACK_IMAGE = '../assets/images/aboutUsTwo.jpg';
+  const ISO_DATE_PATTERN = /^\d{4}-\d{2}-\d{2}$/;
+  const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
-  const toEntity = (entry) => {
-    if (!entry) return null;
-    if (entry.attributes && typeof entry.attributes === 'object') {
-      return {
-        id: entry.id,
-        documentId: entry.documentId,
-        ...entry.attributes,
-      };
+  const clampText = (value, maxLength = 200) => String(value || '').trim().slice(0, maxLength);
+
+  const toFiniteNumber = (value, fallback = 0) => {
+    const number = Number(value);
+    return Number.isFinite(number) ? number : fallback;
+  };
+
+  const toNonNegativeInteger = (value, fallback = 0) => {
+    const number = Math.floor(toFiniteNumber(value, fallback));
+    return number >= 0 ? number : fallback;
+  };
+
+  const isSafeHttpUrl = (value) => {
+    try {
+      const parsed = new URL(value);
+      return parsed.protocol === 'http:' || parsed.protocol === 'https:';
+    } catch (error) {
+      return false;
     }
-    return entry;
+  };
+
+  const sanitizeRelativePath = (value) => {
+    const path = String(value || '').trim();
+    if (!path.startsWith('/')) return '';
+    if (/[\u0000-\u001F]/.test(path)) return '';
+    return path;
+  };
+
+  const toSafeProductLink = (slug) => {
+    const safeSlug = clampText(slug, 120);
+    return `produkt-hilti-sf-6-a22.html?slug=${encodeURIComponent(safeSlug)}`;
+  };
+
+  const clearChildren = (element) => {
+    if (!element) return;
+    while (element.firstChild) {
+      element.removeChild(element.firstChild);
+    }
+  };
+
+  const appendEmptyState = (element, text) => {
+    if (!element) return;
+    clearChildren(element);
+    const message = document.createElement('p');
+    message.className = 'tool-empty';
+    message.textContent = text;
+    element.appendChild(message);
+  };
+
+  const toSafeImageSrc = (value) => {
+    const raw = String(value || '').trim();
+    if (!raw) return FALLBACK_IMAGE;
+    if (/^https?:\/\//i.test(raw)) {
+      return isSafeHttpUrl(raw) ? raw : FALLBACK_IMAGE;
+    }
+    if (/^(\/|\.\/|\.\.\/)/.test(raw)) {
+      return raw;
+    }
+    return FALLBACK_IMAGE;
   };
 
   const getPayloadData = (payload) => {
@@ -34,62 +85,91 @@
 
   const toAbsoluteMediaUrl = (url) => {
     if (!url) return '';
-    if (/^https?:\/\//i.test(url)) return url;
-    return `${STRAPI_URL}${url}`;
+    const rawUrl = String(url).trim();
+    if (/^https?:\/\//i.test(rawUrl)) {
+      return isSafeHttpUrl(rawUrl) ? rawUrl : '';
+    }
+    const safePath = sanitizeRelativePath(rawUrl);
+    if (!safePath) return '';
+    const absoluteUrl = `${PAYLOAD_URL}${safePath}`;
+    return isSafeHttpUrl(absoluteUrl) ? absoluteUrl : '';
+  };
+
+  const readLexicalText = (node) => {
+    if (!node || typeof node !== 'object') return '';
+
+    const parts = [];
+
+    if (typeof node.text === 'string') {
+      parts.push(node.text);
+    }
+
+    if (Array.isArray(node.children)) {
+      node.children.forEach((child) => {
+        const text = readLexicalText(child);
+        if (text) parts.push(text);
+      });
+    }
+
+    return parts.join(' ').trim();
   };
 
   const normalizeMedia = (entry) => {
-    const image = toEntity(entry);
+    const image = entry && typeof entry === 'object' ? entry : null;
     if (!image) return null;
 
-    const rawUrl =
-      image.url || image.formats?.large?.url || image.formats?.medium?.url || image.formats?.small?.url || '';
+    const rawUrl = image.url || image.sizes?.card?.url || image.sizes?.thumb?.url || image.formats?.large?.url || '';
 
     if (!rawUrl) return null;
 
     return {
       id: image.id,
       url: toAbsoluteMediaUrl(rawUrl),
-      alternativeText: image.alternativeText || '',
+      alternativeText: clampText(image.alt || image.alternativeText, 180),
     };
   };
 
   const normalizeCategory = (entry) => {
-    const category = toEntity(entry?.data || entry);
+    const category = entry && typeof entry === 'object' ? entry : null;
     if (!category) return null;
 
     return {
       id: category.id,
-      name: category.name,
-      slug: category.slug,
-      toolCount: Number(category.toolCount || 0),
+      name: clampText(category.name, 120),
+      slug: clampText(category.slug, 120),
+      toolCount: toNonNegativeInteger(category.toolCount, 0),
     };
   };
 
   const normalizeTool = (entry) => {
-    const tool = toEntity(entry);
+    const tool = entry && typeof entry === 'object' ? entry : null;
     if (!tool) return null;
 
     const images = toArray(tool.images).map(normalizeMedia).filter(Boolean);
+    const pricing = tool.pricing && typeof tool.pricing === 'object' ? tool.pricing : {};
+    const availabilityStatus = String(tool.availabilityStatus || '').toLowerCase();
+    const isUnavailable = availabilityStatus === 'unavailable';
+    const lexicalDescription = readLexicalText(tool.longDescription);
 
     return {
       id: tool.id,
-      documentId: tool.documentId,
-      name: tool.name,
-      slug: tool.slug,
-      shortDescription: tool.shortDescription || '',
-      description: tool.description || '',
-      dailyPrice: Number(tool.dailyPrice || 0),
-      deposit: tool.deposit != null ? Number(tool.deposit) : null,
-      quantityTotal: Number(tool.quantityTotal || 0),
-      quantityAvailable: Number(tool.quantityAvailable || 0),
-      calculatedAvailability:
-        tool.calculatedAvailability != null ? Number(tool.calculatedAvailability) : Number(tool.quantityAvailable || 0),
-      location: tool.location || '',
-      tags: tool.tags || {},
+      name: clampText(tool.title || tool.name, 160),
+      slug: clampText(tool.slug, 120),
+      shortDescription: clampText(tool.shortDescription, 300),
+      description: clampText(tool.longDescriptionText || lexicalDescription || tool.shortDescription, 2000),
+      dailyPrice: toFiniteNumber(tool.dailyPrice ?? pricing.dailyPrice, 0),
+      threeDayPrice: toFiniteNumber(tool.threeDayPrice ?? pricing.threeDayPrice, 0),
+      weeklyPrice: toFiniteNumber(tool.weeklyPrice ?? pricing.weeklyPrice, 0),
+      deposit: toFiniteNumber(tool.deposit ?? pricing.deposit, 0) || null,
+      quantityTotal: isUnavailable ? 0 : 1,
+      quantityAvailable: isUnavailable ? 0 : 1,
+      calculatedAvailability: isUnavailable ? 0 : 1,
+      location: '',
+      tags: {},
       category: normalizeCategory(tool.category),
       images,
       seo: tool.seo || null,
+      availabilityStatus: availabilityStatus || 'available',
     };
   };
 
@@ -112,7 +192,7 @@
     );
   };
 
-  const strapiRequest = async (path, options = {}) => {
+  const apiRequest = async (path, options = {}) => {
     const requestUrl = `${API_BASE}${path.startsWith('/') ? path : `/${path}`}`;
 
     const requestOptions = {
@@ -130,7 +210,7 @@
     try {
       response = await fetch(requestUrl, requestOptions);
     } catch (networkError) {
-      throw new Error('Backend nicht erreichbar. Bitte Strapi starten und URL pruefen.');
+      throw new Error('Backend nicht erreichbar. Bitte Payload starten und URL pruefen.');
     }
 
     let payload = null;
@@ -151,75 +231,87 @@
     return payload;
   };
 
-  const StrapiApi = {
+  const RentalApi = {
     async getTools({ category = '', search = '' } = {}) {
       const params = new URLSearchParams();
       if (category) params.set('category', category);
       if (search) params.set('search', search);
 
       const query = params.toString();
-      const payload = await strapiRequest(`/tools${query ? `?${query}` : ''}`);
+      const payload = await apiRequest(`/catalog/products${query ? `?${query}` : ''}`);
       const source = getPayloadData(payload);
       const list = Array.isArray(source) ? source : [];
       return list.map(normalizeTool).filter(Boolean);
     },
 
     async getToolBySlug(slug) {
-      const payload = await strapiRequest(`/tools/slug/${encodeURIComponent(slug)}`);
+      const payload = await apiRequest(`/catalog/products/slug/${encodeURIComponent(slug)}`);
       return normalizeTool(getPayloadData(payload));
     },
 
     async getCategories() {
-      const payload = await strapiRequest('/categories');
+      const payload = await apiRequest('/catalog/categories');
       const source = getPayloadData(payload);
       const list = Array.isArray(source) ? source : [];
       return list.map(normalizeCategory).filter(Boolean);
     },
 
     async getSiteSettings() {
-      const payload = await strapiRequest('/site-setting?populate=*');
-      const source = toEntity(getPayloadData(payload));
+      const payload = await apiRequest('/globals/rental-settings');
+      const source = getPayloadData(payload);
       if (!source) return null;
 
-      const heroImage = normalizeMedia(source.heroImage?.data || source.heroImage);
       return {
         companyName: source.companyName || '',
-        address: source.address || '',
-        email: source.email || '',
-        phone: source.phone || '',
-        openingHours: source.openingHours || '',
         heroHeadline: source.heroHeadline || '',
         heroText: source.heroText || '',
-        heroImage,
-        socials: source.socials || {},
-        legal: source.legal || null,
+        priceDisclaimer: source.priceDisclaimer || '',
       };
     },
 
     async checkAvailability({ toolId, startDate, endDate, quantity }) {
-      const params = new URLSearchParams({
-        startDate,
-        endDate,
-        quantity: String(quantity),
+      const payload = await apiRequest('/catalog/pricing/calculate', {
+        method: 'POST',
+        body: {
+          productId: String(toolId),
+          startDate,
+          endDate,
+        },
       });
-      const payload = await strapiRequest(`/tools/${toolId}/availability?${params.toString()}`);
-      return getPayloadData(payload);
+
+      const data = getPayloadData(payload);
+      const availabilityStatus = String(data?.product?.availabilityStatus || '').toLowerCase();
+      const isAvailable = availabilityStatus !== 'unavailable';
+
+      return {
+        isAvailable,
+        availableQuantity: isAvailable ? 1 : 0,
+        pricing: data?.pricing || null,
+      };
     },
 
     async createRentalRequest(input) {
-      return strapiRequest('/rental-requests', {
+      return apiRequest('/catalog/requests', {
         method: 'POST',
         body: {
-          data: input,
+          productId: String(input.tool),
+          name: input.customerName,
+          email: input.customerEmail,
+          phone: input.customerPhone,
+          startDate: input.startDate,
+          endDate: input.endDate,
+          message: input.notes,
         },
       });
     },
   };
 
-  window.StrapiApi = StrapiApi;
+  window.RentalApi = RentalApi;
 
   const setStatus = (element, text, type) => {
     if (!element) return;
+    element.setAttribute('role', 'status');
+    element.setAttribute('aria-live', type === 'is-error' ? 'assertive' : 'polite');
     element.textContent = text;
     element.classList.remove('is-info', 'is-success', 'is-error');
     element.classList.add(type || 'is-info');
@@ -256,81 +348,163 @@
 
     const renderCategories = (categories) => {
       if (!categoriesList) return;
+      clearChildren(categoriesList);
 
-      const allItemClass = !activeCategory ? 'active' : '';
-      const html = [
-        `<li class="${allItemClass}"><button type="button" class="category-btn" data-category="">Alle Produkte</button><i class="ri-arrow-right-s-line"></i></li>`,
-      ];
+      const addCategoryItem = ({ slug, name, toolCount }, isActive) => {
+        const item = document.createElement('li');
+        if (isActive) item.classList.add('active');
+
+        const button = document.createElement('button');
+        button.type = 'button';
+        button.className = 'category-btn';
+        button.setAttribute('data-category', slug);
+        button.textContent = name;
+        item.appendChild(button);
+
+        const meta = document.createElement('span');
+        meta.className = 'category-meta';
+        if (Number.isFinite(toolCount)) {
+          const countNode = document.createElement('small');
+          countNode.textContent = String(toolCount);
+          meta.appendChild(countNode);
+        }
+        const icon = document.createElement('i');
+        icon.className = 'ri-arrow-right-s-line';
+        icon.setAttribute('aria-hidden', 'true');
+        meta.appendChild(icon);
+        item.appendChild(meta);
+
+        categoriesList.appendChild(item);
+      };
+
+      addCategoryItem(
+        {
+          slug: '',
+          name: 'Alle Produkte',
+          toolCount: NaN,
+        },
+        !activeCategory
+      );
 
       categories.forEach((category) => {
-        const itemClass = activeCategory === category.slug ? 'active' : '';
-        const toolCount = Number.isFinite(category.toolCount) ? `<small>${category.toolCount}</small>` : '';
-
-        html.push(
-          `<li class="${itemClass}"><button type="button" class="category-btn" data-category="${category.slug}">${category.name}</button><span class="category-meta">${toolCount}<i class="ri-arrow-right-s-line"></i></span></li>`
+        addCategoryItem(
+          {
+            slug: clampText(category.slug, 120),
+            name: clampText(category.name, 120) || 'Kategorie',
+            toolCount: category.toolCount,
+          },
+          activeCategory === category.slug
         );
       });
-
-      categoriesList.innerHTML = html.join('');
     };
 
     const renderMiniTools = (tools) => {
       if (!miniGrid) return;
 
       if (!tools.length) {
-        miniGrid.innerHTML = '<p class="tool-empty">Keine Werkzeuge fuer diese Kategorie gefunden.</p>';
+        appendEmptyState(miniGrid, 'Keine Werkzeuge fuer diese Kategorie gefunden.');
         return;
       }
 
-      miniGrid.innerHTML = tools
-        .slice(0, 6)
-        .map((tool) => {
-          const imageUrl = tool.images[0]?.url || FALLBACK_IMAGE;
-          return `<article><img src="${imageUrl}" alt="${tool.name}" /><span>${tool.name}</span></article>`;
-        })
-        .join('');
+      clearChildren(miniGrid);
+      tools.slice(0, 6).forEach((tool) => {
+        const article = document.createElement('article');
+        const image = document.createElement('img');
+        image.src = toSafeImageSrc(tool.images[0]?.url);
+        image.alt = clampText(tool.name, 160) || 'Werkzeugbild';
+        image.loading = 'lazy';
+        image.decoding = 'async';
+
+        const label = document.createElement('span');
+        label.textContent = clampText(tool.name, 160) || 'Werkzeug';
+
+        article.appendChild(image);
+        article.appendChild(label);
+        miniGrid.appendChild(article);
+      });
+    };
+
+    const createSpecRow = (label, value) => {
+      const row = document.createElement('div');
+      const term = document.createElement('dt');
+      term.textContent = label;
+      const desc = document.createElement('dd');
+      desc.textContent = value;
+      row.appendChild(term);
+      row.appendChild(desc);
+      return row;
     };
 
     const renderToolsGrid = (tools) => {
       if (!toolsGrid) return;
 
       if (!tools.length) {
-        toolsGrid.innerHTML = '<p class="tool-empty">Keine Werkzeuge gefunden. Bitte Filter zuruecksetzen.</p>';
+        appendEmptyState(toolsGrid, 'Keine Werkzeuge gefunden. Bitte Filter zuruecksetzen.');
         return;
       }
 
-      toolsGrid.innerHTML = tools
-        .map((tool) => {
-          const imageUrl = tool.images[0]?.url || FALLBACK_IMAGE;
-          const categoryName = tool.category?.name || 'Werkzeug';
-          const productLink = `produkt-hilti-sf-6-a22.html?slug=${encodeURIComponent(tool.slug)}`;
+      clearChildren(toolsGrid);
 
-          return `
-            <article class="shop-product-card">
-              <a class="shop-product-image" href="${productLink}">
-                <img src="${imageUrl}" alt="${tool.name}" />
-              </a>
-              <h3><a href="${productLink}">${tool.name}</a></h3>
-              <p>${categoryName}</p>
-              <dl>
-                <div><dt>Standort</dt><dd>${tool.location || 'Auf Anfrage'}</dd></div>
-                <div><dt>Verfuegbar</dt><dd>${tool.calculatedAvailability}</dd></div>
-              </dl>
-              <a class="btn-price" href="${productLink}">Ab ${formatCurrency(tool.dailyPrice)}</a>
-            </article>
-          `;
-        })
-        .join('');
+      tools.forEach((tool) => {
+        const productLink = toSafeProductLink(tool.slug);
+        const categoryName = clampText(tool.category?.name, 120) || 'Werkzeug';
+        const location = clampText(tool.location, 160) || 'Auf Anfrage';
+        const availability = String(toNonNegativeInteger(tool.calculatedAvailability, 0));
+
+        const card = document.createElement('article');
+        card.className = 'shop-product-card';
+
+        const imageLink = document.createElement('a');
+        imageLink.className = 'shop-product-image';
+        imageLink.href = productLink;
+
+        const image = document.createElement('img');
+        image.src = toSafeImageSrc(tool.images[0]?.url);
+        image.alt = clampText(tool.name, 160) || 'Werkzeugbild';
+        image.loading = 'lazy';
+        image.decoding = 'async';
+        imageLink.appendChild(image);
+
+        const title = document.createElement('h3');
+        const titleLink = document.createElement('a');
+        titleLink.href = productLink;
+        titleLink.textContent = clampText(tool.name, 160) || 'Werkzeug';
+        title.appendChild(titleLink);
+
+        const category = document.createElement('p');
+        category.textContent = categoryName;
+
+        const specs = document.createElement('dl');
+        specs.appendChild(createSpecRow('Standort', location));
+        specs.appendChild(createSpecRow('Verfuegbar', availability));
+
+        const priceLink = document.createElement('a');
+        priceLink.className = 'btn-price';
+        priceLink.href = productLink;
+        priceLink.textContent = `Ab ${formatCurrency(tool.dailyPrice)}`;
+
+        card.appendChild(imageLink);
+        card.appendChild(title);
+        card.appendChild(category);
+        card.appendChild(specs);
+        card.appendChild(priceLink);
+        toolsGrid.appendChild(card);
+      });
     };
 
+    let latestLoadRequestId = 0;
+
     const loadData = async () => {
+      const requestId = ++latestLoadRequestId;
       setStatus(statusNode, 'Lade Werkzeuge aus dem CMS...', 'is-info');
 
       try {
         const [categories, tools] = await Promise.all([
-          StrapiApi.getCategories(),
-          StrapiApi.getTools({ category: activeCategory, search: activeSearch }),
+          RentalApi.getCategories(),
+          RentalApi.getTools({ category: activeCategory, search: activeSearch }),
         ]);
+
+        if (requestId !== latestLoadRequestId) return;
 
         renderCategories(categories);
         renderMiniTools(tools);
@@ -345,7 +519,8 @@
 
         setStatus(statusNode, `${tools.length} Werkzeug(e) geladen.`, 'is-success');
       } catch (error) {
-        setStatus(statusNode, error.message, 'is-error');
+        if (requestId !== latestLoadRequestId) return;
+        setStatus(statusNode, clampText(error?.message, 220) || 'Unbekannter Fehler', 'is-error');
       }
     };
 
@@ -398,23 +573,38 @@
 
     const renderMain = () => {
       const image = images[activeIndex];
-      mainImageNode.src = image.url;
-      mainImageNode.alt = image.alternativeText || tool.name;
+      mainImageNode.src = toSafeImageSrc(image.url);
+      mainImageNode.alt = clampText(image.alternativeText, 160) || clampText(tool.name, 160) || 'Werkzeugbild';
     };
 
     const renderThumbs = () => {
-      thumbsNode.innerHTML = images
-        .map((image, index) => {
-          const activeClass = index === activeIndex ? 'active' : '';
-          return `<button type="button" class="${activeClass}" data-thumb-index="${index}"><img src="${image.url}" alt="${image.alternativeText || tool.name}" /></button>`;
-        })
-        .join('');
+      clearChildren(thumbsNode);
+      images.forEach((image, index) => {
+        const button = document.createElement('button');
+        button.type = 'button';
+        button.setAttribute('data-thumb-index', String(index));
+        button.setAttribute('aria-label', `Bild ${index + 1} anzeigen`);
+        if (index === activeIndex) {
+          button.classList.add('active');
+        }
+
+        const thumb = document.createElement('img');
+        thumb.src = toSafeImageSrc(image.url);
+        thumb.alt = clampText(image.alternativeText, 160) || clampText(tool.name, 160) || 'Werkzeugbild';
+        thumb.loading = 'lazy';
+        thumb.decoding = 'async';
+
+        button.appendChild(thumb);
+        thumbsNode.appendChild(button);
+      });
     };
 
     thumbsNode.addEventListener('click', (event) => {
       const button = event.target.closest('[data-thumb-index]');
       if (!button) return;
-      activeIndex = Number(button.getAttribute('data-thumb-index'));
+      const nextIndex = toNonNegativeInteger(button.getAttribute('data-thumb-index'), 0);
+      if (nextIndex >= images.length) return;
+      activeIndex = nextIndex;
       renderMain();
       renderThumbs();
     });
@@ -424,9 +614,39 @@
   };
 
   const createTodayDateString = (offsetDays = 0) => {
-    const now = new Date();
-    now.setDate(now.getDate() + offsetDays);
-    return now.toISOString().slice(0, 10);
+    const date = new Date();
+    date.setHours(0, 0, 0, 0);
+    date.setDate(date.getDate() + offsetDays);
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
+  };
+
+  const isIsoDate = (value) => ISO_DATE_PATTERN.test(String(value || ''));
+
+  const validateRentalPayload = (payload) => {
+    if (!payload.customerName || payload.customerName.length < 2) {
+      return 'Bitte gueltigen Namen eingeben.';
+    }
+
+    if (!EMAIL_PATTERN.test(payload.customerEmail || '')) {
+      return 'Bitte gueltige E-Mail eingeben.';
+    }
+
+    if (!isIsoDate(payload.startDate) || !isIsoDate(payload.endDate)) {
+      return 'Bitte gueltigen Zeitraum waehlen.';
+    }
+
+    if (payload.endDate < payload.startDate) {
+      return 'Das Enddatum muss am oder nach dem Startdatum liegen.';
+    }
+
+    if (!Number.isInteger(payload.quantity) || payload.quantity < 1) {
+      return 'Bitte gueltige Menge eingeben.';
+    }
+
+    return '';
   };
 
   const renderToolDetailPage = async () => {
@@ -434,7 +654,7 @@
     if (!page) return;
 
     const params = new URLSearchParams(window.location.search);
-    const slug = params.get('slug') || page.getAttribute('data-default-slug') || '';
+    const slug = clampText(params.get('slug') || page.getAttribute('data-default-slug') || '', 120);
 
     const feedbackNode = page.querySelector('[data-tool-feedback]');
 
@@ -448,9 +668,14 @@
     let tool;
 
     try {
-      tool = await StrapiApi.getToolBySlug(slug);
+      tool = await RentalApi.getToolBySlug(slug);
     } catch (error) {
-      setStatus(feedbackNode, error.message, 'is-error');
+      setStatus(feedbackNode, clampText(error?.message, 220) || 'Werkzeug konnte nicht geladen werden.', 'is-error');
+      return;
+    }
+
+    if (!tool) {
+      setStatus(feedbackNode, 'Werkzeug nicht gefunden.', 'is-error');
       return;
     }
 
@@ -472,13 +697,17 @@
 
     const metaTags = tool.tags && typeof tool.tags === 'object' ? tool.tags : {};
 
-    document.title = `${tool.name} | Sortiment`;
-    if (breadcrumbToolName) breadcrumbToolName.textContent = tool.name;
-    if (titleNode) titleNode.textContent = tool.name;
-    if (subtitleNode) subtitleNode.textContent = tool.shortDescription || tool.category?.name || 'Werkzeug';
-    if (descNode) descNode.textContent = tool.description || tool.shortDescription || 'Keine Beschreibung hinterlegt.';
+    document.title = `${clampText(tool.name, 120) || 'Werkzeug'} | Sortiment`;
+    if (breadcrumbToolName) breadcrumbToolName.textContent = clampText(tool.name, 160) || 'Werkzeug';
+    if (titleNode) titleNode.textContent = clampText(tool.name, 160) || 'Werkzeug';
+    if (subtitleNode) subtitleNode.textContent = clampText(tool.shortDescription || tool.category?.name, 200) || 'Werkzeug';
+    if (descNode) {
+      descNode.textContent =
+        clampText(tool.description || tool.shortDescription || 'Keine Beschreibung hinterlegt.', 2000) ||
+        'Keine Beschreibung hinterlegt.';
+    }
     if (priceNode) priceNode.textContent = formatCurrency(tool.dailyPrice);
-    if (categoryNode) categoryNode.textContent = tool.category?.name || 'Werkzeug';
+    if (categoryNode) categoryNode.textContent = clampText(tool.category?.name, 120) || 'Werkzeug';
 
     if (availabilityNode) {
       availabilityNode.textContent = tool.calculatedAvailability > 0 ? 'Verfuegbar ab heute' : 'Aktuell ausgebucht';
@@ -503,31 +732,36 @@
     const endInput = rentForm.querySelector('[name="endDate"]');
     const quantityInput = rentForm.querySelector('[name="quantity"]');
 
-    if (startInput && !startInput.value) startInput.value = createTodayDateString(0);
-    if (endInput && !endInput.value) endInput.value = createTodayDateString(1);
+    if (startInput) {
+      startInput.min = createTodayDateString(0);
+      if (!startInput.value) startInput.value = createTodayDateString(0);
+    }
+    if (endInput) {
+      endInput.min = startInput?.value || createTodayDateString(0);
+      if (!endInput.value) endInput.value = createTodayDateString(1);
+      if (endInput.value < endInput.min) {
+        endInput.value = endInput.min;
+      }
+    }
     if (quantityInput && !quantityInput.value) quantityInput.value = '1';
-
-    let latestAvailability = null;
 
     const refreshAvailability = async () => {
       const startDate = startInput?.value;
       const endDate = endInput?.value;
-      const quantity = Number(quantityInput?.value || 1);
+      const quantity = toNonNegativeInteger(quantityInput?.value, 0);
 
-      if (!startDate || !endDate || !Number.isFinite(quantity) || quantity <= 0) {
+      if (!isIsoDate(startDate) || !isIsoDate(endDate) || endDate < startDate || quantity < 1) {
         setStatus(availabilityInfo, 'Bitte gueltigen Zeitraum und Menge eingeben.', 'is-info');
         return null;
       }
 
       try {
-        const availability = await StrapiApi.checkAvailability({
+        const availability = await RentalApi.checkAvailability({
           toolId: tool.id,
           startDate,
           endDate,
           quantity,
         });
-
-        latestAvailability = availability;
 
         if (availability.isAvailable) {
           setStatus(
@@ -545,7 +779,7 @@
 
         return availability;
       } catch (error) {
-        setStatus(availabilityInfo, error.message, 'is-error');
+        setStatus(availabilityInfo, clampText(error?.message, 220) || 'Verfuegbarkeit konnte nicht geladen werden.', 'is-error');
         return null;
       }
     };
@@ -555,6 +789,15 @@
       input.addEventListener('change', refreshAvailability);
     });
 
+    if (startInput && endInput) {
+      startInput.addEventListener('change', () => {
+        endInput.min = startInput.value || createTodayDateString(0);
+        if (endInput.value && endInput.value < endInput.min) {
+          endInput.value = endInput.min;
+        }
+      });
+    }
+
     await refreshAvailability();
 
     rentForm.addEventListener('submit', async (event) => {
@@ -563,17 +806,18 @@
       const formData = new FormData(rentForm);
       const payload = {
         tool: tool.id,
-        customerName: String(formData.get('customerName') || '').trim(),
-        customerEmail: String(formData.get('customerEmail') || '').trim(),
-        customerPhone: String(formData.get('customerPhone') || '').trim(),
+        customerName: clampText(formData.get('customerName'), 140),
+        customerEmail: clampText(formData.get('customerEmail'), 180),
+        customerPhone: clampText(formData.get('customerPhone'), 80),
         startDate: String(formData.get('startDate') || ''),
         endDate: String(formData.get('endDate') || ''),
-        quantity: Number(formData.get('quantity') || 1),
-        notes: String(formData.get('notes') || '').trim(),
+        quantity: toNonNegativeInteger(formData.get('quantity'), 0),
+        notes: clampText(formData.get('notes'), 1000),
       };
 
-      if (!payload.customerName || !payload.customerEmail) {
-        setStatus(requestFeedback, 'Bitte Name und E-Mail ausfuellen.', 'is-error');
+      const validationError = validateRentalPayload(payload);
+      if (validationError) {
+        setStatus(requestFeedback, validationError, 'is-error');
         return;
       }
 
@@ -586,32 +830,53 @@
       setStatus(requestFeedback, 'Anfrage wird gesendet...', 'is-info');
 
       try {
-        await StrapiApi.createRentalRequest(payload);
+        await RentalApi.createRentalRequest(payload);
         setStatus(requestFeedback, 'Vielen Dank! Ihre Anfrage wurde als "Offen" gespeichert.', 'is-success');
       } catch (error) {
-        setStatus(requestFeedback, error.message, 'is-error');
+        setStatus(requestFeedback, clampText(error?.message, 220) || 'Anfrage konnte nicht gesendet werden.', 'is-error');
       }
     });
 
     const relatedGrid = page.querySelector('[data-related-tools]');
     if (relatedGrid) {
       try {
-        const relatedTools = await StrapiApi.getTools({ category: tool.category?.slug || '' });
+        const relatedTools = await RentalApi.getTools({ category: tool.category?.slug || '' });
         const visible = relatedTools.filter((item) => item.id !== tool.id).slice(0, 4);
 
         if (!visible.length) {
-          relatedGrid.innerHTML = '<p class="tool-empty">Keine weiteren Werkzeuge in dieser Kategorie gefunden.</p>';
+          appendEmptyState(relatedGrid, 'Keine weiteren Werkzeuge in dieser Kategorie gefunden.');
         } else {
-          relatedGrid.innerHTML = visible
-            .map((entry) => {
-              const imageUrl = entry.images[0]?.url || FALLBACK_IMAGE;
-              const link = `produkt-hilti-sf-6-a22.html?slug=${encodeURIComponent(entry.slug)}`;
-              return `<article><a href="${link}"><img src="${imageUrl}" alt="${entry.name}" /></a><h3><a href="${link}">${entry.name}</a></h3><p>ab ${formatCurrency(entry.dailyPrice)}</p></article>`;
-            })
-            .join('');
+          clearChildren(relatedGrid);
+          visible.forEach((entry) => {
+            const article = document.createElement('article');
+            const link = toSafeProductLink(entry.slug);
+
+            const imageLink = document.createElement('a');
+            imageLink.href = link;
+            const image = document.createElement('img');
+            image.src = toSafeImageSrc(entry.images[0]?.url);
+            image.alt = clampText(entry.name, 160) || 'Werkzeugbild';
+            image.loading = 'lazy';
+            image.decoding = 'async';
+            imageLink.appendChild(image);
+
+            const title = document.createElement('h3');
+            const titleLink = document.createElement('a');
+            titleLink.href = link;
+            titleLink.textContent = clampText(entry.name, 160) || 'Werkzeug';
+            title.appendChild(titleLink);
+
+            const price = document.createElement('p');
+            price.textContent = `ab ${formatCurrency(entry.dailyPrice)}`;
+
+            article.appendChild(imageLink);
+            article.appendChild(title);
+            article.appendChild(price);
+            relatedGrid.appendChild(article);
+          });
         }
       } catch (error) {
-        relatedGrid.innerHTML = `<p class="tool-empty">${error.message}</p>`;
+        appendEmptyState(relatedGrid, clampText(error?.message, 220) || 'Aehnliche Werkzeuge konnten nicht geladen werden.');
       }
     }
   };
@@ -628,7 +893,7 @@
     }
 
     try {
-      const settings = await StrapiApi.getSiteSettings();
+      const settings = await RentalApi.getSiteSettings();
       if (!settings) return;
 
       if (headlineNode && settings.heroHeadline) headlineNode.textContent = settings.heroHeadline;

@@ -1,4 +1,4 @@
 window.APP_CONFIG = Object.freeze({
-  STRAPI_URL: 'http://localhost:1337',
-  STRAPI_API_PREFIX: '/api',
+  PAYLOAD_URL: 'http://localhost:3001',
+  PAYLOAD_API_PREFIX: '/api',
 });
