@@ -70,6 +70,14 @@ export default buildConfig({
   csrf: allowedFrontendOrigins,
   admin: {
     user: Users.slug,
+    components: {
+      graphics: {
+        Logo: './components/admin/BrandLogo#BrandLogo',
+        Icon: './components/admin/BrandIcon#BrandIcon',
+      },
+      beforeDashboard: ['./components/admin/DashboardIntro#DashboardIntro'],
+      afterDashboard: ['./components/admin/DashboardStats#DashboardStats'],
+    },
     importMap: {
       baseDir: path.resolve(dirname, 'src'),
     },

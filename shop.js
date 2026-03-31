@@ -3,9 +3,118 @@
   const PAYLOAD_URL = String(appConfig.PAYLOAD_URL || 'http://localhost:3001').replace(/\/$/, '');
   const PAYLOAD_API_PREFIX = String(appConfig.PAYLOAD_API_PREFIX || '/api');
   const API_BASE = `${PAYLOAD_URL}${PAYLOAD_API_PREFIX.startsWith('/') ? PAYLOAD_API_PREFIX : `/${PAYLOAD_API_PREFIX}`}`;
-  const FALLBACK_IMAGE = '../assets/images/aboutUsTwo.jpg';
+  const FALLBACK_IMAGE = '/assets/images/aboutUsTwo.jpg';
   const ISO_DATE_PATTERN = /^\d{4}-\d{2}-\d{2}$/;
   const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  const IS_EN = document.documentElement.lang && document.documentElement.lang.startsWith('en');
+  const PRICE_LOCALE = IS_EN ? 'en-AT' : 'de-AT';
+  const TEXT = {
+    de: {
+      allProducts: 'Alle Produkte',
+      allCategories: 'Alle Kategorien',
+      categoryFallback: 'Kategorie',
+      toolFallback: 'Werkzeug',
+      toolImage: 'Werkzeugbild',
+      location: 'Standort',
+      available: 'Verfügbar',
+      onRequest: 'Auf Anfrage',
+      noToolsCategory: 'Keine Werkzeuge für diese Kategorie gefunden.',
+      noToolsFilter: 'Keine Werkzeuge gefunden. Bitte Filter zurücksetzen.',
+      loadingTools: 'Lade Werkzeuge aus dem CMS...',
+      toolCountLoaded: (count) => `${count} Werkzeug(e) geladen.`,
+      backendUnavailable: 'Backend nicht erreichbar. Bitte Payload starten und URL prüfen.',
+      productsLoadError: 'Produkte konnten nicht geladen werden.',
+      searchError: 'Unbekannter Fehler',
+      fromPrice: 'Ab',
+      dailyFrom: 'Tagesmiete ab',
+      popularFallbackTitle: 'Beliebte Produkte',
+      popularFallbackSubtitle: 'Die Favoriten unserer Kunden diese Woche.',
+      productDataLoading: 'Produktdaten werden aus Payload geladen.',
+      popularEmpty: 'Noch keine beliebten Produkte im CMS ausgewählt.',
+      openProduct: 'Zum Produkt',
+      productUnavailable: 'Aktuell ausgebucht',
+      productAvailable: 'Verfügbar ab heute',
+      loadingProduct: 'Werkzeug wird geladen...',
+      productNotFound: 'Werkzeug nicht gefunden.',
+      invalidSlug: 'Kein Werkzeug-Slug übergeben.',
+      productLoaded: 'Werkzeugdaten geladen.',
+      periodHint: 'Bitte gültigen Zeitraum und Menge eingeben.',
+      availableWindow: (qty, startDate, endDate) =>
+        `Verfügbar: ${qty} Stück im Zeitraum ${startDate} bis ${endDate}.`,
+      unavailableWindow: (qty) => `Nicht verfügbar. Nur ${qty} Stück verfügbar.`,
+      availabilityError: 'Verfügbarkeit konnte nicht geladen werden.',
+      invalidName: 'Bitte gültigen Namen eingeben.',
+      invalidEmail: 'Bitte gültige E-Mail eingeben.',
+      invalidDates: 'Bitte gültigen Zeitraum wählen.',
+      invalidEndDate: 'Das Enddatum muss am oder nach dem Startdatum liegen.',
+      invalidQuantity: 'Bitte gültige Menge eingeben.',
+      privacyRequired: 'Bitte Datenschutzerklärung bestätigen.',
+      requestSending: 'Anfrage wird gesendet...',
+      requestSuccess: 'Vielen Dank! Ihre Anfrage wurde als „Offen“ gespeichert.',
+      requestFail: 'Anfrage konnte nicht gesendet werden.',
+      requestNotAvailable: 'Anfrage nicht gesendet: Zeitraum oder Menge ist nicht verfügbar.',
+      noRelatedTools: 'Keine weiteren Werkzeuge in dieser Kategorie gefunden.',
+      relatedLoadError: 'Ähnliche Werkzeuge konnten nicht geladen werden.',
+      imageButtonLabel: (index) => `Bild ${index} anzeigen`,
+      homepageDefaultBadge: 'Im Piestingtal',
+      descriptionMissing: 'Keine Beschreibung hinterlegt.',
+    },
+    en: {
+      allProducts: 'All products',
+      allCategories: 'All categories',
+      categoryFallback: 'Category',
+      toolFallback: 'Tool',
+      toolImage: 'Tool image',
+      location: 'Location',
+      available: 'Available',
+      onRequest: 'On request',
+      noToolsCategory: 'No tools found for this category.',
+      noToolsFilter: 'No tools found. Please reset filters.',
+      loadingTools: 'Loading tools from CMS...',
+      toolCountLoaded: (count) => `${count} tool(s) loaded.`,
+      backendUnavailable: 'Backend unavailable. Please start Payload and verify URL.',
+      productsLoadError: 'Products could not be loaded.',
+      searchError: 'Unknown error',
+      fromPrice: 'From',
+      dailyFrom: 'Daily rent from',
+      popularFallbackTitle: 'Popular Products',
+      popularFallbackSubtitle: 'Top picks from our customers this week.',
+      productDataLoading: 'Product data is loaded from Payload CMS.',
+      popularEmpty: 'No popular products selected in CMS yet.',
+      openProduct: 'Open product',
+      productUnavailable: 'Currently unavailable',
+      productAvailable: 'Available from today',
+      loadingProduct: 'Loading tool...',
+      productNotFound: 'Tool not found.',
+      invalidSlug: 'No tool slug provided.',
+      productLoaded: 'Tool data loaded.',
+      periodHint: 'Please enter a valid date range and quantity.',
+      availableWindow: (qty, startDate, endDate) => `Available: ${qty} item(s) from ${startDate} to ${endDate}.`,
+      unavailableWindow: (qty) => `Not available. Only ${qty} item(s) available.`,
+      availabilityError: 'Availability could not be loaded.',
+      invalidName: 'Please enter a valid name.',
+      invalidEmail: 'Please enter a valid email.',
+      invalidDates: 'Please select a valid rental period.',
+      invalidEndDate: 'End date must be on or after start date.',
+      invalidQuantity: 'Please enter a valid quantity.',
+      privacyRequired: 'Please accept the privacy policy.',
+      requestSending: 'Sending request...',
+      requestSuccess: 'Thank you. Your request has been saved as \"Open\".',
+      requestFail: 'Request could not be sent.',
+      requestNotAvailable: 'Request not sent: selected period or quantity is not available.',
+      noRelatedTools: 'No additional tools found in this category.',
+      relatedLoadError: 'Related tools could not be loaded.',
+      imageButtonLabel: (index) => `Show image ${index}`,
+      homepageDefaultBadge: 'In the Piesting valley',
+      descriptionMissing: 'No description available.',
+    },
+  };
+  const t = (key, ...args) => {
+    const dict = IS_EN ? TEXT.en : TEXT.de;
+    const value = dict[key];
+    if (typeof value === 'function') return value(...args);
+    return value || key;
+  };
 
   const clampText = (value, maxLength = 200) => String(value || '').trim().slice(0, maxLength);
 
@@ -37,7 +146,7 @@
 
   const toSafeProductLink = (slug) => {
     const safeSlug = clampText(slug, 120);
-    return `produkt-hilti-sf-6-a22.html?slug=${encodeURIComponent(safeSlug)}`;
+    return `/sortiment/produkt-hilti-sf-6-a22.html?slug=${encodeURIComponent(safeSlug)}`;
   };
 
   const clearChildren = (element) => {
@@ -175,7 +284,7 @@
 
   const formatCurrency = (value) => {
     const amount = Number(value || 0);
-    return new Intl.NumberFormat('de-AT', {
+    return new Intl.NumberFormat(PRICE_LOCALE, {
       style: 'currency',
       currency: 'EUR',
       minimumFractionDigits: 2,
@@ -210,7 +319,7 @@
     try {
       response = await fetch(requestUrl, requestOptions);
     } catch (networkError) {
-      throw new Error('Backend nicht erreichbar. Bitte Payload starten und URL pruefen.');
+      throw new Error(t('backendUnavailable'));
     }
 
     let payload = null;
@@ -257,15 +366,32 @@
     },
 
     async getSiteSettings() {
-      const payload = await apiRequest('/globals/rental-settings');
+      const source = await this.getPublicSiteConfig();
+      if (!source) return null;
+
+      return {
+        companyName: source?.rental?.companyName || source?.contact?.brandName || '',
+        heroHeadline: source?.rental?.heroHeadline || '',
+        heroText: source?.rental?.heroText || '',
+        priceDisclaimer: source?.rental?.priceDisclaimer || '',
+        homepage: source?.site?.homepage || {},
+      };
+    },
+
+    async getPublicSiteConfig() {
+      const payload = await apiRequest('/public/site-config');
       const source = getPayloadData(payload);
       if (!source) return null;
 
       return {
-        companyName: source.companyName || '',
-        heroHeadline: source.heroHeadline || '',
-        heroText: source.heroText || '',
-        priceDisclaimer: source.priceDisclaimer || '',
+        ...source,
+        site: {
+          ...(source.site || {}),
+          homepage: {
+            ...(source.site?.homepage || {}),
+            popularProducts: toArray(source.site?.homepage?.popularProducts).map(normalizeTool).filter(Boolean),
+          },
+        },
       };
     },
 
@@ -310,9 +436,17 @@
 
   const setStatus = (element, text, type) => {
     if (!element) return;
+    const normalizedText = String(text || '').trim();
+    if (!normalizedText) {
+      element.textContent = '';
+      element.style.display = 'none';
+      return;
+    }
+
+    element.style.display = '';
     element.setAttribute('role', 'status');
     element.setAttribute('aria-live', type === 'is-error' ? 'assertive' : 'polite');
-    element.textContent = text;
+    element.textContent = normalizedText;
     element.classList.remove('is-info', 'is-success', 'is-error');
     element.classList.add(type || 'is-info');
   };
@@ -380,7 +514,7 @@
       addCategoryItem(
         {
           slug: '',
-          name: 'Alle Produkte',
+          name: t('allProducts'),
           toolCount: NaN,
         },
         !activeCategory
@@ -390,7 +524,7 @@
         addCategoryItem(
           {
             slug: clampText(category.slug, 120),
-            name: clampText(category.name, 120) || 'Kategorie',
+            name: clampText(category.name, 120) || t('categoryFallback'),
             toolCount: category.toolCount,
           },
           activeCategory === category.slug
@@ -402,7 +536,7 @@
       if (!miniGrid) return;
 
       if (!tools.length) {
-        appendEmptyState(miniGrid, 'Keine Werkzeuge fuer diese Kategorie gefunden.');
+        appendEmptyState(miniGrid, t('noToolsCategory'));
         return;
       }
 
@@ -411,12 +545,12 @@
         const article = document.createElement('article');
         const image = document.createElement('img');
         image.src = toSafeImageSrc(tool.images[0]?.url);
-        image.alt = clampText(tool.name, 160) || 'Werkzeugbild';
+        image.alt = clampText(tool.name, 160) || t('toolImage');
         image.loading = 'lazy';
         image.decoding = 'async';
 
         const label = document.createElement('span');
-        label.textContent = clampText(tool.name, 160) || 'Werkzeug';
+        label.textContent = clampText(tool.name, 160) || t('toolFallback');
 
         article.appendChild(image);
         article.appendChild(label);
@@ -439,7 +573,7 @@
       if (!toolsGrid) return;
 
       if (!tools.length) {
-        appendEmptyState(toolsGrid, 'Keine Werkzeuge gefunden. Bitte Filter zuruecksetzen.');
+        appendEmptyState(toolsGrid, t('noToolsFilter'));
         return;
       }
 
@@ -447,8 +581,8 @@
 
       tools.forEach((tool) => {
         const productLink = toSafeProductLink(tool.slug);
-        const categoryName = clampText(tool.category?.name, 120) || 'Werkzeug';
-        const location = clampText(tool.location, 160) || 'Auf Anfrage';
+        const categoryName = clampText(tool.category?.name, 120) || t('toolFallback');
+        const location = clampText(tool.location, 160) || t('onRequest');
         const availability = String(toNonNegativeInteger(tool.calculatedAvailability, 0));
 
         const card = document.createElement('article');
@@ -460,7 +594,7 @@
 
         const image = document.createElement('img');
         image.src = toSafeImageSrc(tool.images[0]?.url);
-        image.alt = clampText(tool.name, 160) || 'Werkzeugbild';
+        image.alt = clampText(tool.name, 160) || t('toolImage');
         image.loading = 'lazy';
         image.decoding = 'async';
         imageLink.appendChild(image);
@@ -468,20 +602,20 @@
         const title = document.createElement('h3');
         const titleLink = document.createElement('a');
         titleLink.href = productLink;
-        titleLink.textContent = clampText(tool.name, 160) || 'Werkzeug';
+        titleLink.textContent = clampText(tool.name, 160) || t('toolFallback');
         title.appendChild(titleLink);
 
         const category = document.createElement('p');
         category.textContent = categoryName;
 
         const specs = document.createElement('dl');
-        specs.appendChild(createSpecRow('Standort', location));
-        specs.appendChild(createSpecRow('Verfuegbar', availability));
+        specs.appendChild(createSpecRow(t('location'), location));
+        specs.appendChild(createSpecRow(t('available'), availability));
 
         const priceLink = document.createElement('a');
         priceLink.className = 'btn-price';
         priceLink.href = productLink;
-        priceLink.textContent = `Ab ${formatCurrency(tool.dailyPrice)}`;
+        priceLink.textContent = `${t('fromPrice')} ${formatCurrency(tool.dailyPrice)}`;
 
         card.appendChild(imageLink);
         card.appendChild(title);
@@ -496,7 +630,7 @@
 
     const loadData = async () => {
       const requestId = ++latestLoadRequestId;
-      setStatus(statusNode, 'Lade Werkzeuge aus dem CMS...', 'is-info');
+      setStatus(statusNode, t('loadingTools'), 'is-info');
 
       try {
         const [categories, tools] = await Promise.all([
@@ -511,16 +645,16 @@
         renderToolsGrid(tools);
 
         const currentCategoryName =
-          categories.find((category) => category.slug === activeCategory)?.name || 'Alle Kategorien';
+          categories.find((category) => category.slug === activeCategory)?.name || t('allCategories');
 
         if (activeCategoryLabel) {
           activeCategoryLabel.textContent = currentCategoryName;
         }
 
-        setStatus(statusNode, `${tools.length} Werkzeug(e) geladen.`, 'is-success');
+        setStatus(statusNode, '', 'is-success');
       } catch (error) {
         if (requestId !== latestLoadRequestId) return;
-        setStatus(statusNode, clampText(error?.message, 220) || 'Unbekannter Fehler', 'is-error');
+        setStatus(statusNode, clampText(error?.message, 220) || t('searchError'), 'is-error');
       }
     };
 
@@ -574,7 +708,7 @@
     const renderMain = () => {
       const image = images[activeIndex];
       mainImageNode.src = toSafeImageSrc(image.url);
-      mainImageNode.alt = clampText(image.alternativeText, 160) || clampText(tool.name, 160) || 'Werkzeugbild';
+      mainImageNode.alt = clampText(image.alternativeText, 160) || clampText(tool.name, 160) || t('toolImage');
     };
 
     const renderThumbs = () => {
@@ -583,14 +717,14 @@
         const button = document.createElement('button');
         button.type = 'button';
         button.setAttribute('data-thumb-index', String(index));
-        button.setAttribute('aria-label', `Bild ${index + 1} anzeigen`);
+        button.setAttribute('aria-label', t('imageButtonLabel', index + 1));
         if (index === activeIndex) {
           button.classList.add('active');
         }
 
         const thumb = document.createElement('img');
         thumb.src = toSafeImageSrc(image.url);
-        thumb.alt = clampText(image.alternativeText, 160) || clampText(tool.name, 160) || 'Werkzeugbild';
+        thumb.alt = clampText(image.alternativeText, 160) || clampText(tool.name, 160) || t('toolImage');
         thumb.loading = 'lazy';
         thumb.decoding = 'async';
 
@@ -627,27 +761,27 @@
 
   const validateRentalPayload = (payload) => {
     if (!payload.customerName || payload.customerName.length < 2) {
-      return 'Bitte gueltigen Namen eingeben.';
+      return t('invalidName');
     }
 
     if (!EMAIL_PATTERN.test(payload.customerEmail || '')) {
-      return 'Bitte gueltige E-Mail eingeben.';
+      return t('invalidEmail');
     }
 
     if (!isIsoDate(payload.startDate) || !isIsoDate(payload.endDate)) {
-      return 'Bitte gueltigen Zeitraum waehlen.';
+      return t('invalidDates');
     }
 
     if (payload.endDate < payload.startDate) {
-      return 'Das Enddatum muss am oder nach dem Startdatum liegen.';
+      return t('invalidEndDate');
     }
 
     if (!Number.isInteger(payload.quantity) || payload.quantity < 1) {
-      return 'Bitte gueltige Menge eingeben.';
+      return t('invalidQuantity');
     }
 
     if (!payload.privacyConsent) {
-      return 'Bitte Datenschutzerklaerung bestaetigen.';
+      return t('privacyRequired');
     }
 
     return '';
@@ -663,23 +797,23 @@
     const feedbackNode = page.querySelector('[data-tool-feedback]');
 
     if (!slug) {
-      setStatus(feedbackNode, 'Kein Werkzeug-Slug uebergeben.', 'is-error');
+      setStatus(feedbackNode, t('invalidSlug'), 'is-error');
       return;
     }
 
-    setStatus(feedbackNode, 'Werkzeug wird geladen...', 'is-info');
+    setStatus(feedbackNode, t('loadingProduct'), 'is-info');
 
     let tool;
 
     try {
       tool = await RentalApi.getToolBySlug(slug);
     } catch (error) {
-      setStatus(feedbackNode, clampText(error?.message, 220) || 'Werkzeug konnte nicht geladen werden.', 'is-error');
+      setStatus(feedbackNode, clampText(error?.message, 220) || t('productsLoadError'), 'is-error');
       return;
     }
 
     if (!tool) {
-      setStatus(feedbackNode, 'Werkzeug nicht gefunden.', 'is-error');
+      setStatus(feedbackNode, t('productNotFound'), 'is-error');
       return;
     }
 
@@ -701,20 +835,19 @@
 
     const metaTags = tool.tags && typeof tool.tags === 'object' ? tool.tags : {};
 
-    document.title = `${clampText(tool.name, 120) || 'Werkzeug'} | Sortiment`;
-    if (breadcrumbToolName) breadcrumbToolName.textContent = clampText(tool.name, 160) || 'Werkzeug';
-    if (titleNode) titleNode.textContent = clampText(tool.name, 160) || 'Werkzeug';
-    if (subtitleNode) subtitleNode.textContent = clampText(tool.shortDescription || tool.category?.name, 200) || 'Werkzeug';
+    document.title = `${clampText(tool.name, 120) || t('toolFallback')} | Sortiment`;
+    if (breadcrumbToolName) breadcrumbToolName.textContent = clampText(tool.name, 160) || t('toolFallback');
+    if (titleNode) titleNode.textContent = clampText(tool.name, 160) || t('toolFallback');
+    if (subtitleNode) subtitleNode.textContent = clampText(tool.shortDescription || tool.category?.name, 200) || t('toolFallback');
     if (descNode) {
       descNode.textContent =
-        clampText(tool.description || tool.shortDescription || 'Keine Beschreibung hinterlegt.', 2000) ||
-        'Keine Beschreibung hinterlegt.';
+        clampText(tool.description || tool.shortDescription || t('descriptionMissing'), 2000) || t('descriptionMissing');
     }
     if (priceNode) priceNode.textContent = formatCurrency(tool.dailyPrice);
-    if (categoryNode) categoryNode.textContent = clampText(tool.category?.name, 120) || 'Werkzeug';
+    if (categoryNode) categoryNode.textContent = clampText(tool.category?.name, 120) || t('toolFallback');
 
     if (availabilityNode) {
-      availabilityNode.textContent = tool.calculatedAvailability > 0 ? 'Verfuegbar ab heute' : 'Aktuell ausgebucht';
+      availabilityNode.textContent = tool.calculatedAvailability > 0 ? t('productAvailable') : t('productUnavailable');
       availabilityNode.classList.toggle('is-out', tool.calculatedAvailability <= 0);
     }
 
@@ -724,7 +857,7 @@
     if (specChuckNode) specChuckNode.textContent = metaTags.chuck || '-';
 
     renderToolImages(tool, mainImageNode, thumbsNode);
-    setStatus(feedbackNode, 'Werkzeugdaten geladen.', 'is-success');
+    setStatus(feedbackNode, t('productLoaded'), 'is-success');
 
     const rentForm = page.querySelector('[data-rental-form]');
     const availabilityInfo = page.querySelector('[data-availability-status]');
@@ -755,7 +888,7 @@
       const quantity = toNonNegativeInteger(quantityInput?.value, 0);
 
       if (!isIsoDate(startDate) || !isIsoDate(endDate) || endDate < startDate || quantity < 1) {
-        setStatus(availabilityInfo, 'Bitte gueltigen Zeitraum und Menge eingeben.', 'is-info');
+        setStatus(availabilityInfo, t('periodHint'), 'is-info');
         return null;
       }
 
@@ -768,22 +901,14 @@
         });
 
         if (availability.isAvailable) {
-          setStatus(
-            availabilityInfo,
-            `Verfuegbar: ${availability.availableQuantity} Stueck im Zeitraum ${startDate} bis ${endDate}.`,
-            'is-success'
-          );
+          setStatus(availabilityInfo, t('availableWindow', availability.availableQuantity, startDate, endDate), 'is-success');
         } else {
-          setStatus(
-            availabilityInfo,
-            `Nicht verfuegbar. Nur ${availability.availableQuantity} Stueck verfuegbar.`,
-            'is-error'
-          );
+          setStatus(availabilityInfo, t('unavailableWindow', availability.availableQuantity), 'is-error');
         }
 
         return availability;
       } catch (error) {
-        setStatus(availabilityInfo, clampText(error?.message, 220) || 'Verfuegbarkeit konnte nicht geladen werden.', 'is-error');
+        setStatus(availabilityInfo, clampText(error?.message, 220) || t('availabilityError'), 'is-error');
         return null;
       }
     };
@@ -828,17 +953,17 @@
 
       const availability = await refreshAvailability();
       if (!availability || !availability.isAvailable) {
-        setStatus(requestFeedback, 'Anfrage nicht gesendet: Zeitraum oder Menge ist nicht verfuegbar.', 'is-error');
+        setStatus(requestFeedback, t('requestNotAvailable'), 'is-error');
         return;
       }
 
-      setStatus(requestFeedback, 'Anfrage wird gesendet...', 'is-info');
+      setStatus(requestFeedback, t('requestSending'), 'is-info');
 
       try {
         await RentalApi.createRentalRequest(payload);
-        setStatus(requestFeedback, 'Vielen Dank! Ihre Anfrage wurde als "Offen" gespeichert.', 'is-success');
+        setStatus(requestFeedback, t('requestSuccess'), 'is-success');
       } catch (error) {
-        setStatus(requestFeedback, clampText(error?.message, 220) || 'Anfrage konnte nicht gesendet werden.', 'is-error');
+        setStatus(requestFeedback, clampText(error?.message, 220) || t('requestFail'), 'is-error');
       }
     });
 
@@ -849,7 +974,7 @@
         const visible = relatedTools.filter((item) => item.id !== tool.id).slice(0, 4);
 
         if (!visible.length) {
-          appendEmptyState(relatedGrid, 'Keine weiteren Werkzeuge in dieser Kategorie gefunden.');
+          appendEmptyState(relatedGrid, t('noRelatedTools'));
         } else {
           clearChildren(relatedGrid);
           visible.forEach((entry) => {
@@ -860,7 +985,7 @@
             imageLink.href = link;
             const image = document.createElement('img');
             image.src = toSafeImageSrc(entry.images[0]?.url);
-            image.alt = clampText(entry.name, 160) || 'Werkzeugbild';
+            image.alt = clampText(entry.name, 160) || t('toolImage');
             image.loading = 'lazy';
             image.decoding = 'async';
             imageLink.appendChild(image);
@@ -868,11 +993,11 @@
             const title = document.createElement('h3');
             const titleLink = document.createElement('a');
             titleLink.href = link;
-            titleLink.textContent = clampText(entry.name, 160) || 'Werkzeug';
+            titleLink.textContent = clampText(entry.name, 160) || t('toolFallback');
             title.appendChild(titleLink);
 
             const price = document.createElement('p');
-            price.textContent = `ab ${formatCurrency(entry.dailyPrice)}`;
+            price.textContent = `${t('fromPrice')} ${formatCurrency(entry.dailyPrice)}`;
 
             article.appendChild(imageLink);
             article.appendChild(title);
@@ -881,7 +1006,7 @@
           });
         }
       } catch (error) {
-        appendEmptyState(relatedGrid, clampText(error?.message, 220) || 'Aehnliche Werkzeuge konnten nicht geladen werden.');
+        appendEmptyState(relatedGrid, clampText(error?.message, 220) || t('relatedLoadError'));
       }
     }
   };
@@ -892,8 +1017,84 @@
     const headlineNode = document.querySelector('[data-site-hero-headline]');
     const textNode = document.querySelector('[data-site-hero-text]');
     const badgeNode = document.querySelector('[data-site-hero-badge]');
+    const popularTitleNode = document.querySelector('[data-popular-title]');
+    const popularSubtitleNode = document.querySelector('[data-popular-subtitle]');
+    const popularGridNode = document.querySelector('[data-popular-grid]');
 
-    if (!headlineNode && !textNode && !badgeNode) {
+    const renderPopularTools = (tools) => {
+      if (!popularGridNode) return;
+
+      if (!Array.isArray(tools) || !tools.length) {
+        appendEmptyState(popularGridNode, t('popularEmpty'));
+        return;
+      }
+
+      clearChildren(popularGridNode);
+
+      tools.slice(0, 3).forEach((tool) => {
+        const article = document.createElement('article');
+        article.className = 'product-card';
+
+        const imageWrap = document.createElement('div');
+        imageWrap.className = 'product-image-wrap';
+        const image = document.createElement('img');
+        image.src = toSafeImageSrc(tool.images?.[0]?.url);
+        image.alt = clampText(tool.name, 160) || t('toolImage');
+        image.loading = 'lazy';
+        image.decoding = 'async';
+        imageWrap.appendChild(image);
+
+        const content = document.createElement('div');
+        content.className = 'product-content';
+
+        const category = document.createElement('span');
+        category.className = 'product-category';
+        category.textContent = clampText(tool.category?.name, 80) || t('categoryFallback');
+
+        const title = document.createElement('h3');
+        const titleLink = document.createElement('a');
+        titleLink.href = toSafeProductLink(tool.slug);
+        titleLink.textContent = clampText(tool.name, 160) || t('toolFallback');
+        title.appendChild(titleLink);
+
+        const description = document.createElement('p');
+        description.textContent = clampText(tool.shortDescription, 160) || t('productDataLoading');
+
+        const footer = document.createElement('div');
+        footer.className = 'product-footer';
+
+        const priceInfo = document.createElement('div');
+        const small = document.createElement('small');
+        small.textContent = t('dailyFrom');
+        const strong = document.createElement('strong');
+        strong.textContent = formatCurrency(tool.dailyPrice || 0);
+        priceInfo.appendChild(small);
+        priceInfo.appendChild(strong);
+
+        const linkBtn = document.createElement('a');
+        linkBtn.className = 'product-cart';
+        linkBtn.href = toSafeProductLink(tool.slug);
+        linkBtn.setAttribute('aria-label', t('openProduct'));
+        const icon = document.createElement('i');
+        icon.className = 'ri-arrow-right-line';
+        icon.setAttribute('aria-hidden', 'true');
+        linkBtn.appendChild(icon);
+
+        footer.appendChild(priceInfo);
+        footer.appendChild(linkBtn);
+
+        content.appendChild(category);
+        content.appendChild(title);
+        content.appendChild(description);
+        content.appendChild(footer);
+
+        article.appendChild(imageWrap);
+        article.appendChild(content);
+        popularGridNode.appendChild(article);
+      });
+    };
+
+    if (!headlineNode && !textNode && !badgeNode && !popularGridNode && !popularTitleNode && !popularSubtitleNode) {
       return;
     }
 
@@ -903,9 +1104,31 @@
 
       if (headlineNode && settings.heroHeadline) headlineNode.textContent = settings.heroHeadline;
       if (textNode && settings.heroText) textNode.textContent = settings.heroText;
-      if (badgeNode && settings.companyName) badgeNode.textContent = settings.companyName;
+      if (badgeNode) badgeNode.textContent = settings.companyName || t('homepageDefaultBadge');
+
+      const homepage = settings.homepage || {};
+      const popularTitle = IS_EN
+        ? homepage.popularSectionTitleEn || t('popularFallbackTitle')
+        : homepage.popularSectionTitleDe || t('popularFallbackTitle');
+      const popularSubtitle = IS_EN
+        ? homepage.popularSectionSubtitleEn || t('popularFallbackSubtitle')
+        : homepage.popularSectionSubtitleDe || t('popularFallbackSubtitle');
+
+      if (popularTitleNode) popularTitleNode.textContent = clampText(popularTitle, 120);
+      if (popularSubtitleNode) popularSubtitleNode.textContent = clampText(popularSubtitle, 180);
+
+      const selectedPopularProducts = Array.isArray(homepage.popularProducts) ? homepage.popularProducts : [];
+      if (selectedPopularProducts.length) {
+        renderPopularTools(selectedPopularProducts);
+        return;
+      }
+
+      const fallbackTools = await RentalApi.getTools();
+      renderPopularTools(fallbackTools);
     } catch (error) {
-      // Stille fallback-Anzeige auf statische Inhalte.
+      if (popularGridNode) {
+        appendEmptyState(popularGridNode, clampText(error?.message, 220) || t('productsLoadError'));
+      }
     }
   };
 

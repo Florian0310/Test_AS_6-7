@@ -13,7 +13,7 @@ export const ContactSettings: GlobalConfig = {
       label: 'Rechtlicher Name',
       type: 'text',
       required: true,
-      defaultValue: 'Schroeder - Alles Saniert (Gesellschaft nach buergerlichem Recht)',
+      defaultValue: 'Schröder - Alles Saniert (Gesellschaft nach bürgerlichem Recht)',
     },
     {
       name: 'brandName',
@@ -24,7 +24,7 @@ export const ContactSettings: GlobalConfig = {
     },
     {
       name: 'street',
-      label: 'Strasse und Hausnummer',
+      label: 'Straße und Hausnummer',
       type: 'text',
       required: true,
       defaultValue: 'Fotzebenweg 3',
@@ -48,7 +48,7 @@ export const ContactSettings: GlobalConfig = {
       label: 'Land',
       type: 'text',
       required: true,
-      defaultValue: 'Oesterreich',
+      defaultValue: 'Österreich',
     },
     {
       name: 'phone',
@@ -66,7 +66,7 @@ export const ContactSettings: GlobalConfig = {
     },
     {
       name: 'inquiryRecipientEmail',
-      label: 'Empfaenger fuer Kontaktformulare',
+      label: 'Empfänger für Kontaktformulare',
       type: 'email',
       required: true,
       defaultValue: 'office@allessaniert.at',

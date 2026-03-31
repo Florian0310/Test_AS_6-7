@@ -42,27 +42,27 @@ export const SiteSettings: GlobalConfig = {
           name: 'metaTitleDe',
           label: 'Meta Title (DE)',
           type: 'text',
-          defaultValue: 'Schroeder - Alles Saniert | Werkzeugverleih und Forstarbeiten',
+          defaultValue: 'Schröder - Alles Saniert | Werkzeugverleih und Forstarbeiten',
         },
         {
           name: 'metaDescriptionDe',
           label: 'Meta Description (DE)',
           type: 'textarea',
           defaultValue:
-            'Werkzeugverleih und Dienstleistungen von Schroeder - Alles Saniert in Pernitz. Professionelle Maschinen, faire Tarife und Anfrage-Checkout ohne Online-Zahlung.',
+            'Werkzeugverleih und Dienstleistungen von Schröder - Alles Saniert in Pernitz. Professionelle Maschinen, faire Tarife und Anfrage-Checkout ohne Online-Zahlung.',
         },
         {
           name: 'metaTitleEn',
           label: 'Meta Title (EN)',
           type: 'text',
-          defaultValue: 'Schroeder - Alles Saniert | Tool Rental and Forestry Services',
+          defaultValue: 'Schröder - Alles Saniert | Tool Rental and Forestry Services',
         },
         {
           name: 'metaDescriptionEn',
           label: 'Meta Description (EN)',
           type: 'textarea',
           defaultValue:
-            'Tool rental and services by Schroeder - Alles Saniert in Pernitz, Austria. Professional equipment, transparent rates and request-based checkout.',
+            'Tool rental and services by Schröder - Alles Saniert in Pernitz, Austria. Professional equipment, transparent rates and request-based checkout.',
         },
         {
           name: 'robotsPolicy',
@@ -90,6 +90,48 @@ export const SiteSettings: GlobalConfig = {
           name: 'ga4MeasurementId',
           label: 'Google Analytics 4 Measurement ID',
           type: 'text',
+        },
+      ],
+    },
+    {
+      name: 'homepage',
+      label: 'Startseite',
+      type: 'group',
+      fields: [
+        {
+          name: 'popularSectionTitleDe',
+          label: 'Titel Beliebte Produkte (DE)',
+          type: 'text',
+          defaultValue: 'Beliebte Produkte',
+        },
+        {
+          name: 'popularSectionSubtitleDe',
+          label: 'Untertitel Beliebte Produkte (DE)',
+          type: 'text',
+          defaultValue: 'Die Favoriten unserer Kunden diese Woche.',
+        },
+        {
+          name: 'popularSectionTitleEn',
+          label: 'Title Popular Products (EN)',
+          type: 'text',
+          defaultValue: 'Popular Products',
+        },
+        {
+          name: 'popularSectionSubtitleEn',
+          label: 'Subtitle Popular Products (EN)',
+          type: 'text',
+          defaultValue: 'Top picks from our customers this week.',
+        },
+        {
+          name: 'popularProducts',
+          label: 'Beliebte Produkte (Auswahl)',
+          type: 'relationship',
+          relationTo: 'products',
+          hasMany: true,
+          admin: {
+            description:
+              'Diese Produkte werden auf der Startseite als "Beliebte Produkte" angezeigt. Reihenfolge bleibt erhalten.',
+          },
         },
       ],
     },

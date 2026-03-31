@@ -635,6 +635,16 @@ export interface SiteSetting {
     gtmId?: string | null;
     ga4MeasurementId?: string | null;
   };
+  homepage?: {
+    popularSectionTitleDe?: string | null;
+    popularSectionSubtitleDe?: string | null;
+    popularSectionTitleEn?: string | null;
+    popularSectionSubtitleEn?: string | null;
+    /**
+     * Diese Produkte werden auf der Startseite als "Beliebte Produkte" angezeigt. Reihenfolge bleibt erhalten.
+     */
+    popularProducts?: (number | Product)[] | null;
+  };
   updatedAt?: string | null;
   createdAt?: string | null;
 }
@@ -713,6 +723,15 @@ export interface SiteSettingsSelect<T extends boolean = true> {
     | {
         gtmId?: T;
         ga4MeasurementId?: T;
+      };
+  homepage?:
+    | T
+    | {
+        popularSectionTitleDe?: T;
+        popularSectionSubtitleDe?: T;
+        popularSectionTitleEn?: T;
+        popularSectionSubtitleEn?: T;
+        popularProducts?: T;
       };
   updatedAt?: T;
   createdAt?: T;

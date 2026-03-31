@@ -110,6 +110,43 @@ const formatProduct = (doc: any) => ({
   seo: doc.seo || null,
 })
 
+const countDocuments = async (
+  req: PayloadRequest,
+  collection: 'categories' | 'products' | 'requests',
+  where?: any,
+): Promise<number> => {
+  const payloadWithCount = req.payload as typeof req.payload & {
+    count?: (args: {
+      collection: 'categories' | 'products' | 'requests'
+      req?: PayloadRequest
+      where?: Record<string, unknown>
+      overrideAccess?: boolean
+    }) => Promise<{ totalDocs?: number }>
+  }
+
+  if (typeof payloadWithCount.count === 'function') {
+    const countResult = await payloadWithCount.count({
+      collection,
+      req,
+      where,
+      overrideAccess: true,
+    })
+
+    return Number(countResult?.totalDocs || 0)
+  }
+
+  const docsResult = await req.payload.find({
+    collection,
+    depth: 0,
+    limit: 0,
+    req,
+    where,
+    overrideAccess: true,
+  })
+
+  return Number(docsResult?.totalDocs || 0)
+}
+
 const errorResponse = (error: unknown, fallbackMessage: string) => {
   const status = error instanceof PricingValidationError ? 400 : 500
   const message = error instanceof Error ? error.message : fallbackMessage
@@ -370,6 +407,55 @@ export const siteConfigHandler: Endpoint['handler'] = async (req) => {
       }),
     ])
 
+    const popularProductIDsRaw = Array.isArray(siteSettings?.homepage?.popularProducts)
+      ? siteSettings.homepage.popularProducts
+      : []
+
+    const popularProductIDs = popularProductIDsRaw
+      .map((entry: unknown) => {
+        if (!entry) return null
+        if (typeof entry === 'object' && entry !== null && 'id' in (entry as Record<string, unknown>)) {
+          return (entry as { id?: number | string }).id || null
+        }
+        if (typeof entry === 'number' || typeof entry === 'string') return entry
+        return null
+      })
+      .filter((value): value is number | string => value !== null)
+
+    let popularProducts: Array<ReturnType<typeof formatProduct>> = []
+
+    if (popularProductIDs.length) {
+      const productResult = await req.payload.find({
+        collection: 'products',
+        depth: 1,
+        limit: Math.min(popularProductIDs.length, 12),
+        req,
+        where: {
+          and: [
+            {
+              id: {
+                in: popularProductIDs,
+              },
+            },
+            {
+              isActive: {
+                equals: true,
+              },
+            },
+          ],
+        },
+        sort: ['title'],
+      })
+
+      const mappedProducts = productResult.docs.map(formatProduct)
+      const orderMap = new Map(popularProductIDs.map((id, index) => [String(id), index]))
+      popularProducts = mappedProducts.sort((a, b) => {
+        const orderA = orderMap.get(String(a.id)) ?? Number.MAX_SAFE_INTEGER
+        const orderB = orderMap.get(String(b.id)) ?? Number.MAX_SAFE_INTEGER
+        return orderA - orderB
+      })
+    }
+
     return Response.json({
       success: true,
       data: {
@@ -388,6 +474,15 @@ export const siteConfigHandler: Endpoint['handler'] = async (req) => {
             gtmId: siteSettings?.tracking?.gtmId || '',
             ga4MeasurementId: siteSettings?.tracking?.ga4MeasurementId || '',
           },
+          homepage: {
+            popularSectionTitleDe: siteSettings?.homepage?.popularSectionTitleDe || 'Beliebte Produkte',
+            popularSectionSubtitleDe:
+              siteSettings?.homepage?.popularSectionSubtitleDe || 'Die Favoriten unserer Kunden diese Woche.',
+            popularSectionTitleEn: siteSettings?.homepage?.popularSectionTitleEn || 'Popular Products',
+            popularSectionSubtitleEn:
+              siteSettings?.homepage?.popularSectionSubtitleEn || 'Top picks from our customers this week.',
+            popularProducts,
+          },
         },
         contact: {
           legalCompanyName: contactSettings?.legalCompanyName || '',
@@ -400,6 +495,9 @@ export const siteConfigHandler: Endpoint['handler'] = async (req) => {
           email: contactSettings?.email || '',
         },
         rental: {
+          companyName: rentalSettings?.companyName || 'Alles Saniert',
+          heroHeadline: rentalSettings?.heroHeadline || '',
+          heroText: rentalSettings?.heroText || '',
           priceDisclaimer: rentalSettings?.priceDisclaimer || '',
         },
         legal: {
@@ -412,6 +510,40 @@ export const siteConfigHandler: Endpoint['handler'] = async (req) => {
     })
   } catch (error) {
     return errorResponse(error, 'Website-Einstellungen konnten nicht geladen werden.')
+  }
+}
+
+export const adminStatisticsHandler: Endpoint['handler'] = async (req) => {
+  try {
+    if (!req.user) {
+      return Response.json({ success: false, message: 'Nicht autorisiert.' }, { status: 401 })
+    }
+
+    const sevenDaysAgo = new Date()
+    sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7)
+
+    const [activeProducts, activeCategories, openRequests, requestsLast7Days] = await Promise.all([
+      countDocuments(req, 'products', { isActive: { equals: true } }),
+      countDocuments(req, 'categories', { isActive: { equals: true } }),
+      countDocuments(req, 'requests', { status: { in: ['new', 'in_progress'] } }),
+      countDocuments(req, 'requests', {
+        createdAt: {
+          greater_than_equal: sevenDaysAgo.toISOString(),
+        },
+      }),
+    ])
+
+    return Response.json({
+      success: true,
+      data: {
+        activeProducts,
+        activeCategories,
+        openRequests,
+        requestsLast7Days,
+      },
+    })
+  } catch (error) {
+    return errorResponse(error, 'Statistiken konnten nicht geladen werden.')
   }
 }
 
@@ -564,5 +696,10 @@ export const publicEndpoints: Endpoint[] = [
     path: '/public/contact',
     method: 'post',
     handler: submitContactInquiryHandler,
+  },
+  {
+    path: '/admin/statistics',
+    method: 'get',
+    handler: adminStatisticsHandler,
   },
 ]

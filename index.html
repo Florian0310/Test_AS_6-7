@@ -41,7 +41,7 @@
             <li><a class="nav-link" href="forestry-work/index.html">Forstarbeiten</a></li>
             <li><a class="nav-link" href="about-us/index.html">&Uuml;ber uns</a></li>
             <li><a class="nav-link" href="contact/index.html">Kontakt</a></li>
-            <li><a class="nav-link" href="en/index.html" lang="en">EN</a></li>
+            <li><a class="nav-link" href="en/index.html" lang="en" data-locale-switch="en">EN</a></li>
           </ul>
           <button class="icon-btn nav-close" type="button" data-close-menu aria-label="Men&uuml; schlie&szlig;en">
             <i class="ri-close-line"></i>
@@ -95,55 +95,23 @@
         <div class="container">
           <div class="section-head">
             <div>
-              <h2 class="section-title text-left">Beliebte Produkte</h2>
-              <p class="section-subtitle">Die Favoriten unserer Kunden diese Woche.</p>
+              <h2 class="section-title text-left" data-popular-title>Beliebte Produkte</h2>
+              <p class="section-subtitle" data-popular-subtitle>Die Favoriten unserer Kunden diese Woche.</p>
             </div>
           </div>
-          <div class="product-row">
+          <div class="product-row" data-popular-grid>
             <article class="product-card">
               <div class="product-image-wrap">
-                <img src="assets/images/aboutUsTwo.jpg" alt="Hilti SF 6-A22" />
+                <img src="assets/images/aboutUsTwo.jpg" alt="Werkzeug" />
               </div>
               <div class="product-content">
-                <span class="product-category">Bohren &amp; Schrauben</span>
-                <h3><a href="sortiment/produkt-hilti-sf-6-a22.html">Hilti SF 6-A22</a></h3>
-                <p>Leistungsstarker Akku-Bohrschrauber f&uuml;r universelle Anwendungen in Holz und Metall.</p>
+                <span class="product-category">Wird geladen</span>
+                <h3><a href="sortiment/index.html">Beliebtes Produkt</a></h3>
+                <p>Produktdaten werden aus Payload geladen.</p>
                 <div class="product-footer">
-                  <div><small>Tagesmiete ab</small><strong>49,90&euro;</strong></div>
-                  <button class="product-cart" type="button" aria-label="In den Warenkorb">
-                    <i class="ri-shopping-cart-2-line"></i>
-                  </button>
-                </div>
-              </div>
-            </article>
-            <article class="product-card">
-              <div class="product-image-wrap">
-                <img src="assets/images/forestryWorkBackground.jpg" alt="Stihl MS 261" />
-              </div>
-              <div class="product-content">
-                <span class="product-category">Garten &amp; Forst</span>
-                <h3><a href="sortiment/produkt-hilti-sf-6-a22.html">Stihl MS 261</a></h3>
-                <p>Profi-Kettens&auml;ge f&uuml;r Forstarbeiten. Leicht, handlich und kraftvoll.</p>
-                <div class="product-footer">
-                  <div><small>Tagesmiete ab</small><strong>65,00&euro;</strong></div>
-                  <button class="product-cart" type="button" aria-label="In den Warenkorb">
-                    <i class="ri-shopping-cart-2-line"></i>
-                  </button>
-                </div>
-              </div>
-            </article>
-            <article class="product-card">
-              <div class="product-image-wrap">
-                <img src="assets/images/aboutUsOne.jpg" alt="Festool Rotex RO 150" />
-              </div>
-              <div class="product-content">
-                <span class="product-category">Schleifen</span>
-                <h3><a href="sortiment/produkt-hilti-sf-6-a22.html">Festool Rotex RO 150</a></h3>
-                <p>3-in-1 Getriebe-Exzenterschleifer f&uuml;r Grob-, Feinschliff und Polieren.</p>
-                <div class="product-footer">
-                  <div><small>Tagesmiete ab</small><strong>42,00&euro;</strong></div>
-                  <button class="product-cart" type="button" aria-label="In den Warenkorb">
-                    <i class="ri-shopping-cart-2-line"></i>
+                  <div><small>Tagesmiete ab</small><strong>--</strong></div>
+                  <button class="product-cart" type="button" aria-label="Zum Produkt">
+                    <i class="ri-arrow-right-line"></i>
                   </button>
                 </div>
               </div>
@@ -228,7 +196,7 @@
               <li><a href="datenschutz/index.html">Datenschutz</a></li>
               <li><a href="cookie-richtlinie/index.html">Cookie-Richtlinie</a></li>
               <li><a href="barrierefreiheit/index.html">Barrierefreiheit</a></li>
-              <li><a href="en/index.html" lang="en">English Version</a></li>
+              <li><a href="en/index.html" lang="en" data-locale-switch="en">English Version</a></li>
             </ul>
           </div>
           <div class="footer-col">
@@ -258,8 +226,8 @@
       {
         "@context": "https://schema.org",
         "@type": "LocalBusiness",
-        "name": "Schroeder - Alles Saniert",
-        "legalName": "Schroeder - Alles Saniert (Gesellschaft nach buergerlichem Recht)",
+        "name": "Schröder - Alles Saniert",
+        "legalName": "Schröder - Alles Saniert (Gesellschaft nach bürgerlichem Recht)",
         "address": {
           "@type": "PostalAddress",
           "streetAddress": "Fotzebenweg 3",

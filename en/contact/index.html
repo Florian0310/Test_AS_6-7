@@ -1,70 +1,213 @@
-<!doctype html>
+﻿<!doctype html>
 <html lang="en">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Contact | Alles Saniert</title>
-    <meta name="description" content="Contact Schroeder - Alles Saniert." />
+    <meta name="description" content="Contact page of Schröder - Alles Saniert. Send your request securely via form." />
+    <meta name="robots" content="index, follow" />
     <link rel="canonical" href="https://www.allessaniert.at/en/contact/" />
+    <title>Contact | Alles Saniert</title>
     <link rel="icon" type="image/svg+xml" href="../../favicon.svg" />
     <link rel="stylesheet" href="../../assets/vendor/icons.css" />
     <link rel="stylesheet" href="../../styles.css" />
   </head>
   <body>
     <a class="skip-link" href="#main-content">Skip to content</a>
-    <main id="main-content" class="legal-main">
-      <article class="legal-card">
-        <h1>Contact</h1>
-        <p>Send us your request. We reply as soon as possible.</p>
+    <header class="header">
+      <nav class="nav container">
+        <a class="brand-logo" href="../index.html" aria-label="Alles Saniert home">
+          <span class="brand-text">
+            <strong>ALLES SANIERT</strong>
+            <small>SCHRÖDER GESNBR</small>
+          </span>
+        </a>
+        <div class="nav-menu" data-nav-menu>
+          <ul class="nav-list">
+            <li><a class="nav-link" href="../catalog/index.html">Catalog</a></li>
+            <li><a class="nav-link" href="../../forestry-work/index.html">Forestry</a></li>
+            <li><a class="nav-link" href="../../about-us/index.html">About us</a></li>
+            <li><a class="nav-link active" href="index.html">Contact</a></li>
+            <li><a class="nav-link" href="../../index.html" lang="de" data-locale-switch="de">DE</a></li>
+          </ul>
+          <button class="icon-btn nav-close" type="button" data-close-menu aria-label="Close menu">
+            <i class="ri-close-line"></i>
+          </button>
+        </div>
+        <div class="nav-actions">
+          <button class="icon-btn nav-search-toggle" type="button" data-open-search aria-label="Open search">
+            <i class="ri-search-line"></i>
+          </button>
+          <button class="icon-btn nav-menu-toggle" type="button" data-open-menu aria-label="Open menu">
+            <i class="ri-menu-line"></i>
+          </button>
+        </div>
+      </nav>
+    </header>
 
-        <form class="contact-form" data-contact-form novalidate>
-          <div class="field-grid">
-            <label class="field"><span>First name</span><input name="first_name" type="text" required /></label>
-            <label class="field"><span>Last name</span><input name="last_name" type="text" /></label>
+    <div class="search" data-search>
+      <form class="search-form">
+        <i class="ri-search-line"></i>
+        <input class="search-input" type="search" placeholder="What are you looking for?" />
+      </form>
+      <button class="icon-btn search-close" type="button" data-close-search aria-label="Close search">
+        <i class="ri-close-line"></i>
+      </button>
+    </div>
+
+    <main id="main-content" class="contact-main">
+      <section class="contact-split">
+        <aside class="contact-left">
+          <div class="contact-left-inner">
+            <h1>Ready for your next project?</h1>
+            <p>
+              Whether renovation or forestry work: we provide the right equipment to move your project forward.
+            </p>
+
+            <div class="contact-info-list">
+              <article class="contact-info-item">
+                <div class="icon-box"><i class="ri-phone-fill"></i></div>
+                <div>
+                  <span>Phone</span>
+                  <strong data-company-phone>+43 650 3021328</strong>
+                  <small>Mon-Fri 07:00 - 18:00</small>
+                </div>
+              </article>
+              <article class="contact-info-item">
+                <div class="icon-box"><i class="ri-mail-fill"></i></div>
+                <div>
+                  <span>Email</span>
+                  <strong data-company-email>office@allessaniert.at</strong>
+                  <small>Reply within 24h</small>
+                </div>
+              </article>
+            </div>
           </div>
+        </aside>
 
-          <div class="field-grid">
-            <label class="field"><span>Email</span><input name="email" type="email" required /></label>
-            <label class="field"><span>Phone</span><input name="phone" type="tel" /></label>
+        <section class="contact-right">
+          <div class="contact-form-wrap">
+            <h2>Send a message</h2>
+            <p>Fill out the form and our team will get back to you quickly.</p>
+
+            <form class="contact-form" data-contact-form novalidate>
+              <div class="field-grid">
+                <label class="field">
+                  <span>First name</span>
+                  <input name="first_name" type="text" placeholder="Max" required />
+                </label>
+                <label class="field">
+                  <span>Last name</span>
+                  <input name="last_name" type="text" placeholder="Mustermann" />
+                </label>
+              </div>
+
+              <div class="field-grid">
+                <label class="field">
+                  <span>Email</span>
+                  <input name="email" type="email" placeholder="max@example.com" required />
+                </label>
+                <label class="field">
+                  <span>Phone</span>
+                  <input name="phone" type="tel" placeholder="+43 650 3021328" />
+                </label>
+              </div>
+
+              <label class="field">
+                <span>Subject</span>
+                <select name="subject">
+                  <option>Tool rental request</option>
+                  <option>Forestry services</option>
+                  <option>General request</option>
+                </select>
+              </label>
+
+              <label class="field">
+                <span>Message</span>
+                <textarea name="message" rows="5" placeholder="How can we help you?" required></textarea>
+              </label>
+
+              <div class="consent">
+                <label class="consent-check">
+                  <input type="checkbox" name="privacy_consent" required />
+                  <span>I agree to the</span>
+                </label>
+                <a class="consent-link" href="../privacy-policy/index.html">Privacy policy</a>
+                <span>.</span>
+              </div>
+              <p class="consent-meta">Required fields are marked. Your data is only used to process your request.</p>
+
+              <label class="visually-hidden-field" aria-hidden="true">
+                <span>Website</span>
+                <input type="text" name="website" tabindex="-1" autocomplete="off" />
+              </label>
+
+              <input type="hidden" name="turnstileToken" />
+              <div data-turnstile-container></div>
+
+              <div class="contact-actions">
+                <button class="btn-primary" type="submit">Send</button>
+              </div>
+              <p class="contact-status is-info" data-contact-status role="status" aria-live="polite">
+                Your request is sent securely.
+              </p>
+            </form>
           </div>
-
-          <label class="field">
-            <span>Subject</span>
-            <select name="subject">
-              <option>Tool rental request</option>
-              <option>Forestry service request</option>
-              <option>General question</option>
-            </select>
-          </label>
-
-          <label class="field"><span>Message</span><textarea name="message" rows="5" required></textarea></label>
-
-          <div class="consent">
-            <label class="consent-check">
-              <input type="checkbox" name="privacy_consent" required />
-              <span>I agree to the</span>
-            </label>
-            <a class="consent-link" href="../privacy-policy/index.html">Privacy Policy</a>
-            <span>.</span>
-          </div>
-
-          <label class="visually-hidden-field" aria-hidden="true">
-            <span>Website</span>
-            <input type="text" name="website" tabindex="-1" autocomplete="off" />
-          </label>
-
-          <input type="hidden" name="turnstileToken" />
-          <div data-turnstile-container></div>
-
-          <div class="contact-actions">
-            <button class="btn-primary" type="submit">Send message</button>
-          </div>
-          <p class="contact-status is-info" data-contact-status role="status" aria-live="polite"></p>
-        </form>
-
-        <p><a href="../index.html">Back to English start page</a></p>
-      </article>
+        </section>
+      </section>
     </main>
+
+    <footer class="footer">
+      <div class="container">
+        <div class="footer-grid">
+          <div class="footer-col">
+            <h3 class="footer-brand-title" data-company-brand-name>Alles Saniert</h3>
+            <div class="footer-brand-sub">Schröder Gesnbr</div>
+            <p class="footer-brand-text">
+              Your trusted partner for professional tool rental in the Piesting valley. High-quality equipment and
+              fair pricing.
+            </p>
+          </div>
+          <div class="footer-col">
+            <h3>Service</h3>
+            <ul class="footer-list">
+              <li><a href="../index.html#rentInstructions">How renting works</a></li>
+              <li><a href="../cookie-settings/index.html">Cookie settings</a></li>
+              <li><a href="../catalog/index.html">Catalog</a></li>
+              <li><a href="index.html">Contact form</a></li>
+            </ul>
+          </div>
+          <div class="footer-col">
+            <h3>Legal</h3>
+            <ul class="footer-list">
+              <li><a href="../imprint/index.html">Imprint</a></li>
+              <li><a href="../privacy-policy/index.html">Privacy policy</a></li>
+              <li><a href="../cookie-policy/index.html">Cookie policy</a></li>
+              <li><a href="../accessibility-statement/index.html">Accessibility</a></li>
+            </ul>
+          </div>
+          <div class="footer-col">
+            <h3>Contact</h3>
+            <ul class="footer-list">
+              <li class="footer-contact-item">
+                <i class="ri-map-pin-2-fill"></i>
+                <span data-company-address>Fotzebenweg 3<br />2763 Pernitz</span>
+              </li>
+              <li class="footer-contact-item">
+                <i class="ri-phone-fill"></i>
+                <a href="tel:+436503021328" data-company-phone>+43 650 3021328</a>
+              </li>
+              <li class="footer-contact-item">
+                <i class="ri-mail-fill"></i>
+                <a href="mailto:office@allessaniert.at" data-company-email>office@allessaniert.at</a>
+              </li>
+            </ul>
+          </div>
+        </div>
+        <div class="footer-bottom">
+          <p>&copy; 2026 Alles Saniert Schröder Gesnbr. All rights reserved.</p>
+        </div>
+      </div>
+    </footer>
 
     <script src="../../app-config.js"></script>
     <script src="../../consent.js"></script>

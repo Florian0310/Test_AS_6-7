@@ -4,7 +4,7 @@ export const defaultProducts = [
     title: 'Hilti SF 6-A22',
     slug: 'hilti-sf-6-a22',
     categorySlug: 'bohren-stemmen',
-    shortDescription: 'Akku-Bohrschrauber fuer professionelle Anwendungen in Holz und Metall.',
+    shortDescription: 'Akku-Bohrschrauber für professionelle Anwendungen in Holz und Metall.',
     availabilityStatus: 'available',
     pricing: {
       dailyPrice: 49.9,
@@ -21,7 +21,7 @@ export const defaultProducts = [
     title: 'Bautrockner 50L',
     slug: 'bautrockner-50l',
     categorySlug: 'reinigung',
-    shortDescription: 'Leistungsstarker Bautrockner fuer Baustellen, Keller und Sanierungsprojekte.',
+    shortDescription: 'Leistungsstarker Bautrockner für Baustellen, Keller und Sanierungsprojekte.',
     availabilityStatus: 'limited',
     pricing: {
       dailyPrice: 39,

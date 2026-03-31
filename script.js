@@ -1,5 +1,7 @@
 const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const THEME_STORAGE_KEY = 'as_theme_mode_v1';
+const LOCALE_STORAGE_KEY = 'as_locale_pref_v1';
+const LOCALE_AUTODETECT_KEY = 'as_locale_autodetect_done_v1';
 
 const getAppConfig = () => window.APP_CONFIG || {};
 
@@ -11,6 +13,83 @@ const getApiBase = () => {
 };
 
 const setupPage = () => {
+  const safeStorageGet = (key) => {
+    try {
+      return window.localStorage.getItem(key);
+    } catch (_error) {
+      return null;
+    }
+  };
+
+  const safeStorageSet = (key, value) => {
+    try {
+      window.localStorage.setItem(key, value);
+    } catch (_error) {
+      // Ignore storage errors.
+    }
+  };
+
+  const detectLocale = () => {
+    const languages = Array.isArray(navigator.languages) ? navigator.languages : [navigator.language || ''];
+    const normalized = languages
+      .map((entry) => String(entry || '').toLowerCase())
+      .filter(Boolean);
+
+    const hasEnglish = normalized.some((entry) => entry.startsWith('en'));
+    return hasEnglish ? 'en' : 'de';
+  };
+
+  const setLocalePreferenceFromPath = () => {
+    const path = String(window.location.pathname || '').toLowerCase();
+    if (path.includes('/en/')) {
+      safeStorageSet(LOCALE_STORAGE_KEY, 'en');
+      return;
+    }
+
+    if (document.body.classList.contains('home-page')) {
+      safeStorageSet(LOCALE_STORAGE_KEY, 'de');
+    }
+  };
+
+  const maybeRedirectLocale = () => {
+    if (!document.body.classList.contains('home-page')) return;
+
+    const currentPath = String(window.location.pathname || '');
+    const normalizedPath = currentPath.toLowerCase();
+    const isEnglishPath = normalizedPath.includes('/en/');
+    const isRootLike = normalizedPath.endsWith('/index.html') || normalizedPath.endsWith('/');
+
+    if (!isRootLike || isEnglishPath) return;
+
+    const storedLocale = safeStorageGet(LOCALE_STORAGE_KEY);
+    if (storedLocale === 'de') return;
+
+    if (storedLocale === 'en') {
+      const targetPath = normalizedPath.endsWith('/index.html')
+        ? currentPath.replace(/\/index\.html$/i, '/en/index.html')
+        : `${currentPath.replace(/\/$/, '')}/en/index.html`;
+
+      window.location.replace(`${window.location.origin}${targetPath}${window.location.search}${window.location.hash}`);
+      return;
+    }
+
+    if (safeStorageGet(LOCALE_AUTODETECT_KEY) === '1') return;
+
+    const preferredLocale = detectLocale();
+    safeStorageSet(LOCALE_AUTODETECT_KEY, '1');
+
+    if (preferredLocale !== 'en') return;
+
+    const targetPath = normalizedPath.endsWith('/index.html')
+      ? currentPath.replace(/\/index\.html$/i, '/en/index.html')
+      : `${currentPath.replace(/\/$/, '')}/en/index.html`;
+
+    window.location.replace(`${window.location.origin}${targetPath}${window.location.search}${window.location.hash}`);
+  };
+
+  maybeRedirectLocale();
+  setLocalePreferenceFromPath();
+
   const menu = document.querySelector('[data-nav-menu]');
   const openMenuBtn = document.querySelector('[data-open-menu]');
   const closeMenuBtn = document.querySelector('[data-close-menu]');
@@ -191,6 +270,17 @@ const setupPage = () => {
     navActions.appendChild(button);
   };
 
+  const setupLocaleSwitch = () => {
+    document.querySelectorAll('[data-locale-switch]').forEach((link) => {
+      link.addEventListener('click', () => {
+        const locale = String(link.getAttribute('data-locale-switch') || '').trim().toLowerCase();
+        if (locale === 'de' || locale === 'en') {
+          safeStorageSet(LOCALE_STORAGE_KEY, locale);
+        }
+      });
+    });
+  };
+
   const setContactStatus = (node, text, type = 'is-info') => {
     if (!node) return;
     node.textContent = text;
@@ -261,7 +351,7 @@ const setupPage = () => {
           });
         }
       } catch (_error) {
-        setContactStatus(statusNode, 'Sicherheitspruefung konnte nicht geladen werden.', 'is-error');
+        setContactStatus(statusNode, 'Sicherheitsprüfung konnte nicht geladen werden.', 'is-error');
       }
     }
 
@@ -282,17 +372,17 @@ const setupPage = () => {
 
       if (!name || !EMAIL_PATTERN.test(email) || message.length < 10) {
         contactForm.reportValidity();
-        setContactStatus(statusNode, 'Bitte alle Pflichtfelder korrekt ausfuellen.', 'is-error');
+        setContactStatus(statusNode, 'Bitte alle Pflichtfelder korrekt ausfüllen.', 'is-error');
         return;
       }
 
       if (!privacyConsent || !privacyConsent.checked) {
-        setContactStatus(statusNode, 'Bitte stimmen Sie der Datenschutzerklaerung zu.', 'is-error');
+        setContactStatus(statusNode, 'Bitte stimmen Sie der Datenschutzerklärung zu.', 'is-error');
         return;
       }
 
       if (turnstileSiteKey && !turnstileToken) {
-        setContactStatus(statusNode, 'Bitte bestaetigen Sie die Sicherheitspruefung.', 'is-error');
+        setContactStatus(statusNode, 'Bitte bestätigen Sie die Sicherheitsprüfung.', 'is-error');
         return;
       }
 
@@ -339,7 +429,7 @@ const setupPage = () => {
           window.turnstile.reset(turnstileWidgetId);
         }
       } catch (_error) {
-        setContactStatus(statusNode, 'Backend nicht erreichbar. Bitte spaeter erneut versuchen.', 'is-error');
+        setContactStatus(statusNode, 'Backend nicht erreichbar. Bitte später erneut versuchen.', 'is-error');
       } finally {
         if (submitButton instanceof HTMLButtonElement) submitButton.disabled = false;
       }
@@ -565,6 +655,7 @@ const setupPage = () => {
   });
 
   setupThemeToggle();
+  setupLocaleSwitch();
   setupContactForm();
   hydrateSiteConfig();
 

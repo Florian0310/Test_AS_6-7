@@ -1,0 +1,163 @@
+﻿<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content="Tool catalog connected to Payload CMS. Filter products and prepare rental requests." />
+    <meta name="robots" content="index, follow" />
+    <link rel="canonical" href="https://www.allessaniert.at/en/catalog/" />
+    <title>Catalog | Alles Saniert</title>
+    <link rel="icon" type="image/svg+xml" href="../../favicon.svg" />
+    <link rel="stylesheet" href="../../assets/vendor/icons.css" />
+    <link rel="stylesheet" href="../../styles.css" />
+  </head>
+  <body class="shop-page" data-shop-page>
+    <a class="skip-link" href="#main-content">Skip to content</a>
+    <header class="header">
+      <nav class="nav container">
+        <a class="brand-logo" href="../index.html" aria-label="Alles Saniert home">
+          <span class="brand-text">
+            <strong>ALLES SANIERT</strong>
+            <small>SCHRÖDER GESNBR</small>
+          </span>
+        </a>
+        <div class="nav-menu" data-nav-menu>
+          <ul class="nav-list">
+            <li><a class="nav-link active" href="index.html">Catalog</a></li>
+            <li><a class="nav-link" href="../../forestry-work/index.html">Forestry</a></li>
+            <li><a class="nav-link" href="../../about-us/index.html">About us</a></li>
+            <li><a class="nav-link" href="../contact/index.html">Contact</a></li>
+            <li><a class="nav-link" href="../../index.html" lang="de" data-locale-switch="de">DE</a></li>
+          </ul>
+          <button class="icon-btn nav-close" type="button" data-close-menu aria-label="Close menu">
+            <i class="ri-close-line"></i>
+          </button>
+        </div>
+        <div class="nav-actions">
+          <button class="icon-btn nav-search-toggle" type="button" data-open-search aria-label="Open search">
+            <i class="ri-search-line"></i>
+          </button>
+          <button class="icon-btn nav-menu-toggle" type="button" data-open-menu aria-label="Open menu">
+            <i class="ri-menu-line"></i>
+          </button>
+        </div>
+      </nav>
+    </header>
+
+    <div class="search" data-search>
+      <form class="search-form">
+        <i class="ri-search-line"></i>
+        <input class="search-input" type="search" placeholder="Search tools..." />
+      </form>
+      <button class="icon-btn search-close" type="button" data-close-search aria-label="Close search">
+        <i class="ri-close-line"></i>
+      </button>
+    </div>
+
+    <main id="main-content" class="shop-main">
+      <section class="container shop-head">
+        <nav class="shop-breadcrumb" aria-label="Breadcrumb">
+          <a href="../index.html">Home</a>
+          <i class="ri-arrow-right-s-line"></i>
+          <span>Catalog</span>
+        </nav>
+        <h1>Tools &amp; Machines</h1>
+        <p>All content is loaded from Payload CMS. You can filter by category and search terms directly.</p>
+        <form class="shop-search-form" data-tools-search-form>
+          <input type="search" placeholder="Search tools..." data-tools-search />
+          <button type="submit" class="btn-filter">Search</button>
+        </form>
+      </section>
+
+      <section class="container shop-layout">
+        <aside class="shop-categories">
+          <h2>Categories</h2>
+          <ul data-categories-list>
+            <li class="active"><button type="button" class="category-btn" data-category="">All products</button><i class="ri-arrow-right-s-line"></i></li>
+          </ul>
+        </aside>
+
+        <div class="shop-content">
+          <section class="shop-strip">
+            <div class="shop-strip-head">
+              <h2 data-shop-current-category>All categories</h2>
+              <button type="button" class="btn-filter" data-reset-filter>Reset filters</button>
+            </div>
+            <div class="shop-mini-grid" data-tools-mini>
+              <article>
+                <img src="../../assets/images/aboutUsTwo.jpg" alt="Tool placeholder" />
+                <span>Loading data...</span>
+              </article>
+            </div>
+          </section>
+
+          <section class="shop-products-wrap">
+            <div class="shop-strip-head">
+              <h2>Products</h2>
+            </div>
+            <p class="shop-feedback is-info" data-shop-feedback aria-live="polite"></p>
+            <div class="shop-products-grid" data-tools-grid></div>
+          </section>
+        </div>
+      </section>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <div class="footer-grid">
+          <div class="footer-col">
+            <h3 class="footer-brand-title" data-company-brand-name>Alles Saniert</h3>
+            <div class="footer-brand-sub">Schröder Gesnbr</div>
+            <p class="footer-brand-text">
+              Your trusted partner for professional tool rental in the Piesting valley. High-quality equipment and
+              fair pricing.
+            </p>
+          </div>
+          <div class="footer-col">
+            <h3>Service</h3>
+            <ul class="footer-list">
+              <li><a href="../index.html#rentInstructions">How renting works</a></li>
+              <li><a href="../cookie-settings/index.html">Cookie settings</a></li>
+              <li><a href="index.html">Catalog</a></li>
+              <li><a href="../contact/index.html">Contact form</a></li>
+            </ul>
+          </div>
+          <div class="footer-col">
+            <h3>Legal</h3>
+            <ul class="footer-list">
+              <li><a href="../imprint/index.html">Imprint</a></li>
+              <li><a href="../privacy-policy/index.html">Privacy policy</a></li>
+              <li><a href="../cookie-policy/index.html">Cookie policy</a></li>
+              <li><a href="../accessibility-statement/index.html">Accessibility</a></li>
+            </ul>
+          </div>
+          <div class="footer-col">
+            <h3>Contact</h3>
+            <ul class="footer-list">
+              <li class="footer-contact-item">
+                <i class="ri-map-pin-2-fill"></i>
+                <span data-company-address>Fotzebenweg 3<br />2763 Pernitz</span>
+              </li>
+              <li class="footer-contact-item">
+                <i class="ri-phone-fill"></i>
+                <a href="tel:+436503021328" data-company-phone>+43 650 3021328</a>
+              </li>
+              <li class="footer-contact-item">
+                <i class="ri-mail-fill"></i>
+                <a href="mailto:office@allessaniert.at" data-company-email>office@allessaniert.at</a>
+              </li>
+            </ul>
+          </div>
+        </div>
+        <div class="footer-bottom">
+          <p>&copy; 2026 Alles Saniert Schröder Gesnbr. All rights reserved.</p>
+        </div>
+      </div>
+    </footer>
+
+    <script src="../../app-config.js"></script>
+    <script src="../../consent.js"></script>
+    <script src="../../script.js"></script>
+    <script src="../../shop.js"></script>
+  </body>
+</html>

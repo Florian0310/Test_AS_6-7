@@ -86,21 +86,21 @@ export const Products: CollectionConfig = {
     },
     {
       name: 'availabilityStatus',
-      label: 'Verfuegbarkeitsstatus',
+      label: 'Verfügbarkeitsstatus',
       type: 'select',
       required: true,
       defaultValue: 'available',
       options: [
         {
-          label: 'Verfuegbar',
+          label: 'Verfügbar',
           value: 'available',
         },
         {
-          label: 'Begrenzt verfuegbar',
+          label: 'Begrenzt verfügbar',
           value: 'limited',
         },
         {
-          label: 'Aktuell nicht verfuegbar',
+          label: 'Aktuell nicht verfügbar',
           value: 'unavailable',
         },
       ],
@@ -149,19 +149,19 @@ export const Products: CollectionConfig = {
         },
         {
           name: 'cleaningFee',
-          label: 'Reinigungsgebuehr (EUR)',
+          label: 'Reinigungsgebühr (EUR)',
           type: 'number',
           min: 0,
         },
         {
           name: 'insuranceRequired',
-          label: 'Geraeteversicherung verpflichtend',
+          label: 'Geräteversicherung verpflichtend',
           type: 'checkbox',
           defaultValue: true,
         },
         {
           name: 'insuranceRateOverride',
-          label: 'Versicherungssatz Override (z. B. 0.10 fuer 10%)',
+          label: 'Versicherungssatz Override (z. B. 0.10 für 10%)',
           type: 'number',
           min: 0,
           max: 1,
@@ -176,9 +176,9 @@ export const Products: CollectionConfig = {
         },
         {
           name: 'consumableCostNote',
-          label: 'Hinweis zu Treibstoff / Verschleiss',
+          label: 'Hinweis zu Treibstoff / Verschleiß',
           type: 'textarea',
-          defaultValue: 'Preise exklusive Treibstoff und Verschleisskosten.',
+          defaultValue: 'Preise exklusive Treibstoff und Verschleißkosten.',
         },
       ],
     },

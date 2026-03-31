@@ -26,7 +26,7 @@ export const RentalSettings: GlobalConfig = {
     },
     {
       name: 'defaultInsuranceRate',
-      label: 'Standard-Versicherungssatz (z. B. 0.10 fuer 10%)',
+      label: 'Standard-Versicherungssatz (z. B. 0.10 für 10%)',
       type: 'number',
       required: true,
       defaultValue: 0.1,
@@ -35,13 +35,13 @@ export const RentalSettings: GlobalConfig = {
     },
     {
       name: 'insuranceMandatory',
-      label: 'Geraeteversicherung standardmaessig verpflichtend',
+      label: 'Geräteversicherung standardmäßig verpflichtend',
       type: 'checkbox',
       defaultValue: true,
     },
     {
       name: 'requestNotificationEmail',
-      label: 'Empfaenger fuer Anfragen',
+      label: 'Empfänger für Anfragen',
       type: 'email',
       required: true,
       defaultValue: 'office@allessaniert.at',
@@ -51,7 +51,7 @@ export const RentalSettings: GlobalConfig = {
       label: 'Preis-Hinweis',
       type: 'textarea',
       defaultValue:
-        'Geraeteversicherung ist verpflichtend (10% der Miete). Preise exklusive Treibstoff und Verschleisskosten.',
+        'Geräteversicherung ist verpflichtend (10% der Miete). Preise exklusive Treibstoff und Verschleißkosten.',
     },
   ],
 }

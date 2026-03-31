@@ -27,7 +27,7 @@
             <li><a class="nav-link" href="../forestry-work/index.html">Forstarbeiten</a></li>
             <li><a class="nav-link" href="../about-us/index.html">&Uuml;ber uns</a></li>
             <li><a class="nav-link" href="../contact/index.html">Kontakt</a></li>
-            <li><a class="nav-link" href="../en/index.html" lang="en">EN</a></li>
+            <li><a class="nav-link" href="../en/index.html" lang="en" data-locale-switch="en">EN</a></li>
           </ul>
           <button class="icon-btn nav-close" type="button" data-close-menu aria-label="Men&uuml; schlie&szlig;en">
             <i class="ri-close-line"></i>
@@ -62,7 +62,7 @@
           <span>Sortiment</span>
         </nav>
         <h1>Werkzeuge &amp; Maschinen</h1>
-        <p>Alle Inhalte werden aus Payload CMS geladen. Sie koennen direkt nach Kategorien und Begriffen filtern.</p>
+        <p>Alle Inhalte werden aus Payload CMS geladen. Sie können direkt nach Kategorien und Begriffen filtern.</p>
         <form class="shop-search-form" data-tools-search-form>
           <input type="search" placeholder="Werkzeug suchen..." data-tools-search />
           <button type="submit" class="btn-filter">Suchen</button>
@@ -81,7 +81,7 @@
           <section class="shop-strip">
             <div class="shop-strip-head">
               <h2 data-shop-current-category>Alle Kategorien</h2>
-              <button type="button" class="btn-filter" data-reset-filter>Filter reset</button>
+              <button type="button" class="btn-filter" data-reset-filter>Filter zurücksetzen</button>
             </div>
             <div class="shop-mini-grid" data-tools-mini>
               <article>
@@ -93,62 +93,10 @@
 
           <section class="shop-products-wrap">
             <div class="shop-strip-head">
-              <h2>Beliebt</h2>
+              <h2>Produkte</h2>
             </div>
-            <p class="shop-feedback is-info" data-shop-feedback>Lade Daten...</p>
-            <div class="shop-products-grid" data-tools-grid>
-              <article class="shop-product-card">
-                <a class="shop-product-image" href="produkt-hilti-sf-6-a22.html">
-                  <img src="../assets/images/aboutUsTwo.jpg" alt="HILTI SF 6-A22" />
-                </a>
-                <h3><a href="produkt-hilti-sf-6-a22.html">HILTI SF 6-A22</a></h3>
-                <p>Akku-Bohrschrauber</p>
-                <dl>
-                  <div><dt>Drehmoment</dt><dd>84/100/150 Nm</dd></div>
-                  <div><dt>Schrauben-Durchmesser</dt><dd>13 mm</dd></div>
-                </dl>
-                <a class="btn-price" href="produkt-hilti-sf-6-a22.html">Ab 49,90&euro;</a>
-              </article>
-
-              <article class="shop-product-card">
-                <a class="shop-product-image" href="produkt-hilti-sf-6-a22.html">
-                  <img src="../assets/images/aboutUsOne.jpg" alt="HILTI TE 6-A22" />
-                </a>
-                <h3><a href="produkt-hilti-sf-6-a22.html">HILTI TE 6-A22</a></h3>
-                <p>Akku-Bohrhammer</p>
-                <dl>
-                  <div><dt>Drehmoment</dt><dd>84/100/150 Nm</dd></div>
-                  <div><dt>Schrauben-Durchmesser</dt><dd>13 mm</dd></div>
-                </dl>
-                <a class="btn-price" href="produkt-hilti-sf-6-a22.html">Ab 39,90&euro;</a>
-              </article>
-
-              <article class="shop-product-card">
-                <a class="shop-product-image" href="produkt-hilti-sf-6-a22.html">
-                  <img src="../assets/images/aboutUsTwo.jpg" alt="HILTI SF 6-A22" />
-                </a>
-                <h3><a href="produkt-hilti-sf-6-a22.html">HILTI SF 6-A22</a></h3>
-                <p>Akku-Bohrschrauber</p>
-                <dl>
-                  <div><dt>Drehmoment</dt><dd>84/100/150 Nm</dd></div>
-                  <div><dt>Schrauben-Durchmesser</dt><dd>13 mm</dd></div>
-                </dl>
-                <a class="btn-price" href="produkt-hilti-sf-6-a22.html">Ab 49,90&euro;</a>
-              </article>
-
-              <article class="shop-product-card">
-                <a class="shop-product-image" href="produkt-hilti-sf-6-a22.html">
-                  <img src="../assets/images/aboutUsOne.jpg" alt="HILTI TE 6-A22" />
-                </a>
-                <h3><a href="produkt-hilti-sf-6-a22.html">HILTI TE 6-A22</a></h3>
-                <p>Akku-Bohrhammer</p>
-                <dl>
-                  <div><dt>Drehmoment</dt><dd>84/100/150 Nm</dd></div>
-                  <div><dt>Schrauben-Durchmesser</dt><dd>13 mm</dd></div>
-                </dl>
-                <a class="btn-price" href="produkt-hilti-sf-6-a22.html">Ab 39,90&euro;</a>
-              </article>
-            </div>
+            <p class="shop-feedback is-info" data-shop-feedback aria-live="polite"></p>
+            <div class="shop-products-grid" data-tools-grid></div>
           </section>
         </div>
       </section>

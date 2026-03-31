@@ -4,11 +4,11 @@ Dieses Projekt kombiniert ein bestehendes statisches Frontend mit einem Payload-
 
 Wichtig:
 - Strapi wurde entfernt.
-- Payload CMS ist die einzige aktive Backend-/CMS-Loesung.
+- Payload CMS ist die einzige aktive Backend-/CMS-Lösung.
 
 ## Projektziel
 
-Die Plattform bildet einen Anfrage-Checkout fuer Werkzeugverleih ab:
+Die Plattform bildet einen Anfrage-Checkout für Werkzeugverleih ab:
 - Produkte und Kategorien anzeigen
 - Mietdauer/Zeitraum erfassen
 - Preis serverseitig berechnen
@@ -22,6 +22,9 @@ Kein Zahlungs-Checkout und kein Warenkorb mit Payment.
 
 ### Frontend
 - Statisches HTML/CSS/JS im Repo-Root
+- DE/EN-Frontend mit Sprach-Autodetect auf der Startseite:
+  - Standard: Deutsch
+  - Bei englischer Browser-Sprache automatische EN-Startseite
 - Consent-Banner mit Opt-in (notwendig + analytics)
 - Google Tag Manager / GA4 nur nach Consent
 - Cookie-Einstellungen Seiten:
@@ -32,10 +35,12 @@ Kein Zahlungs-Checkout und kein Warenkorb mit Payment.
   - `/en/imprint/`, `/en/privacy-policy/`, `/en/cookie-policy/`, `/en/accessibility-statement/`
 - Keine externen Google-Font Requests
 - Kein externes Icon-CDN (lokale Icon-Styles)
+- Startseite: „Beliebte Produkte“ wird aus Payload-Global gepflegt
+- Sortiment: aufgeräumte Filter-UI, konsistente Kartenhöhen, bereinigte Debug-Ausgaben
 
 ### Backend
 - Payload CMS + Next.js App Router in `backend/`
-- SQLite fuer lokale Entwicklung
+- SQLite für lokale Entwicklung
 - Collections:
   - `users`, `media`, `categories`, `products`, `requests`
 - Globals:
@@ -43,6 +48,10 @@ Kein Zahlungs-Checkout und kein Warenkorb mit Payment.
   - `site-settings`
   - `contact-settings`
   - `legal-settings`
+- Admin-Verbesserungen:
+  - Branding (Logo/Icon)
+  - Dashboard-Intro
+  - Dashboard-Schnellstatistik (aktive Produkte/Kategorien, offene Anfragen, 7-Tage-Anfragen)
 - Public Endpoints:
   - `GET /api/catalog/products`
   - `GET /api/catalog/products/slug/:slug`
@@ -51,6 +60,7 @@ Kein Zahlungs-Checkout und kein Warenkorb mit Payment.
   - `POST /api/catalog/requests`
   - `GET /api/public/site-config`
   - `POST /api/public/contact`
+  - `GET /api/admin/statistics` (nur authentifiziert)
 
 ## Setup
 
@@ -147,7 +157,7 @@ Berechnung:
 - zuerst 7-Tage-Bloecke
 - dann 3-Tage-Bloecke
 - dann Resttage
-- Versicherung standardmaessig 10%
+- Versicherung standardmäßig 10%
 - Kaution/Reinigungsgebuehr separat
 
 ## Tests
@@ -173,7 +183,8 @@ npm run start
 ## Frontend-Anbindung an Payload (statt Strapi)
 
 - `shop.js` nutzt Payload-Endpoints unter `/api/catalog/*`
-- Site-/Kontaktdaten koennen ueber `/api/public/site-config` geladen werden
+- Site-/Kontaktdaten können über `/api/public/site-config` geladen werden
+- „Beliebte Produkte“ werden im Payload-Global `site-settings > Startseite > Beliebte Produkte` gewählt
 - Kontaktformular nutzt `/api/public/contact`
 
 ## Wichtiger Hinweis zu GitHub Push

@@ -1,12 +1,26 @@
-<!doctype html>
+﻿<!doctype html>
 <html lang="en">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Everything Renovated | Tool Rental</title>
-    <meta name="description" content="Tool rental and service work by Schroeder - Alles Saniert in Pernitz, Austria." />
+    <title>Alles Saniert | Tool Rental & Forestry Services</title>
+    <meta
+      name="description"
+      content="Tool rental and services by Schröder - Alles Saniert in Pernitz, Austria. Transparent rates and request-based checkout."
+    />
+    <meta name="robots" content="index, follow" />
     <link rel="canonical" href="https://www.allessaniert.at/en/index.html" />
     <link rel="alternate" hreflang="de-AT" href="https://www.allessaniert.at/" />
+    <link rel="alternate" hreflang="en" href="https://www.allessaniert.at/en/index.html" />
+    <link rel="alternate" hreflang="x-default" href="https://www.allessaniert.at/" />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="Alles Saniert | Tool Rental & Forestry Services" />
+    <meta
+      property="og:description"
+      content="Professional tool rental with request checkout. Discover products and send a non-binding request."
+    />
+    <meta property="og:url" content="https://www.allessaniert.at/en/index.html" />
+    <meta property="og:image" content="https://www.allessaniert.at/assets/images/bannerBackground.jpg" />
     <link rel="icon" type="image/svg+xml" href="../favicon.svg" />
     <link rel="stylesheet" href="../assets/vendor/icons.css" />
     <link rel="stylesheet" href="../styles.css" />
@@ -15,51 +29,203 @@
     <a class="skip-link" href="#main-content">Skip to content</a>
     <header class="header">
       <nav class="nav container">
-        <a class="brand-logo" href="index.html" aria-label="Everything Renovated home">
-          <span class="brand-text"><strong>ALLES SANIERT</strong><small>SCHROEDER GESNBR</small></span>
+        <a class="brand-logo" href="index.html" aria-label="Alles Saniert home">
+          <span class="brand-text">
+            <strong>ALLES SANIERT</strong>
+            <small>SCHRÖDER GESNBR</small>
+          </span>
         </a>
         <div class="nav-menu" data-nav-menu>
           <ul class="nav-list">
-            <li><a class="nav-link" href="../sortiment/index.html">Catalog</a></li>
+            <li><a class="nav-link" href="catalog/index.html">Catalog</a></li>
             <li><a class="nav-link" href="../forestry-work/index.html">Forestry</a></li>
+            <li><a class="nav-link" href="../about-us/index.html">About us</a></li>
             <li><a class="nav-link" href="contact/index.html">Contact</a></li>
-            <li><a class="nav-link" href="../index.html" lang="de">DE</a></li>
+            <li><a class="nav-link" href="../index.html" lang="de" data-locale-switch="de">DE</a></li>
           </ul>
-          <button class="icon-btn nav-close" type="button" data-close-menu aria-label="Close menu"><i class="ri-close-line"></i></button>
+          <button class="icon-btn nav-close" type="button" data-close-menu aria-label="Close menu">
+            <i class="ri-close-line"></i>
+          </button>
         </div>
         <div class="nav-actions">
-          <button class="icon-btn nav-menu-toggle" type="button" data-open-menu aria-label="Open menu"><i class="ri-menu-line"></i></button>
+          <button class="icon-btn nav-search-toggle" type="button" data-open-search aria-label="Open search">
+            <i class="ri-search-line"></i>
+          </button>
+          <button class="icon-btn nav-menu-toggle" type="button" data-open-menu aria-label="Open menu">
+            <i class="ri-menu-line"></i>
+          </button>
         </div>
       </nav>
     </header>
 
-    <main id="main-content" class="legal-main">
-      <article class="legal-card">
-        <h1>Tool Rental and Services in Pernitz</h1>
-        <p>
-          Welcome to Schroeder - Alles Saniert. We provide professional tools for rent and service work, including
-          forestry support.
-        </p>
-        <ul>
-          <li>No payment checkout - request based flow</li>
-          <li>Transparent daily, 3-day and weekly rates</li>
-          <li>Manual confirmation by the operator</li>
-        </ul>
-        <p>
-          For legal and privacy information please use the links below.
-        </p>
-        <ul>
-          <li><a href="imprint/index.html">Imprint</a></li>
-          <li><a href="privacy-policy/index.html">Privacy Policy</a></li>
-          <li><a href="cookie-policy/index.html">Cookie Policy</a></li>
-          <li><a href="cookie-settings/index.html">Cookie Settings</a></li>
-          <li><a href="accessibility-statement/index.html">Accessibility Statement</a></li>
-        </ul>
-      </article>
+    <div class="search" data-search>
+      <form class="search-form">
+        <i class="ri-search-line"></i>
+        <input class="search-input" type="search" placeholder="What are you looking for?" />
+      </form>
+      <button class="icon-btn search-close" type="button" data-close-search aria-label="Close search">
+        <i class="ri-close-line"></i>
+      </button>
+    </div>
+
+    <main id="main-content">
+      <section class="hero">
+        <div class="hero-content container">
+          <span class="hero-badge" data-site-hero-badge>In the Piesting valley</span>
+          <h1>Your tool rental partner <strong data-site-hero-headline>professional and simple.</strong></h1>
+          <p data-site-hero-text>
+            Find the right equipment for your project. Well maintained, high quality and ready to rent.
+          </p>
+          <div class="hero-actions">
+            <a class="btn-primary btn-hero" href="catalog/index.html">
+              Explore catalog
+              <i class="ri-arrow-right-line"></i>
+            </a>
+            <a class="btn-ghost" href="#rentInstructions">
+              <i class="ri-play-circle-line"></i>
+              How it works
+            </a>
+          </div>
+        </div>
+        <div class="hero-scroll-hint"><i class="ri-arrow-down-s-line"></i></div>
+      </section>
+
+      <section id="popularTools" class="section section-soft">
+        <div class="container">
+          <div class="section-head">
+            <div>
+              <h2 class="section-title text-left" data-popular-title>Popular Products</h2>
+              <p class="section-subtitle" data-popular-subtitle>Top picks from our customers this week.</p>
+            </div>
+          </div>
+          <div class="product-row" data-popular-grid>
+            <article class="product-card">
+              <div class="product-image-wrap">
+                <img src="../assets/images/aboutUsTwo.jpg" alt="Tool" />
+              </div>
+              <div class="product-content">
+                <span class="product-category">Loading</span>
+                <h3><a href="catalog/index.html">Popular item</a></h3>
+                <p>Product data is loaded from Payload CMS.</p>
+                <div class="product-footer">
+                  <div><small>Daily rent from</small><strong>--</strong></div>
+                  <button class="product-cart" type="button" aria-label="Open product">
+                    <i class="ri-arrow-right-line"></i>
+                  </button>
+                </div>
+              </div>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section id="rentInstructions" class="section container">
+        <h2 class="section-title">How renting works</h2>
+        <p class="section-subtitle center">Rent professional tools in just a few steps.</p>
+        <div class="steps cards">
+          <article class="step-card">
+            <span class="step-number">1</span>
+            <h3 class="step-label">Choose</h3>
+            <p>Select suitable equipment and check availability.</p>
+          </article>
+          <article class="step-card">
+            <span class="step-number">2</span>
+            <h3 class="step-label">Request</h3>
+            <p>Send your request online and get a quick response.</p>
+          </article>
+          <article class="step-card">
+            <span class="step-number">3</span>
+            <h3 class="step-label">Use</h3>
+            <p>Complete your project with professional tools.</p>
+          </article>
+          <article class="step-card">
+            <span class="step-number">4</span>
+            <h3 class="step-label">Return</h3>
+            <p>Bring equipment back easily. We handle service and maintenance.</p>
+          </article>
+        </div>
+      </section>
+
+      <section id="whyRentFromUs" class="section container">
+        <h2 class="section-title">Why rent from us?</h2>
+        <div class="benefits modern">
+          <article class="benefit">
+            <img src="../assets/images/awardIcon.png" alt="Award" />
+            <span>Tools from top brands</span>
+          </article>
+          <article class="benefit">
+            <img src="../assets/images/ecoFriendlyIcon.png" alt="Eco-friendly" />
+            <span>Regional &amp; sustainable</span>
+          </article>
+          <article class="benefit">
+            <img src="../assets/images/handshakeIcon.png" alt="Advice" />
+            <span>Expert consultation</span>
+          </article>
+          <article class="benefit">
+            <img src="../assets/images/currencyIcon.png" alt="Prices" />
+            <span>Fair pricing</span>
+          </article>
+        </div>
+      </section>
     </main>
+
+    <footer class="footer">
+      <div class="container">
+        <div class="footer-grid">
+          <div class="footer-col">
+            <h3 class="footer-brand-title" data-company-brand-name>Alles Saniert</h3>
+            <div class="footer-brand-sub">Schröder Gesnbr</div>
+            <p class="footer-brand-text">
+              Your trusted partner for professional tool rental in the Piesting valley. High-quality equipment and
+              fair pricing.
+            </p>
+          </div>
+          <div class="footer-col">
+            <h3>Service</h3>
+            <ul class="footer-list">
+              <li><a href="#rentInstructions">How renting works</a></li>
+              <li><a href="catalog/index.html">Catalog</a></li>
+              <li><a href="contact/index.html">Contact form</a></li>
+              <li><a href="cookie-settings/index.html">Cookie settings</a></li>
+            </ul>
+          </div>
+          <div class="footer-col">
+            <h3>Legal</h3>
+            <ul class="footer-list">
+              <li><a href="imprint/index.html">Imprint</a></li>
+              <li><a href="privacy-policy/index.html">Privacy policy</a></li>
+              <li><a href="cookie-policy/index.html">Cookie policy</a></li>
+              <li><a href="accessibility-statement/index.html">Accessibility</a></li>
+              <li><a href="../index.html" lang="de" data-locale-switch="de">Deutsch</a></li>
+            </ul>
+          </div>
+          <div class="footer-col">
+            <h3>Contact</h3>
+            <ul class="footer-list">
+              <li class="footer-contact-item">
+                <i class="ri-map-pin-2-fill"></i>
+                <span data-company-address>Fotzebenweg 3<br />2763 Pernitz</span>
+              </li>
+              <li class="footer-contact-item">
+                <i class="ri-phone-fill"></i>
+                <a href="tel:+436503021328" data-company-phone>+43 650 3021328</a>
+              </li>
+              <li class="footer-contact-item">
+                <i class="ri-mail-fill"></i>
+                <a href="mailto:office@allessaniert.at" data-company-email>office@allessaniert.at</a>
+              </li>
+            </ul>
+          </div>
+        </div>
+        <div class="footer-bottom">
+          <p>&copy; 2026 Alles Saniert Schröder Gesnbr. All rights reserved.</p>
+        </div>
+      </div>
+    </footer>
 
     <script src="../app-config.js"></script>
     <script src="../consent.js"></script>
     <script src="../script.js"></script>
+    <script src="../shop.js"></script>
   </body>
 </html>

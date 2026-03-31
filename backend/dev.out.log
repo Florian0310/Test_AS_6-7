@@ -32,3 +32,4 @@ Creating turbopack project {
  GET /api/users/me 200 in 2.3s (next.js: 2.3s, application-code: 36ms)
  GET /api/payload-preferences/nav 200 in 15ms (next.js: 9ms, application-code: 7ms)
  GET /api/payload-preferences/nav 200 in 8ms (next.js: 3ms, application-code: 5ms)
+[?25h

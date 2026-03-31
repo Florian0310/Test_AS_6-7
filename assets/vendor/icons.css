@@ -1,4 +1,4 @@
-i[class^='ri-'],
+ï»¿i[class^='ri-'],
 i[class*=' ri-'] {
   display: inline-flex;
   align-items: center;
@@ -11,28 +11,28 @@ i[class*=' ri-'] {
   line-height: 1;
 }
 
-.ri-search-line::before { content: '?'; }
-.ri-menu-line::before { content: '?'; }
-.ri-close-line::before { content: '?'; }
-.ri-arrow-right-line::before { content: '?'; }
-.ri-arrow-left-line::before { content: '?'; }
-.ri-arrow-right-s-line::before { content: '›'; }
-.ri-arrow-down-s-line::before { content: '?'; }
-.ri-play-circle-line::before { content: '?'; }
-.ri-shopping-cart-2-line::before { content: '??'; }
-.ri-map-pin-2-fill::before { content: '?'; }
-.ri-phone-fill::before { content: '?'; }
-.ri-mail-fill::before { content: '?'; }
-.ri-scissors-cut-line::before { content: '?'; }
-.ri-plant-line::before { content: '?'; }
-.ri-shield-check-line::before { content: '??'; }
-.ri-leaf-line::before { content: '??'; }
-.ri-hammer-line::before { content: '??'; }
-.ri-star-fill::before { content: '?'; }
-.ri-star-half-fill::before { content: '?'; }
-.ri-checkbox-circle-fill::before { content: '?'; }
-.ri-check-line::before { content: '?'; }
-.ri-mail-send-line::before { content: '?'; }
-.ri-360-view::before { content: '?'; }
-.ri-store-2-line::before { content: '??'; }
-.ri-truck-line::before { content: '??'; }
+.ri-search-line::before { content: '\01F50D'; }
+.ri-menu-line::before { content: '\2630'; }
+.ri-close-line::before { content: '\2715'; }
+.ri-arrow-right-line::before { content: '\2192'; }
+.ri-arrow-left-line::before { content: '\2190'; }
+.ri-arrow-right-s-line::before { content: '\203A'; }
+.ri-arrow-down-s-line::before { content: '\2304'; }
+.ri-play-circle-line::before { content: '\25B6'; }
+.ri-shopping-cart-2-line::before { content: '\01F6D2'; }
+.ri-map-pin-2-fill::before { content: '\01F4CD'; }
+.ri-phone-fill::before { content: '\260E'; }
+.ri-mail-fill::before { content: '\2709'; }
+.ri-scissors-cut-line::before { content: '\2702'; }
+.ri-plant-line::before { content: '\01F331'; }
+.ri-shield-check-line::before { content: '\2713'; }
+.ri-leaf-line::before { content: '\01F33F'; }
+.ri-hammer-line::before { content: '\01F528'; }
+.ri-star-fill::before { content: '\2605'; }
+.ri-star-half-fill::before { content: '\272E'; }
+.ri-checkbox-circle-fill::before { content: '\2714'; }
+.ri-check-line::before { content: '\2713'; }
+.ri-mail-send-line::before { content: '\01F4E8'; }
+.ri-360-view::before { content: '\27F3'; }
+.ri-store-2-line::before { content: '\01F3EA'; }
+.ri-truck-line::before { content: '\01F69A'; }
