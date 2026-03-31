@@ -44,7 +44,7 @@ export const RentalSettings: GlobalConfig = {
       label: 'Empfaenger fuer Anfragen',
       type: 'email',
       required: true,
-      defaultValue: 'anfragen@allessaniert.at',
+      defaultValue: 'office@allessaniert.at',
     },
     {
       name: 'priceDisclaimer',

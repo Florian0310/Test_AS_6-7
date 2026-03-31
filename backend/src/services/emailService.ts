@@ -53,7 +53,7 @@ export const buildRequestMail = (args: {
   const text = lines.join('\n')
 
   return {
-    to: process.env.REQUEST_NOTIFICATION_EMAIL || 'anfragen@allessaniert.at',
+    to: process.env.REQUEST_NOTIFICATION_EMAIL || 'office@allessaniert.at',
     subject,
     text,
   }

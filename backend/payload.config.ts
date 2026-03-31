@@ -14,6 +14,9 @@ import { Categories } from './src/collections/Categories'
 import { Products } from './src/collections/Products'
 import { Requests } from './src/collections/Requests'
 import { RentalSettings } from './src/globals/RentalSettings'
+import { SiteSettings } from './src/globals/SiteSettings'
+import { ContactSettings } from './src/globals/ContactSettings'
+import { LegalSettings } from './src/globals/LegalSettings'
 import { publicEndpoints } from './src/endpoints/publicEndpoints'
 
 const filename = fileURLToPath(import.meta.url)
@@ -57,7 +60,7 @@ export default buildConfig({
     },
   }),
   collections: [Users, Media, Categories, Products, Requests],
-  globals: [RentalSettings],
+  globals: [RentalSettings, SiteSettings, ContactSettings, LegalSettings],
   endpoints: publicEndpoints,
   routes: {
     api: '/api',
@@ -107,7 +110,16 @@ export default buildConfig({
       overrideAccess: true,
       data: {
         requestNotificationEmail:
-          process.env.REQUEST_NOTIFICATION_EMAIL || 'anfragen@allessaniert.at',
+          process.env.REQUEST_NOTIFICATION_EMAIL || 'office@allessaniert.at',
+      },
+    })
+
+    await payload.updateGlobal({
+      slug: 'contact-settings',
+      overrideAccess: true,
+      data: {
+        inquiryRecipientEmail:
+          process.env.REQUEST_NOTIFICATION_EMAIL || 'office@allessaniert.at',
       },
     })
   },

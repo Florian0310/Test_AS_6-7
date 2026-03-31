@@ -95,9 +95,15 @@ export interface Config {
   fallbackLocale: null;
   globals: {
     'rental-settings': RentalSetting;
+    'site-settings': SiteSetting;
+    'contact-settings': ContactSetting;
+    'legal-settings': LegalSetting;
   };
   globalsSelect: {
     'rental-settings': RentalSettingsSelect<false> | RentalSettingsSelect<true>;
+    'site-settings': SiteSettingsSelect<false> | SiteSettingsSelect<true>;
+    'contact-settings': ContactSettingsSelect<false> | ContactSettingsSelect<true>;
+    'legal-settings': LegalSettingsSelect<false> | LegalSettingsSelect<true>;
   };
   locale: null;
   widgets: {
@@ -159,7 +165,7 @@ export interface User {
  */
 export interface Media {
   id: number;
-  alt: string;
+  alt?: string | null;
   caption?: string | null;
   updatedAt: string;
   createdAt: string;
@@ -611,6 +617,66 @@ export interface RentalSetting {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "site-settings".
+ */
+export interface SiteSetting {
+  id: number;
+  siteName: string;
+  websiteUrl: string;
+  defaultLocale: 'de' | 'en';
+  seo?: {
+    metaTitleDe?: string | null;
+    metaDescriptionDe?: string | null;
+    metaTitleEn?: string | null;
+    metaDescriptionEn?: string | null;
+    robotsPolicy?: ('index_follow' | 'noindex_nofollow') | null;
+  };
+  tracking?: {
+    gtmId?: string | null;
+    ga4MeasurementId?: string | null;
+  };
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "contact-settings".
+ */
+export interface ContactSetting {
+  id: number;
+  legalCompanyName: string;
+  brandName: string;
+  street: string;
+  postalCode: string;
+  city: string;
+  country: string;
+  phone: string;
+  email: string;
+  inquiryRecipientEmail: string;
+  serviceDescriptionDe?: string | null;
+  serviceDescriptionEn?: string | null;
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "legal-settings".
+ */
+export interface LegalSetting {
+  id: number;
+  impressumDe: string;
+  impressumEn: string;
+  privacyDe: string;
+  privacyEn: string;
+  cookiePolicyDe: string;
+  cookiePolicyEn: string;
+  accessibilityDe: string;
+  accessibilityEn: string;
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "rental-settings_select".
  */
 export interface RentalSettingsSelect<T extends boolean = true> {
@@ -621,6 +687,70 @@ export interface RentalSettingsSelect<T extends boolean = true> {
   insuranceMandatory?: T;
   requestNotificationEmail?: T;
   priceDisclaimer?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "site-settings_select".
+ */
+export interface SiteSettingsSelect<T extends boolean = true> {
+  siteName?: T;
+  websiteUrl?: T;
+  defaultLocale?: T;
+  seo?:
+    | T
+    | {
+        metaTitleDe?: T;
+        metaDescriptionDe?: T;
+        metaTitleEn?: T;
+        metaDescriptionEn?: T;
+        robotsPolicy?: T;
+      };
+  tracking?:
+    | T
+    | {
+        gtmId?: T;
+        ga4MeasurementId?: T;
+      };
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "contact-settings_select".
+ */
+export interface ContactSettingsSelect<T extends boolean = true> {
+  legalCompanyName?: T;
+  brandName?: T;
+  street?: T;
+  postalCode?: T;
+  city?: T;
+  country?: T;
+  phone?: T;
+  email?: T;
+  inquiryRecipientEmail?: T;
+  serviceDescriptionDe?: T;
+  serviceDescriptionEn?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "legal-settings_select".
+ */
+export interface LegalSettingsSelect<T extends boolean = true> {
+  impressumDe?: T;
+  impressumEn?: T;
+  privacyDe?: T;
+  privacyEn?: T;
+  cookiePolicyDe?: T;
+  cookiePolicyEn?: T;
+  accessibilityDe?: T;
+  accessibilityEn?: T;
   updatedAt?: T;
   createdAt?: T;
   globalType?: T;

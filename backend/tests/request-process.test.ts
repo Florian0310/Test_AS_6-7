@@ -50,7 +50,7 @@ describe('Anfrageprozess', () => {
     const emailMock = vi.fn(async () => ({
       mode: 'prepared' as const,
       preview: {
-        to: 'anfragen@allessaniert.at',
+        to: 'office@allessaniert.at',
         subject: 'Test',
         text: 'Test',
       },

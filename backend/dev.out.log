@@ -4,9 +4,19 @@
 
 ▲ Next.js 16.2.1 (Turbopack)
 - Local:         http://localhost:3001
-- Network:       http://172.27.18.185:3001
+- Network:       http://172.26.76.127:3001
 - Environments: .env
-✓ Ready in 317ms
+✓ Ready in 548ms
+Creating turbopack project {
+  dir: 'C:\\Users\\User\\Documents\\GitHub\\Test_AS_6-7\\backend',
+  testMode: true
+}
+
+▲ Next.js 16.2.1 (Turbopack)
+- Local:         http://localhost:3001
+- Network:       http://172.26.76.127:3001
+- Environments: .env
+✓ Ready in 562ms
 Creating turbopack project {
   dir: 'C:\\Users\\User\\Documents\\GitHub\\Test_AS_6-7\\backend',
   testMode: true
@@ -14,13 +24,11 @@ Creating turbopack project {
 
 [⣷] Pulling schema from database...
 [2K[1G[✓] Pulling schema from database...
-[11:53:45] [33mWARN[39m: [36mNo email adapter provided. Email will be written to console. More info at https://payloadcms.com/docs/email/overview.[39m
- GET / 404 in 3.4s (next.js: 1134ms, application-code: 2.3s)
- GET /api/payload-preferences/nav 200 in 1961ms (next.js: 1941ms, application-code: 20ms)
- GET /api/users/me 200 in 2.1s (next.js: 2.0s, application-code: 22ms)
- GET /admin/globals/rental-settings 200 in 2.2s (next.js: 1870ms, application-code: 300ms)
- GET /api/users/me 200 in 14ms (next.js: 7ms, application-code: 7ms)
- GET /api/payload-preferences/nav 200 in 7ms (next.js: 1536µs, application-code: 6ms)
- GET /admin/login 200 in 88ms (next.js: 6ms, application-code: 82ms)
- GET /api/catalog/products 200 in 34ms (next.js: 6ms, application-code: 28ms)
- GET /api/catalog/products 200 in 15ms (next.js: 6ms, application-code: 8ms)
+[09:12:56] [33mWARN[39m: [36mNo email adapter provided. Email will be written to console. More info at https://payloadcms.com/docs/email/overview.[39m
+ GET / 404 in 3.2s (next.js: 389ms, application-code: 2.9s)
+ GET / 404 in 540ms (next.js: 32ms, application-code: 508ms)
+ GET /admin/logout-inactivity 200 in 3.2s (next.js: 2.4s, application-code: 819ms)
+ GET / 404 in 574ms (next.js: 55ms, application-code: 519ms)
+ GET /api/users/me 200 in 2.3s (next.js: 2.3s, application-code: 36ms)
+ GET /api/payload-preferences/nav 200 in 15ms (next.js: 9ms, application-code: 7ms)
+ GET /api/payload-preferences/nav 200 in 8ms (next.js: 3ms, application-code: 5ms)

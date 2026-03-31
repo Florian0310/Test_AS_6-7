@@ -3,18 +3,16 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content="Unternehmensgeschichte und Leistungen von Alles Saniert in Pernitz." />
+    <meta name="robots" content="index, follow" />
+    <link rel="canonical" href="https://www.allessaniert.at/about-us/" />
     <title>&Uuml;ber uns | Alles Saniert</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
-      rel="stylesheet"
-    />
     <link rel="icon" type="image/svg+xml" href="../favicon.svg" />
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/remixicon/3.5.0/remixicon.css" />
+    <link rel="stylesheet" href="../assets/vendor/icons.css" />
     <link rel="stylesheet" href="../styles.css" />
   </head>
   <body>
+    <a class="skip-link" href="#main-content">Zum Inhalt springen</a>
     <header class="header">
       <nav class="nav container">
         <a class="brand-logo" href="../index.html" aria-label="Alles Saniert Startseite">
@@ -29,6 +27,7 @@
             <li><a class="nav-link" href="../forestry-work/index.html">Forstarbeiten</a></li>
             <li><a class="nav-link active" href="index.html">&Uuml;ber uns</a></li>
             <li><a class="nav-link" href="../contact/index.html">Kontakt</a></li>
+            <li><a class="nav-link" href="../en/index.html" lang="en">EN</a></li>
           </ul>
           <button class="icon-btn nav-close" type="button" data-close-menu aria-label="Men&uuml; schlie&szlig;en">
             <i class="ri-close-line"></i>
@@ -55,7 +54,7 @@
       </button>
     </div>
 
-    <main>
+    <main id="main-content">
       <section class="page-hero">
         <div class="container">
           <h1>&Uuml;ber uns</h1>
@@ -100,11 +99,11 @@
                 Unterst&uuml;tzung f&uuml;r kleine und gro&szlig;e Projekte.
               </p>
               <p>
-                <a class="inline-link" href="#">Werkzeugverleih:</a> Passende Ger&auml;te f&uuml;r drinnen und drau&szlig;en,
+                <a class="inline-link" href="../sortiment/index.html">Werkzeugverleih:</a> Passende Ger&auml;te f&uuml;r drinnen und drau&szlig;en,
                 einfach mieten statt kaufen.
               </p>
               <p>
-                <a class="inline-link" href="#">Baustoffe:</a> Fachkundige Beratung und hochwertige Materialien f&uuml;r
+                <a class="inline-link" href="../contact/index.html">Baustoffe:</a> Fachkundige Beratung und hochwertige Materialien f&uuml;r
                 stabile Ergebnisse.
               </p>
               <p>
@@ -121,7 +120,7 @@
       <div class="container">
         <div class="footer-grid">
           <div class="footer-col">
-            <h3 class="footer-brand-title">Alles Saniert</h3>
+            <h3 class="footer-brand-title" data-company-brand-name>Alles Saniert</h3>
             <div class="footer-brand-sub">Schr&ouml;der Gesnbr</div>
             <p class="footer-brand-text">
               Ihr zuverl&auml;ssiger Partner f&uuml;r professionellen Werkzeugverleih im Piestingtal. Hochwertige
@@ -131,18 +130,18 @@
             <h3>Service</h3>
             <ul class="footer-list">
               <li><a href="../index.html#rentInstructions">Mieten: so geht's</a></li>
-              <li><a href="#">H&auml;ufig gestellte Fragen (FAQ)</a></li>
-              <li><a href="#">Lieferung &amp; Abholung</a></li>
-              <li><a href="#">Kundenkonto</a></li>
+              <li><a href="../cookie-einstellungen/index.html">Cookie-Einstellungen</a></li>
+              <li><a href="../sortiment/index.html">Sortiment</a></li>
+              <li><a href="../contact/index.html">Kontaktformular</a></li>
             </ul>
           </div>
           <div class="footer-col">
             <h3>Rechtliches</h3>
             <ul class="footer-list">
-              <li><button type="button" data-open-dialog="impressum">Impressum</button></li>
-              <li><button type="button" data-open-dialog="datenschutz">Datenschutzerkl&auml;rung</button></li>
-              <li><a href="#">AGB</a></li>
-              <li><a href="#">Widerrufsrecht</a></li>
+              <li><a href="../impressum/index.html">Impressum</a></li>
+              <li><a href="../datenschutz/index.html">Datenschutz</a></li>
+              <li><a href="../cookie-richtlinie/index.html">Cookie-Richtlinie</a></li>
+              <li><a href="../barrierefreiheit/index.html">Barrierefreiheit</a></li>
             </ul>
           </div>
           <div class="footer-col">
@@ -150,15 +149,15 @@
             <ul class="footer-list">
               <li class="footer-contact-item">
                 <i class="ri-map-pin-2-fill"></i>
-                <span>Musterstra&szlig;e 12<br />2753 Markt Piesting</span>
+                <span data-company-address>Fotzebenweg 3<br />2763 Pernitz</span>
               </li>
               <li class="footer-contact-item">
                 <i class="ri-phone-fill"></i>
-                <a href="tel:+43123456789">+43 123 456 789</a>
+                <a href="tel:+436503021328" data-company-phone>+43 650 3021328</a>
               </li>
               <li class="footer-contact-item">
                 <i class="ri-mail-fill"></i>
-                <a href="mailto:info@allessaniert.at">info@allessaniert.at</a>
+                <a href="mailto:office@allessaniert.at" data-company-email>office@allessaniert.at</a>
               </li>
             </ul>
           </div>
@@ -168,72 +167,8 @@
       </div>
     </footer>
 
-    <div id="impressum" class="dialog" aria-hidden="true">
-      <div class="dialog-card">
-        <h4>Impressum</h4>
-        <p><strong>Verantwortlicher (iS der DSGVO) ist:</strong></p>
-        <p>Florian Schr&ouml;der<br />Erlachgasse 63/16, 1100 Wien</p>
-        <p><strong>Bildnachweis:</strong> privat,</p>
-        <p>#560375666 &copy; bloodline - stock.adobe.com,</p>
-        <p>#481741028 &copy; Barudak Lier - stock.adobe.com</p>
-        <p>#593452377 &copy; Fahrul - stock.adobe.com</p>
-        <p>#582321219 &copy; Michael - stock.adobe.com</p>
-        <p>#306384344 &copy; LIGHTFIELD STUDIOS - stock.adobe.com</p>
-        <p>#294996561 &copy; Valerii Honcharuk - stock.adobe.com</p>
-        <p>#217540846 &copy; alfa27 - stock.adobe.com</p>
-        <button class="btn-primary dialog-close" type="button" data-close-dialog>Schlie&szlig;en</button>
-      </div>
-    </div>
-
-    <div id="datenschutz" class="dialog" aria-hidden="true">
-      <div class="dialog-card">
-        <h4>Datenschutzerkl&auml;rung</h4>
-        <p><strong>GRUNDS&Auml;TZLICHES</strong></p>
-        <p>
-          Der Schutz Ihrer pers&ouml;nlichen Daten ist uns ein besonderes Anliegen. Wir verarbeiten Ihre Daten daher
-          ausschlie&szlig;lich auf Grundlage der gesetzlichen Bestimmungen (DSGVO/DSG2018, TKG 2003). In dieser
-          Datenschutzerkl&auml;rung informieren wir Sie &uuml;ber die wichtigsten Aspekte der Datenverarbeitung im
-          Rahmen unserer Website.
-        </p>
-        <p><strong>Verantwortlicher (iS der DSGVO) ist:</strong></p>
-        <p>Schr&ouml;der Willy<br />Fotzebenweg 3, 2763 Pernitz<br />0650 302 13 28</p>
-        <p><strong>COOKIES</strong></p>
-        <p>Diese Website verwendet keine Cookies.</p>
-        <p><strong>BEWEGUNGSDATEN/-ANALYSE</strong></p>
-        <p>
-          Beim Besuch der Website werden (typischerweise) Daten durch den Auftragsverarbeiter aufgezeichnet (diese
-          Standardprotokollierung ist vorgegeben und kann durch den Verantwortlichen nicht deaktiviert werden). Dies
-          umfasst je aufgerufener Seite (Ressource) die IP-Adresse, Datum und Zeit, Browsertyp, Referrer sowie Art und
-          Status des Aufrufs(Requests). Die IP-Adresse wird dabei bereits vor der Protokollierung anonymisiert, und
-          zwar derart, dass das letzte Byte (das sind, die letzten drei Ziffern) der IP-Adresse verworfen wird.
-          Dar&uuml;ber hinaus findet keine weitere Aufzeichnung, Weitergabe oder Auswertung der Bewegungsdaten statt.
-          Verarbeitungsgrundlage (iS der DSGVO) stellt ein berechtigtes Interesse des Verantwortlichen der zur
-          Pr&auml;sentation der Leistungen und zur m&ouml;glichen Information sowie Kontaktaufnahme f&uuml;r den
-          Besucher/Interessenten dar (Art 6 Abs 1 lit f DSGVO). Die Bewegungsdaten werden nach einer Frist von 2
-          Monaten gel&ouml;scht.
-        </p>
-        <p><strong>KONTAKT MIT UNS</strong></p>
-        <p>
-          Sie k&ouml;nnen per E-Mail Kontakt mit uns aufnehmen. Die Erstellung und Zustellung des E-Mails erfolgt dabei
-          zur G&auml;nze innerhalb des Rechenzentrums des Auftragsverarbeiters. S&auml;mtliche E-Mails werden durch den
-          Verantwortlichen &uuml;ber eine sichere Verbindung ([START]TLS) abgerufen. Verarbeitungsgrundlage (iS der
-          DSGVO) sind ein berechtigtes Interesse des Verantwortlichen der zur Kommunikation mit Interessenten (Art 6
-          Abs 1 lit f DSGVO) bzw. die Durchf&uuml;hrung vorvertraglicher Ma&szlig;nahmen auf Anfrage der betroffenen
-          Person (Art 6 Abs 1 lit b DSGVO). Die Kontaktdaten werden zwecks Bearbeitung der Anfrage und f&uuml;r den Fall
-          von Anschlussfragen, solange wie notwendig, maximal aber sechs Monate gespeichert. S&auml;mtliche Kontaktdaten
-          geben wir nicht an Dritte weiter.
-        </p>
-        <p><strong>IHRE RECHTE</strong></p>
-        <p>
-          Ihnen stehen bez&uuml;glich Ihrer verarbeiten personenbezogenen Daten grunds&auml;tzlich die Rechte auf
-          Auskunft, Berichtigung, L&ouml;schung, Einschr&auml;nkung, Daten&uuml;bertragbarkeit, Widerruf und Widerspruch
-          zu. Gerne kommen wir der Erf&uuml;llung dieser Rechte schnellstm&ouml;glich (l&auml;ngstens aber binnen 1
-          Monats) nach (gegebenenfalls erlauben Sie uns dazu, in Ihrem Interesse Ihre Identit&auml;t zu pr&uuml;fen).
-        </p>
-        <button class="btn-primary dialog-close" type="button" data-close-dialog>Schlie&szlig;en</button>
-      </div>
-    </div>
-
+    <script src="../app-config.js"></script>
+    <script src="../consent.js"></script>
     <script src="../script.js"></script>
   </body>
 </html>

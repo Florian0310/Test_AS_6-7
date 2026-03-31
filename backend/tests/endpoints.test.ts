@@ -4,6 +4,8 @@ import {
   getProductBySlugHandler,
   listCategoriesHandler,
   listProductsHandler,
+  siteConfigHandler,
+  submitContactInquiryHandler,
   submitRequestHandler,
 } from '../src/endpoints/publicEndpoints'
 
@@ -69,7 +71,41 @@ const makePayload = () => {
   return {
     find,
     findByID: vi.fn(async () => productDoc),
-    findGlobal: vi.fn(async () => ({ defaultInsuranceRate: 0.1 })),
+    findGlobal: vi.fn(async (args: any) => {
+      if (args?.slug === 'site-settings') {
+        return {
+          siteName: 'Alles Saniert',
+          websiteUrl: 'https://www.allessaniert.at',
+          defaultLocale: 'de',
+          seo: {},
+          tracking: {},
+        }
+      }
+
+      if (args?.slug === 'contact-settings') {
+        return {
+          legalCompanyName: 'Schroeder - Alles Saniert',
+          brandName: 'Alles Saniert',
+          street: 'Fotzebenweg 3',
+          postalCode: '2763',
+          city: 'Pernitz',
+          country: 'Oesterreich',
+          phone: '+43 650 3021328',
+          email: 'office@allessaniert.at',
+          inquiryRecipientEmail: 'office@allessaniert.at',
+        }
+      }
+
+      if (args?.slug === 'rental-settings') {
+        return {
+          defaultInsuranceRate: 0.1,
+          requestNotificationEmail: 'office@allessaniert.at',
+          priceDisclaimer: 'Test',
+        }
+      }
+
+      return { defaultInsuranceRate: 0.1 }
+    }),
     create: vi.fn(async (args: any) => ({ id: 'req-1', requestNumber: 'ANF-1', ...args.data })),
     update: vi.fn(async (args: any) => ({ id: 'req-1', ...args.data })),
   }
@@ -154,5 +190,50 @@ describe('API Endpoints', () => {
     expect(res.status).toBe(201)
     expect(body.success).toBe(true)
     expect(payload.create).toHaveBeenCalledOnce()
+  })
+
+  it('liefert oeffentliche Site-Konfiguration', async () => {
+    const payload = makePayload()
+    const res = await siteConfigHandler({ payload } as any)
+    const body = await res.json()
+
+    expect(res.status).toBe(200)
+    expect(body.success).toBe(true)
+    expect(body.data.site.siteName).toBe('Alles Saniert')
+  })
+
+  it('validiert Kontaktanfrage ohne Einwilligung', async () => {
+    const payload = makePayload()
+    const res = await submitContactInquiryHandler({
+      payload,
+      json: async () => ({
+        name: 'Max',
+        email: 'max@example.com',
+        subject: 'Test',
+        message: 'Das ist eine gueltige Nachricht.',
+        consentPrivacy: false,
+      }),
+      headers: new Headers(),
+    } as any)
+
+    expect(res.status).toBe(400)
+  })
+
+  it('nimmt Honeypot-Kontaktanfrage still an', async () => {
+    const payload = makePayload()
+    const res = await submitContactInquiryHandler({
+      payload,
+      json: async () => ({
+        name: 'Max',
+        email: 'max@example.com',
+        subject: 'Test',
+        message: 'Das ist eine gueltige Nachricht.',
+        consentPrivacy: true,
+        website: 'spam-field-filled',
+      }),
+      headers: new Headers(),
+    } as any)
+
+    expect(res.status).toBe(202)
   })
 })

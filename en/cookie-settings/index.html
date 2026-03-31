@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Cookie Settings | Alles Saniert</title>
+    <meta name="description" content="Manage your cookie preferences." />
+    <link rel="canonical" href="https://www.allessaniert.at/en/cookie-settings/" />
+    <link rel="icon" type="image/svg+xml" href="../../favicon.svg" />
+    <link rel="stylesheet" href="../../assets/vendor/icons.css" />
+    <link rel="stylesheet" href="../../styles.css" />
+  </head>
+  <body>
+    <a class="skip-link" href="#main-content">Skip to content</a>
+    <main id="main-content" class="legal-main">
+      <article class="legal-card">
+        <h1>Cookie Settings</h1>
+        <p>You can change or withdraw analytics consent at any time.</p>
+
+        <form class="consent-settings" data-consent-settings-form>
+          <div class="consent-settings__row">
+            <div>
+              <strong>Necessary</strong>
+              <div class="consent-settings__meta">Provider: Alles Saniert | Purpose: security and consent storage | Duration: until withdrawal</div>
+            </div>
+            <input type="checkbox" checked disabled />
+          </div>
+
+          <div class="consent-settings__row">
+            <div>
+              <strong>Analytics</strong>
+              <div class="consent-settings__meta">Provider: Google | Purpose: aggregated usage analytics | Duration: depends on Google configuration</div>
+            </div>
+            <input type="checkbox" data-consent-analytics />
+          </div>
+
+          <div class="cookie-banner__actions">
+            <button class="btn-primary" type="button" data-consent-save>Save choices</button>
+            <button class="btn-secondary" type="button" data-consent-revoke>Withdraw consent</button>
+          </div>
+
+          <p class="contact-status is-info" data-consent-status role="status" aria-live="polite"></p>
+        </form>
+      </article>
+    </main>
+
+    <script src="../../app-config.js"></script>
+    <script src="../../consent.js"></script>
+    <script src="../../script.js"></script>
+  </body>
+</html>

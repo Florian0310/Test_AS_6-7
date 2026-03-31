@@ -1,1 +1,48 @@
-^C^C
+⚠ Found a change in next.config.mjs. Restarting the server to apply the changes...
+⨯ Error: Failed query: CREATE INDEX `media_updated_at_idx` ON `media` (`updated_at`);
+params: 
+    at ignore-listed frames {
+  query: 'CREATE INDEX `media_updated_at_idx` ON `media` (`updated_at`);',
+  params: [],
+  payloadInitError: true,
+  digest: '2372155262',
+  [cause]: Error [LibsqlError]: SQLITE_ERROR: index media_updated_at_idx already exists
+      at ignore-listed frames {
+    code: 'SQLITE_ERROR',
+    rawCode: 1,
+    [cause]: SqliteError: index media_updated_at_idx already exists
+        at ignore-listed frames {
+      code: 'SQLITE_ERROR',
+      rawCode: 1
+    }
+  }
+}
+Persisting failed: Unable to write SST file 00000721.sst
+
+Caused by:
+    Das System kann den angegebenen Pfad nicht finden. (os error 3)
+Compaction failed: Another write batch or compaction is already active (Only a single write operations is allowed at a time)
+
+thread 'tokio-runtime-worker' (16644) panicked at turbopack\crates\turbo-tasks-backend\src\backend\operation\mod.rs:224:17:
+Failed to restore task data (corrupted database or bug): Data for batch of 2 tasks
+
+Caused by:
+    0: Looking up typed data for 2 tasks from database failed
+    1: Unable to open static sorted file referenced from 00000542.meta
+    2: Unable to open static sorted file 00000535.sst
+    3: Failed to open SST file C:\Users\User\Documents\GitHub\Test_AS_6-7\backend\.next\dev\cache/turbopack\3e37bb42\00000535.sst
+    4: Das System kann den angegebenen Pfad nicht finden. (os error 3)
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+thread 'tokio-runtime-worker' (16644) panicked at turbopack\crates\turbo-tasks-backend\src\backend\operation\mod.rs:196:17:
+Failed to restore task data (corrupted database or bug): Data for TaskId 41808)
+
+Caused by:
+    0: Looking up task storage for TaskId 41808 from database failed
+    1: Unable to open static sorted file referenced from 00000183.meta
+    2: Unable to open static sorted file 00000181.sst
+    3: Failed to open SST file C:\Users\User\Documents\GitHub\Test_AS_6-7\backend\.next\dev\cache/turbopack\3e37bb42\00000181.sst
+    4: Das System kann den angegebenen Pfad nicht finden. (os error 3)
+Persisting failed: Another write batch or compaction is already active (Only a single write operations is allowed at a time)
+Compaction failed: Another write batch or compaction is already active (Only a single write operations is allowed at a time)
+Compaction failed: Another write batch or compaction is already active (Only a single write operations is allowed at a time)

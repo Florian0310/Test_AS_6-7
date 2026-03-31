@@ -1,98 +1,60 @@
-﻿# Alles Saniert - Werkzeugverleih mit Payload CMS
+# Alles Saniert - Frontend + Payload CMS Backend
 
-Dieses Repository enthaelt ein bestehendes statisches Frontend und ein vollstaendig auf Payload CMS umgestelltes Backend fuer einen Werkzeugverleih.
+Dieses Projekt kombiniert ein bestehendes statisches Frontend mit einem Payload-CMS-Backend.
 
-Wichtig: Strapi wurde aus dem Projekt entfernt und durch Payload ersetzt.
+Wichtig:
+- Strapi wurde entfernt.
+- Payload CMS ist die einzige aktive Backend-/CMS-Loesung.
 
-## Projektzweck
+## Projektziel
 
-Das System ist bewusst kein klassischer Onlineshop mit Zahlung.
-
-Es ist ein Anfrage-Checkout:
-- Produkte anzeigen
-- Mietzeitraum oder Miettage erfassen
+Die Plattform bildet einen Anfrage-Checkout fuer Werkzeugverleih ab:
+- Produkte und Kategorien anzeigen
+- Mietdauer/Zeitraum erfassen
 - Preis serverseitig berechnen
 - Anfrage speichern
-- E-Mail an Betreiber senden oder vorbereitet protokollieren
-- Betreiber entscheidet manuell
+- Betreiber wird per E-Mail informiert
+- manuelle Annahme/Ablehnung durch Betreiber
 
-## Architektur (kurz)
+Kein Zahlungs-Checkout und kein Warenkorb mit Payment.
 
-- Frontend: statisches HTML/CSS/JS im Repository-Root
-- Backend: Payload CMS 3.x + Next.js App Router in `backend/`
-- Sprache/Stack: TypeScript, Node.js
-- Datenbank: SQLite (pragmatisch fuer lokale Entwicklung, kein extra DB-Server noetig)
-- Medien: Payload Upload Collection `media`
-- Tests: Vitest
+## Technischer Stand
 
-## Strapi wurde entfernt
+### Frontend
+- Statisches HTML/CSS/JS im Repo-Root
+- Consent-Banner mit Opt-in (notwendig + analytics)
+- Google Tag Manager / GA4 nur nach Consent
+- Cookie-Einstellungen Seiten:
+  - `/cookie-einstellungen/` (DE)
+  - `/en/cookie-settings/` (EN)
+- Rechtsseiten:
+  - `/impressum/`, `/datenschutz/`, `/cookie-richtlinie/`, `/barrierefreiheit/`
+  - `/en/imprint/`, `/en/privacy-policy/`, `/en/cookie-policy/`, `/en/accessibility-statement/`
+- Keine externen Google-Font Requests
+- Kein externes Icon-CDN (lokale Icon-Styles)
 
-Entfernt bzw. ersetzt:
-- fruehere Strapi-Backend-Struktur in `backend/` (vollstaendig ersetzt)
-- Strapi-Dependencies und Strapi-Konfiguration
-- Strapi-spezifische API-Annahmen im Frontend (`shop.js`, `app-config.js`)
-- Strapi-Hinweise in der Projektdokumentation
-
-Aktive Backend-Loesung:
-- ausschliesslich Payload CMS
-
-## Projektstruktur (relevant)
-
-```text
-.
-|-- app-config.js
-|-- app-config.example.js
-|-- shop.js
-|-- index.html
-|-- sortiment/
-|-- backend/
-|   |-- package.json
-|   |-- payload.config.ts
-|   |-- next.config.mjs
-|   |-- src/
-|   |   |-- app/(payload)/
-|   |   |   |-- layout.tsx
-|   |   |   |-- admin/
-|   |   |   |   |-- importMap.js
-|   |   |   |   `-- [[...segments]]/page.tsx
-|   |   |   `-- api/[...slug]/route.ts
-|   |   |-- collections/
-|   |   |   |-- Categories.ts
-|   |   |   |-- Products.ts
-|   |   |   |-- Requests.ts
-|   |   |   |-- Media.ts
-|   |   |   `-- Users.ts
-|   |   |-- globals/
-|   |   |   `-- RentalSettings.ts
-|   |   |-- endpoints/
-|   |   |   `-- publicEndpoints.ts
-|   |   |-- services/
-|   |   |   |-- pricingService.ts
-|   |   |   |-- requestService.ts
-|   |   |   `-- emailService.ts
-|   |   |-- utils/
-|   |   |   |-- pricing.ts
-|   |   |   |-- slug.ts
-|   |   |   `-- access.ts
-|   |   |-- seed/
-|   |   |   |-- defaultCategories.ts
-|   |   |   |-- defaultProducts.ts
-|   |   |   `-- runSeed.ts
-|   |   |-- migrations/
-|   |   |   `-- .gitkeep
-|   |   `-- payload-types.ts
-|   `-- tests/
-|       |-- pricing.test.ts
-|       |-- request-process.test.ts
-|       `-- endpoints.test.ts
-`-- docs/
-    |-- BACKEND_DOKUMENTATION.md
-    `-- ENDNUTZER_PFLEGEANLEITUNG.md
-```
+### Backend
+- Payload CMS + Next.js App Router in `backend/`
+- SQLite fuer lokale Entwicklung
+- Collections:
+  - `users`, `media`, `categories`, `products`, `requests`
+- Globals:
+  - `rental-settings`
+  - `site-settings`
+  - `contact-settings`
+  - `legal-settings`
+- Public Endpoints:
+  - `GET /api/catalog/products`
+  - `GET /api/catalog/products/slug/:slug`
+  - `GET /api/catalog/categories`
+  - `POST /api/catalog/pricing/calculate`
+  - `POST /api/catalog/requests`
+  - `GET /api/public/site-config`
+  - `POST /api/public/contact`
 
 ## Setup
 
-### 1) Backend vorbereiten
+### 1) Backend
 
 ```powershell
 cd backend
@@ -102,106 +64,91 @@ npm run generate:importmap
 npm run generate:types
 npm run migrate
 npm run seed
-```
-
-### 2) Backend starten
-
-```powershell
-cd backend
 npm run dev
 ```
 
-Erreichbar:
+Backend URLs:
 - Admin: `http://localhost:3001/admin`
 - API: `http://localhost:3001/api`
 
-### 3) Frontend starten
+### 2) Frontend
 
 ```powershell
 cd ..
 python -m http.server 8000
 ```
 
-Erreichbar:
-- Frontend: `http://localhost:8000`
+Frontend URL:
+- `http://localhost:8000`
 
-## Runtime-Konfiguration Frontend
+## Wichtige Konfigurationsdateien
 
-`app-config.js`:
+### Frontend `app-config.js`
 
 ```js
 window.APP_CONFIG = Object.freeze({
   PAYLOAD_URL: 'http://localhost:3001',
   PAYLOAD_API_PREFIX: '/api',
+  GTM_ID: '',
+  GA4_MEASUREMENT_ID: '',
+  TURNSTILE_SITE_KEY: '',
 });
 ```
 
-## Wichtige Collections und Global
+### Backend `.env` (Auszug)
 
-- `categories`
-- `products`
-- `requests`
-- `media`
-- Global: `rental-settings`
+```env
+PAYLOAD_SECRET=change-me-in-production
+DATABASE_URI=file:./data/payload.sqlite
+PAYLOAD_PUBLIC_SERVER_URL=http://localhost:3001
+FRONTEND_PUBLIC_URL=http://localhost:8000
+FRONTEND_ALLOWED_ORIGINS=http://localhost:8000,http://127.0.0.1:8000
 
-## Wichtige Endpoints
+PAYLOAD_ADMIN_EMAIL=admin@example.com
+PAYLOAD_ADMIN_PASSWORD=ChangeMe123!
 
-Custom Catalog API:
-- `GET /api/catalog/products`
-- `GET /api/catalog/products/slug/:slug`
-- `GET /api/catalog/categories`
-- `POST /api/catalog/pricing/calculate`
-- `POST /api/catalog/requests`
+REQUEST_NOTIFICATION_EMAIL=office@allessaniert.at
+ENABLE_EMAIL_SENDING=false
+SMTP_HOST=localhost
+SMTP_PORT=1025
+SMTP_SECURE=false
+SMTP_USER=
+SMTP_PASS=
 
-Zusaetzlich: Standard-Payload-REST unter `/api/<collection>`.
+TURNSTILE_SECRET_KEY=
+TURNSTILE_BYPASS_FOR_DEV=true
+CONTACT_RATE_LIMIT_WINDOW_MS=600000
+CONTACT_RATE_LIMIT_MAX=8
+```
 
-## Preislogik
+## Consent und Tracking
 
-Tarife je Produkt:
+- Consent Mode v2 wird mit `denied` als Default gesetzt.
+- Ohne Einwilligung kein Analytics-Tracking.
+- Nach Opt-in werden GTM/GA4 dynamisch geladen.
+- Consent kann auf den Cookie-Einstellungsseiten geaendert oder widerrufen werden.
+
+## Formular- und Spam-Schutz
+
+- Kontaktformular sendet an `POST /api/public/contact`
+- Validierung client- und serverseitig
+- Honeypot-Feld gegen einfache Bots
+- Cloudflare Turnstile-Unterstuetzung
+- In-Memory Rate-Limiting im Backend
+
+## Preislogik (Backend)
+
+Tarife pro Produkt:
 - Tarif I: Tagespreis
 - Tarif II: 3-Tages-Preis
 - Tarif III: Wochenpreis (7 Tage)
 
 Berechnung:
-- Wochenbloecke (7 Tage)
-- danach 3-Tages-Bloecke
-- danach Resttage als Tagespreis
-
-Beispiele:
-- 1 Tag = Tagespreis
-- 3 Tage = 3-Tages-Preis
-- 7 Tage = Wochenpreis
-- 10 Tage = Wochenpreis + 3-Tages-Preis
-- 8 Tage = Wochenpreis + 1 Tagespreis
-- 11 Tage = Wochenpreis + 3-Tages-Preis + 1 Tagespreis
-
-Zusatz:
-- Pflichtversicherung standardmaessig 10% auf Mietpreis
-- Kaution separat
-- Reinigungsgebuehr separat
-
-Rueckgabe ist strukturiert (`blocks`, `unitPrices`, `subtotals`, `insurance`).
-
-## Anfrage-Checkout
-
-Ablauf:
-1. Produktdaten laden
-2. Preis berechnen
-3. Anfrage validieren
-4. Anfrage speichern
-5. E-Mail senden oder vorbereiten
-6. Status im Backend pflegen (`new`, `in_progress`, `answered`, `accepted`, `rejected`, `completed`)
-
-## E-Mail-Logik
-
-- Implementierung in `backend/src/services/emailService.ts`
-- Bei `ENABLE_EMAIL_SENDING=false` wird E-Mail als `prepared` in Anfrage gespeichert
-- Bei `ENABLE_EMAIL_SENDING=true` wird SMTP verwendet
-
-Relevante ENVs (`backend/.env`):
-- `REQUEST_NOTIFICATION_EMAIL`
-- `ENABLE_EMAIL_SENDING`
-- `SMTP_HOST`, `SMTP_PORT`, `SMTP_SECURE`, `SMTP_USER`, `SMTP_PASS`
+- zuerst 7-Tage-Bloecke
+- dann 3-Tage-Bloecke
+- dann Resttage
+- Versicherung standardmaessig 10%
+- Kaution/Reinigungsgebuehr separat
 
 ## Tests
 
@@ -211,19 +158,9 @@ npm test
 ```
 
 Abgedeckt:
-- Preisberechnung (Tarifkombinationen, Versicherung, Kaution, Reinigungsgebuehr, Mindestmiete, Input-Validierung)
-- Anfrageprozess (Speichern, Status, Produkt-Snapshot, E-Mail-Trigger)
-- Endpoints (Produkte, Produkt per Slug, Kategorien, Pricing, Anfrage)
-
-## Frontend-Umstellung von Strapi auf Payload
-
-In der bestehenden Frontend-Integration wurde umgestellt:
-- `STRAPI_URL` -> `PAYLOAD_URL`
-- `STRAPI_API_PREFIX` -> `PAYLOAD_API_PREFIX`
-- API-Ziele auf `/api/catalog/*` und `/api/globals/rental-settings`
-- Datenmapping in `shop.js` auf Payload-Produktstruktur (`title`, `pricing`, `availabilityStatus`)
-
-Wenn weitere Frontend-Teile noch alte Endpoints verwenden, muessen sie auf die oben genannten Payload-Endpoints migriert werden.
+- Preisberechnung
+- Anfrageprozess
+- API-Endpunkte inkl. Contact-/Site-Config-Erweiterung
 
 ## Build / Production
 
@@ -233,15 +170,23 @@ npm run build
 npm run start
 ```
 
-## Erweiterung (spaeter)
+## Frontend-Anbindung an Payload (statt Strapi)
 
-- echte Verfuegbarkeitsverwaltung mit Reservierungsbestaenden
-- Reservierungskalender
-- E-Mail-Adapter direkt ueber Payload konfigurieren
-- SEO-Ausbau
-- echtes Buchungs- oder Checkout-System
+- `shop.js` nutzt Payload-Endpoints unter `/api/catalog/*`
+- Site-/Kontaktdaten koennen ueber `/api/public/site-config` geladen werden
+- Kontaktformular nutzt `/api/public/contact`
+
+## Wichtiger Hinweis zu GitHub Push
+
+Das Repo ignoriert nun u.a.:
+- `backend/.next/`
+- `backend/node_modules/`
+- `backend/data/`
+
+Damit werden keine grossen Build-Cache-Dateien mehr mitgepusht.
 
 ## Weiterfuehrende Doku
 
-- Technik + API + Migration: `docs/BACKEND_DOKUMENTATION.md`
-- Endnutzer-Adminpflege: `docs/ENDNUTZER_PFLEGEANLEITUNG.md`
+- `docs/BACKEND_DOKUMENTATION.md`
+- `docs/ENDNUTZER_PFLEGEANLEITUNG.md`
+- `docs/GO_LIVE_CHECKLISTE.md`

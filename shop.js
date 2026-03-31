@@ -646,6 +646,10 @@
       return 'Bitte gueltige Menge eingeben.';
     }
 
+    if (!payload.privacyConsent) {
+      return 'Bitte Datenschutzerklaerung bestaetigen.';
+    }
+
     return '';
   };
 
@@ -813,6 +817,7 @@
         endDate: String(formData.get('endDate') || ''),
         quantity: toNonNegativeInteger(formData.get('quantity'), 0),
         notes: clampText(formData.get('notes'), 1000),
+        privacyConsent: formData.get('rentalPrivacyConsent') === 'on',
       };
 
       const validationError = validateRentalPayload(payload);

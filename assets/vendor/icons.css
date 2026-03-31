@@ -1,0 +1,38 @@
+i[class^='ri-'],
+i[class*=' ri-'] {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1em;
+  height: 1em;
+  font-style: normal;
+  font-family: 'Segoe UI Symbol', 'Noto Emoji', sans-serif;
+  font-size: 1em;
+  line-height: 1;
+}
+
+.ri-search-line::before { content: '?'; }
+.ri-menu-line::before { content: '?'; }
+.ri-close-line::before { content: '?'; }
+.ri-arrow-right-line::before { content: '?'; }
+.ri-arrow-left-line::before { content: '?'; }
+.ri-arrow-right-s-line::before { content: '›'; }
+.ri-arrow-down-s-line::before { content: '?'; }
+.ri-play-circle-line::before { content: '?'; }
+.ri-shopping-cart-2-line::before { content: '??'; }
+.ri-map-pin-2-fill::before { content: '?'; }
+.ri-phone-fill::before { content: '?'; }
+.ri-mail-fill::before { content: '?'; }
+.ri-scissors-cut-line::before { content: '?'; }
+.ri-plant-line::before { content: '?'; }
+.ri-shield-check-line::before { content: '??'; }
+.ri-leaf-line::before { content: '??'; }
+.ri-hammer-line::before { content: '??'; }
+.ri-star-fill::before { content: '?'; }
+.ri-star-half-fill::before { content: '?'; }
+.ri-checkbox-circle-fill::before { content: '?'; }
+.ri-check-line::before { content: '?'; }
+.ri-mail-send-line::before { content: '?'; }
+.ri-360-view::before { content: '?'; }
+.ri-store-2-line::before { content: '??'; }
+.ri-truck-line::before { content: '??'; }

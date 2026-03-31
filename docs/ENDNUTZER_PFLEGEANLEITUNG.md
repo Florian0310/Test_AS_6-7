@@ -1,121 +1,90 @@
-﻿# Endnutzer-Pflegeanleitung (Admin)
+# Endnutzer-Pflegeanleitung (Admin)
 
-Diese Anleitung richtet sich an Redakteure oder Betreiber ohne technische Vorkenntnisse.
+## 1) Anmeldung
 
-## 1) Anmeldung im Admin
+1. `http://localhost:3001/admin` aufrufen
+2. mit Admin-Zugangsdaten anmelden
 
-1. Browser oeffnen: `http://localhost:3001/admin`
-2. Mit Admin-Zugangsdaten anmelden
+## 2) Kategorien pflegen
 
-## 2) Neue Kategorie anlegen
+- Menue: `Kategorien`
+- Neu anlegen, umbenennen, aktiv/inaktiv setzen
+- `Sortierung` fuer Reihenfolge nutzen
 
-1. Links `Kategorien` oeffnen
-2. `Create new` klicken
-3. `Name` eintragen (Slug wird automatisch erzeugt)
-4. Optional `Beschreibung` und `Sortierung` setzen
-5. `Aktiv` pruefen
-6. Speichern
+## 3) Produkte pflegen
 
-## 3) Kategorie umbenennen
-
-1. `Kategorien` oeffnen
-2. Gewuenschte Kategorie anklicken
-3. Feld `Name` aendern
-4. Speichern
-
-Hinweis: Der Slug kann automatisch angepasst werden. Wenn der Slug bereits im Frontend verwendet wird, bitte mit Bedacht aendern.
-
-## 4) Neues Produkt anlegen
-
-1. `Produkte` oeffnen
-2. `Create new` klicken
-3. Pflichtfelder ausfuellen:
-- `Titel`
-- `Artikelnummer`
-- `Kategorie`
-- `Kurzbeschreibung`
-- Preisgruppe `Tarif I`, `Tarif II`, `Tarif III`
-4. Optional:
-- Bilder hochladen (`Produktbilder`)
-- `Langbeschreibung`
-- `Technische Daten`
-- `Kaution`, `Mindestmietdauer`, `Reinigungsgebuehr`
-5. Speichern
-
-## 5) Preise pflegen
-
-Produkt oeffnen -> Bereich `Preise und Tarife`:
-- `Tarif I - Tagespreis`
-- `Tarif II - 3-Tages-Preis`
-- `Tarif III - Wochenpreis`
+Pflichtfelder:
+- Titel
+- Artikelnummer
+- Kategorie
+- Kurzbeschreibung
+- Preise: Tagespreis, 3-Tages-Preis, Wochenpreis
 
 Optional:
-- `Kaution`
-- `Mindestmietdauer`
-- `Reinigungsgebuehr`
-- `Preisnotiz`
-- `Hinweis zu Treibstoff / Verschleiss`
+- Langbeschreibung
+- Bilder
+- Verfuegbarkeitsstatus
+- Kaution, Mindestmietdauer, Reinigungsgebuehr
+- technische Daten
 
-## 6) Bild hochladen
+## 4) Preise aktualisieren
 
-1. Produkt oeffnen
-2. Feld `Produktbilder`
-3. Datei auswaehlen oder hochladen
-4. Im Medien-Eintrag `Alternativtext` pflegen
-5. Speichern
+Bereich `Preise und Tarife` im Produkt:
+- Tarif I (Tag)
+- Tarif II (3 Tage)
+- Tarif III (Woche)
 
-## 7) Produkt aktiv/inaktiv schalten
+## 5) Medien
 
-Im Produkt rechts:
-- Feld `Aktiv` an/aus
+- Menue: `Medien`
+- Bild hochladen
+- Alternativtext pflegen (wichtig fuer Barrierefreiheit)
 
-Auswirkung:
-- Inaktive Produkte werden in den oeffentlichen Katalog-Endpoints nicht mehr ausgeliefert.
+## 6) Anfragen bearbeiten
 
-## 8) Anfragen ansehen und bearbeiten
+- Menue: `Anfragen`
+- Status setzen: `Neu`, `In Bearbeitung`, `Beantwortet`, `Angenommen`, `Abgelehnt`, `Abgeschlossen`
 
-1. `Anfragen` oeffnen
-2. Anfrage auswaehlen
-3. Status setzen:
-- `Neu`
-- `In Bearbeitung`
-- `Beantwortet`
-- `Angenommen`
-- `Abgelehnt`
-- `Abgeschlossen`
-4. Speichern
+## 7) Neue Globals
+
+### `Vermietungs-Einstellungen`
+- Versicherungssatz
+- Preis-Hinweis
+- Anfrage-Empfaenger
+
+### `Website-Einstellungen`
+- SEO-Defaults
+- Tracking IDs (GTM / GA4)
+
+### `Kontakt-Einstellungen`
+- Firmenname, Adresse, Telefon, E-Mail
+- Empfaenger fuer Kontaktformular
+
+### `Rechtstexte`
+- Impressum DE/EN
+- Datenschutz DE/EN
+- Cookie-Text DE/EN
+- Barrierefreiheit DE/EN
+
+## 8) Cookie/Tracking
 
 Wichtig:
-- In `Produkt-Snapshot` und `Preiszusammenfassung` sehen Sie den Stand zum Zeitpunkt der Anfrage.
+- Analytics nur nach Consent aktivieren
+- IDs in `Website-Einstellungen` eintragen
+- Cookie-Einstellungen im Frontend pruefen
 
-## 9) Wo wird die Anfrage-E-Mail hingeschickt?
+## 9) Typische Fehler
 
-Global `Vermietungs-Einstellungen`:
-- Feld `Empfaenger fuer Anfragen`
+### Produkte erscheinen nicht
+- Produkt `Aktiv`?
+- Kategorie `Aktiv`?
+- Pflichtfelder vorhanden?
 
-Technische SMTP-Daten liegen in der `backend/.env`.
+### Kontaktformular sendet nicht
+- Backend erreichbar?
+- Turnstile-Schluessel gesetzt?
+- Rate-Limit ausgeloest?
 
-## 10) Preislogik kurz erklaert
-
-- Es wird immer serverseitig gerechnet
-- Wochenpreis (7 Tage) wird zuerst verwendet
-- Danach 3-Tages-Preis
-- Restliche Tage als Tagespreis
-- Versicherung ist standardmaessig Pflicht (10%)
-- Kaution/Reinigungsgebuehr kommen separat dazu
-
-## 11) Typische Fehler
-
-### Produkt erscheint nicht im Frontend
-- Produkt evtl. `Aktiv = false`
-- Kategorie evtl. `Aktiv = false`
-- Pflichtfelder unvollstaendig
-
-### Anfrage kommt ohne E-Mail an
-- Anfrage ist trotzdem gespeichert
+### Keine Anfrage-E-Mail
 - `ENABLE_EMAIL_SENDING` und SMTP in `backend/.env` pruefen
-
-### Bild wird nicht angezeigt
-- Medien-Eintrag vorhanden?
-- Dateityp Bild?
-- Backend laeuft unter richtiger URL?
+- ansonsten wird E-Mail als vorbereitetes Ergebnis gespeichert

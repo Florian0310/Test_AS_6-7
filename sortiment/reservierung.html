@@ -3,18 +3,16 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content="Reservierungsuebersicht fuer den Anfrage-Checkout im Werkzeugverleih." />
+    <meta name="robots" content="index, follow" />
+    <link rel="canonical" href="https://www.allessaniert.at/sortiment/reservierung.html" />
     <title>Reservierung | Alles Saniert</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
-      rel="stylesheet"
-    />
     <link rel="icon" type="image/svg+xml" href="../favicon.svg" />
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/remixicon/3.5.0/remixicon.css" />
+    <link rel="stylesheet" href="../assets/vendor/icons.css" />
     <link rel="stylesheet" href="../styles.css" />
   </head>
   <body class="shop-page">
+    <a class="skip-link" href="#main-content">Zum Inhalt springen</a>
     <header class="header">
       <nav class="nav container">
         <a class="brand-logo" href="../index.html" aria-label="Alles Saniert Startseite">
@@ -29,6 +27,7 @@
             <li><a class="nav-link" href="../forestry-work/index.html">Forstarbeiten</a></li>
             <li><a class="nav-link" href="../about-us/index.html">&Uuml;ber uns</a></li>
             <li><a class="nav-link" href="../contact/index.html">Kontakt</a></li>
+            <li><a class="nav-link" href="../en/index.html" lang="en">EN</a></li>
           </ul>
           <button class="icon-btn nav-close" type="button" data-close-menu aria-label="Men&uuml; schlie&szlig;en">
             <i class="ri-close-line"></i>
@@ -55,7 +54,7 @@
       </button>
     </div>
 
-    <main class="shop-main">
+    <main id="main-content" class="shop-main">
       <section class="container reservation-wrap">
         <nav class="shop-breadcrumb" aria-label="Breadcrumb">
           <a href="../index.html">Startseite</a>
@@ -116,18 +115,17 @@
     <footer class="footer">
       <div class="container">
         <div class="footer-grid">
-          <div class="footer-col"><h3 class="footer-brand-title">Alles Saniert</h3><div class="footer-brand-sub">Schr&ouml;der Gesnbr</div><p class="footer-brand-text">Ihr zuverl&auml;ssiger Partner f&uuml;r professionellen Werkzeugverleih im Piestingtal.</p></div>
-          <div class="footer-col"><h3>Service</h3><ul class="footer-list"><li><a href="../index.html#rentInstructions">Mieten: so geht's</a></li><li><a href="#">FAQ</a></li><li><a href="#">Lieferung &amp; Abholung</a></li><li><a href="#">Kundenkonto</a></li></ul></div>
-          <div class="footer-col"><h3>Rechtliches</h3><ul class="footer-list"><li><button type="button" data-open-dialog="impressum">Impressum</button></li><li><button type="button" data-open-dialog="datenschutz">Datenschutzerkl&auml;rung</button></li><li><a href="#">AGB</a></li><li><a href="#">Widerrufsrecht</a></li></ul></div>
-          <div class="footer-col"><h3>Kontakt</h3><ul class="footer-list"><li class="footer-contact-item"><i class="ri-map-pin-2-fill"></i><span>Musterstra&szlig;e 12<br />2753 Markt Piesting</span></li><li class="footer-contact-item"><i class="ri-phone-fill"></i><a href="tel:+43123456789">+43 123 456 789</a></li><li class="footer-contact-item"><i class="ri-mail-fill"></i><a href="mailto:info@allessaniert.at">info@allessaniert.at</a></li></ul></div>
+          <div class="footer-col"><h3 class="footer-brand-title" data-company-brand-name>Alles Saniert</h3><div class="footer-brand-sub">Schr&ouml;der Gesnbr</div><p class="footer-brand-text">Ihr zuverl&auml;ssiger Partner f&uuml;r professionellen Werkzeugverleih im Piestingtal.</p></div>
+          <div class="footer-col"><h3>Service</h3><ul class="footer-list"><li><a href="../index.html#rentInstructions">Mieten: so geht's</a></li><li><a href="../cookie-einstellungen/index.html">Cookie-Einstellungen</a></li><li><a href="../sortiment/index.html">Sortiment</a></li><li><a href="../contact/index.html">Kontaktformular</a></li></ul></div>
+          <div class="footer-col"><h3>Rechtliches</h3><ul class="footer-list"><li><a href="../impressum/index.html">Impressum</a></li><li><a href="../datenschutz/index.html">Datenschutz</a></li><li><a href="../cookie-richtlinie/index.html">Cookie-Richtlinie</a></li><li><a href="../barrierefreiheit/index.html">Barrierefreiheit</a></li></ul></div>
+          <div class="footer-col"><h3>Kontakt</h3><ul class="footer-list"><li class="footer-contact-item"><i class="ri-map-pin-2-fill"></i><span data-company-address>Fotzebenweg 3<br />2763 Pernitz</span></li><li class="footer-contact-item"><i class="ri-phone-fill"></i><a href="tel:+436503021328" data-company-phone>+43 650 3021328</a></li><li class="footer-contact-item"><i class="ri-mail-fill"></i><a href="mailto:office@allessaniert.at" data-company-email>office@allessaniert.at</a></li></ul></div>
         </div>
         <div class="footer-bottom"><p>&copy; 2026 Alles Saniert Schr&ouml;der Gesnbr. Alle Rechte vorbehalten.</p></div>
       </div>
     </footer>
 
-    <div id="impressum" class="dialog" aria-hidden="true"><div class="dialog-card"><h4>Impressum</h4><p><strong>Verantwortlicher (iS der DSGVO) ist:</strong></p><p>Florian Schr&ouml;der<br />Erlachgasse 63/16, 1100 Wien</p><button class="btn-primary dialog-close" type="button" data-close-dialog>Schlie&szlig;en</button></div></div>
-    <div id="datenschutz" class="dialog" aria-hidden="true"><div class="dialog-card"><h4>Datenschutzerkl&auml;rung</h4><p>Informationen zur Datenverarbeitung gem&auml;&szlig; DSGVO finden Sie hier als Platzhalter f&uuml;r den Shop.</p><button class="btn-primary dialog-close" type="button" data-close-dialog>Schlie&szlig;en</button></div></div>
-
+    <script src="../app-config.js"></script>
+    <script src="../consent.js"></script>
     <script src="../script.js"></script>
   </body>
 </html>

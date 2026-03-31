@@ -1,0 +1,29 @@
+# Node
+node_modules/
+backend/node_modules/
+
+# Next/Payload build output
+backend/.next/
+backend/.payload/
+backend/dist/
+backend/out/
+
+# Runtime data
+backend/data/
+backend/media/
+
+# Logs
+*.log
+backend/*.log
+backend/dev.out.log
+backend/dev.err.log
+npm-debug.log*
+
+# Environment files
+.env
+backend/.env
+
+# OS / IDE
+.DS_Store
+Thumbs.db
+.vscode/

@@ -1,4 +1,16 @@
-function setupPage() {
+const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+const THEME_STORAGE_KEY = 'as_theme_mode_v1';
+
+const getAppConfig = () => window.APP_CONFIG || {};
+
+const getApiBase = () => {
+  const config = getAppConfig();
+  const payloadUrl = String(config.PAYLOAD_URL || 'http://localhost:3001').replace(/\/$/, '');
+  const apiPrefix = String(config.PAYLOAD_API_PREFIX || '/api');
+  return `${payloadUrl}${apiPrefix.startsWith('/') ? apiPrefix : `/${apiPrefix}`}`;
+};
+
+const setupPage = () => {
   const menu = document.querySelector('[data-nav-menu]');
   const openMenuBtn = document.querySelector('[data-open-menu]');
   const closeMenuBtn = document.querySelector('[data-close-menu]');
@@ -120,6 +132,287 @@ function setupPage() {
     }
   };
 
+  const setupThemeToggle = () => {
+    const navActions = document.querySelector('.nav-actions');
+    if (!navActions || navActions.querySelector('[data-theme-toggle]')) return;
+
+    const button = document.createElement('button');
+    button.type = 'button';
+    button.className = 'theme-toggle';
+    button.setAttribute('data-theme-toggle', 'true');
+    const isEnglish = document.documentElement.lang && document.documentElement.lang.startsWith('en');
+
+    const applyTheme = (mode) => {
+      if (mode === 'dark') {
+        document.documentElement.setAttribute('data-theme', 'dark');
+      } else {
+        document.documentElement.removeAttribute('data-theme');
+      }
+
+      button.textContent = mode === 'dark' ? (isEnglish ? 'Dark' : 'Dunkel') : 'Auto';
+      button.setAttribute(
+        'aria-label',
+        mode === 'dark'
+          ? isEnglish
+            ? 'Dark theme active'
+            : 'Dunkles Theme aktiv'
+          : isEnglish
+            ? 'Automatic theme active'
+            : 'Automatisches Theme aktiv',
+      );
+    };
+
+    const getStoredMode = () => {
+      try {
+        return window.localStorage.getItem(THEME_STORAGE_KEY) === 'dark' ? 'dark' : 'auto';
+      } catch (_error) {
+        return 'auto';
+      }
+    };
+
+    const setStoredMode = (mode) => {
+      try {
+        window.localStorage.setItem(THEME_STORAGE_KEY, mode);
+      } catch (_error) {
+        // Ignore storage errors, mode still applies for current view.
+      }
+    };
+
+    const initialMode = getStoredMode();
+    applyTheme(initialMode);
+
+    button.addEventListener('click', () => {
+      const currentMode = getStoredMode();
+      const nextMode = currentMode === 'dark' ? 'auto' : 'dark';
+      setStoredMode(nextMode);
+      applyTheme(nextMode);
+    });
+
+    navActions.appendChild(button);
+  };
+
+  const setContactStatus = (node, text, type = 'is-info') => {
+    if (!node) return;
+    node.textContent = text;
+    node.classList.remove('is-info', 'is-success', 'is-error');
+    node.classList.add(type);
+  };
+
+  let turnstileScriptPromise = null;
+
+  const loadTurnstileScript = () => {
+    if (turnstileScriptPromise) return turnstileScriptPromise;
+
+    turnstileScriptPromise = new Promise((resolve, reject) => {
+      const existing = document.querySelector('script[src^="https://challenges.cloudflare.com/turnstile/"]');
+      if (existing) {
+        if (window.turnstile) {
+          resolve(true);
+        } else {
+          existing.addEventListener('load', () => resolve(true), { once: true });
+          existing.addEventListener('error', () => reject(new Error('Turnstile konnte nicht geladen werden.')), {
+            once: true,
+          });
+        }
+        return;
+      }
+
+      const script = document.createElement('script');
+      script.src = 'https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit';
+      script.async = true;
+      script.defer = true;
+      script.onload = () => resolve(true);
+      script.onerror = () => reject(new Error('Turnstile konnte nicht geladen werden.'));
+      document.head.appendChild(script);
+    });
+
+    return turnstileScriptPromise;
+  };
+
+  const setupContactForm = async () => {
+    if (!contactForm) return;
+
+    const statusNode = contactForm.querySelector('[data-contact-status]');
+    const submitButton = contactForm.querySelector('button[type="submit"]');
+    const honeypotInput = contactForm.querySelector('input[name="website"]');
+    const privacyConsent = contactForm.querySelector('input[name="privacy_consent"]');
+    const tokenInput = contactForm.querySelector('input[name="turnstileToken"]');
+    const turnstileContainer = contactForm.querySelector('[data-turnstile-container]');
+    const locale = document.documentElement.lang && document.documentElement.lang.startsWith('en') ? 'en' : 'de';
+
+    const turnstileSiteKey = String(getAppConfig().TURNSTILE_SITE_KEY || '').trim();
+    let turnstileWidgetId = null;
+
+    if (turnstileSiteKey && turnstileContainer) {
+      try {
+        await loadTurnstileScript();
+        if (window.turnstile && typeof window.turnstile.render === 'function') {
+          turnstileWidgetId = window.turnstile.render(turnstileContainer, {
+            sitekey: turnstileSiteKey,
+            callback: (token) => {
+              if (tokenInput) tokenInput.value = token;
+            },
+            'expired-callback': () => {
+              if (tokenInput) tokenInput.value = '';
+            },
+            'error-callback': () => {
+              if (tokenInput) tokenInput.value = '';
+            },
+          });
+        }
+      } catch (_error) {
+        setContactStatus(statusNode, 'Sicherheitspruefung konnte nicht geladen werden.', 'is-error');
+      }
+    }
+
+    contactForm.addEventListener('submit', async (event) => {
+      event.preventDefault();
+
+      const formData = new FormData(contactForm);
+      const firstName = String(formData.get('first_name') || '').trim();
+      const lastName = String(formData.get('last_name') || '').trim();
+      const fallbackName = String(formData.get('name') || '').trim();
+      const name = [firstName, lastName].filter(Boolean).join(' ') || fallbackName;
+      const email = String(formData.get('email') || '').trim();
+      const phone = String(formData.get('phone') || '').trim();
+      const subject = String(formData.get('subject') || '').trim() || 'Kontaktanfrage';
+      const message = String(formData.get('message') || '').trim();
+      const honeypotValue = String(honeypotInput?.value || '').trim();
+      const turnstileToken = String(tokenInput?.value || '').trim();
+
+      if (!name || !EMAIL_PATTERN.test(email) || message.length < 10) {
+        contactForm.reportValidity();
+        setContactStatus(statusNode, 'Bitte alle Pflichtfelder korrekt ausfuellen.', 'is-error');
+        return;
+      }
+
+      if (!privacyConsent || !privacyConsent.checked) {
+        setContactStatus(statusNode, 'Bitte stimmen Sie der Datenschutzerklaerung zu.', 'is-error');
+        return;
+      }
+
+      if (turnstileSiteKey && !turnstileToken) {
+        setContactStatus(statusNode, 'Bitte bestaetigen Sie die Sicherheitspruefung.', 'is-error');
+        return;
+      }
+
+      setContactStatus(statusNode, 'Nachricht wird gesendet...', 'is-info');
+      if (submitButton instanceof HTMLButtonElement) submitButton.disabled = true;
+
+      try {
+        const response = await fetch(`${getApiBase()}/public/contact`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            Accept: 'application/json',
+          },
+          body: JSON.stringify({
+            name,
+            email,
+            phone,
+            subject,
+            message,
+            consentPrivacy: true,
+            turnstileToken,
+            website: honeypotValue,
+            locale,
+          }),
+        });
+
+        const payload = await response.json().catch(() => null);
+
+        if (!response.ok || !payload?.success) {
+          const errorMessage = payload?.message || 'Anfrage konnte nicht gesendet werden.';
+          setContactStatus(statusNode, errorMessage, 'is-error');
+          return;
+        }
+
+        setContactStatus(
+          statusNode,
+          locale === 'en' ? 'Thank you, your message has been sent.' : 'Vielen Dank. Ihre Nachricht wurde gesendet.',
+          'is-success',
+        );
+
+        contactForm.reset();
+        if (tokenInput) tokenInput.value = '';
+        if (window.turnstile && typeof window.turnstile.reset === 'function' && turnstileWidgetId != null) {
+          window.turnstile.reset(turnstileWidgetId);
+        }
+      } catch (_error) {
+        setContactStatus(statusNode, 'Backend nicht erreichbar. Bitte spaeter erneut versuchen.', 'is-error');
+      } finally {
+        if (submitButton instanceof HTMLButtonElement) submitButton.disabled = false;
+      }
+    });
+  };
+
+  const hydrateSiteConfig = async () => {
+    const targets = {
+      legalName: document.querySelectorAll('[data-company-legal-name]'),
+      brandName: document.querySelectorAll('[data-company-brand-name]'),
+      address: document.querySelectorAll('[data-company-address]'),
+      phone: document.querySelectorAll('[data-company-phone]'),
+      email: document.querySelectorAll('[data-company-email]'),
+    };
+
+    const hasTargets =
+      targets.legalName.length ||
+      targets.brandName.length ||
+      targets.address.length ||
+      targets.phone.length ||
+      targets.email.length;
+
+    if (!hasTargets) return;
+
+    try {
+      const response = await fetch(`${getApiBase()}/public/site-config`, {
+        headers: {
+          Accept: 'application/json',
+        },
+      });
+
+      if (!response.ok) return;
+      const payload = await response.json();
+      const data = payload?.data;
+      if (!data) return;
+
+      const contact = data.contact || {};
+      const legalName = String(contact.legalCompanyName || '').trim();
+      const brandName = String(contact.brandName || '').trim();
+      const phone = String(contact.phone || '').trim();
+      const email = String(contact.email || '').trim();
+      const address = [contact.street, contact.postalCode, contact.city, contact.country].filter(Boolean).join(', ');
+
+      targets.legalName.forEach((node) => {
+        node.textContent = legalName || node.textContent;
+      });
+
+      targets.brandName.forEach((node) => {
+        node.textContent = brandName || node.textContent;
+      });
+
+      targets.address.forEach((node) => {
+        node.textContent = address || node.textContent;
+      });
+
+      targets.phone.forEach((node) => {
+        node.textContent = phone || node.textContent;
+        if (node.tagName === 'A' && phone) {
+          node.setAttribute('href', `tel:${phone.replace(/\s+/g, '')}`);
+        }
+      });
+
+      targets.email.forEach((node) => {
+        node.textContent = email || node.textContent;
+        if (node.tagName === 'A' && email) {
+          node.setAttribute('href', `mailto:${email}`);
+        }
+      });
+    } catch (_error) {
+      // Fallback: statische Inhalte bleiben sichtbar.
+    }
+  };
+
   if (menu) {
     if (!menu.id) {
       menu.id = 'site-navigation';
@@ -145,6 +438,10 @@ function setupPage() {
   }
 
   document.querySelectorAll('.nav-link').forEach((link) => {
+    if (link.classList.contains('active')) {
+      link.setAttribute('aria-current', 'page');
+    }
+
     link.addEventListener('click', () => {
       setMenuState(false);
     });
@@ -158,7 +455,7 @@ function setupPage() {
   }
 
   if (searchInput && !searchInput.hasAttribute('aria-label')) {
-    searchInput.setAttribute('aria-label', 'Website durchsuchen');
+    searchInput.setAttribute('aria-label', document.documentElement.lang.startsWith('en') ? 'Search website' : 'Website durchsuchen');
   }
 
   if (openSearchBtn && search) {
@@ -267,36 +564,13 @@ function setupPage() {
     }
   });
 
-  if (contactForm) {
-    contactForm.addEventListener('submit', (event) => {
-      event.preventDefault();
-
-      const formData = new FormData(contactForm);
-      const firstName = String(formData.get('first_name') || '').trim();
-      const lastName = String(formData.get('last_name') || '').trim();
-      const fallbackName = String(formData.get('name') || '').trim();
-      const name = [firstName, lastName].filter(Boolean).join(' ') || fallbackName;
-      const email = String(formData.get('email') || '').trim();
-      const phone = String(formData.get('phone') || '').trim();
-      const selectedSubject = String(formData.get('subject') || '').trim();
-      const message = String(formData.get('message') || '').trim();
-
-      if (!name || !email || !EMAIL_PATTERN.test(email) || !message) {
-        contactForm.reportValidity();
-        return;
-      }
-
-      const subject = encodeURIComponent(`${selectedSubject || 'Kontaktanfrage'} - ${name || 'Website'}`);
-      const body = encodeURIComponent(`Name: ${name}\nE-Mail: ${email}\nTelefon: ${phone}\n\nNachricht:\n${message}`);
-
-      window.location.assign(`mailto:test@test.at?subject=${subject}&body=${body}`);
-    });
-  }
+  setupThemeToggle();
+  setupContactForm();
+  hydrateSiteConfig();
 
   setMenuState(Boolean(menu && menu.classList.contains('open')));
   setSearchState(Boolean(search && search.classList.contains('active')));
   setBodyLock();
-}
+};
 
-const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 document.addEventListener('DOMContentLoaded', setupPage);

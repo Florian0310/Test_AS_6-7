@@ -1,6 +1,11 @@
-﻿import type { Endpoint, PayloadRequest } from 'payload'
+import type { Endpoint, PayloadRequest } from 'payload'
+import { z } from 'zod'
+
 import { createRequestWithPricing } from '../services/requestService'
+import { sendRequestNotification } from '../services/emailService'
 import { calculatePricingForProduct, findProductForRequest } from '../services/pricingService'
+import { verifyTurnstileToken } from '../services/turnstileService'
+import { createInMemoryRateLimiter } from '../utils/rateLimit'
 import { PricingValidationError } from '../utils/pricing'
 
 const parseBody = async <T = Record<string, unknown>>(req: PayloadRequest): Promise<T> => {
@@ -10,6 +15,64 @@ const parseBody = async <T = Record<string, unknown>>(req: PayloadRequest): Prom
 
   const fallbackBody = (req as { body?: unknown; data?: unknown }).body || (req as { data?: unknown }).data
   return (fallbackBody || {}) as T
+}
+
+const toFiniteNumber = (value: string | undefined, fallback: number): number => {
+  const parsed = Number(value)
+  return Number.isFinite(parsed) ? parsed : fallback
+}
+
+const contactRateLimiter = createInMemoryRateLimiter({
+  windowMs: Math.max(toFiniteNumber(process.env.CONTACT_RATE_LIMIT_WINDOW_MS, 10 * 60 * 1000), 60_000),
+  maxRequests: Math.max(toFiniteNumber(process.env.CONTACT_RATE_LIMIT_MAX, 8), 1),
+})
+
+const contactInquirySchema = z
+  .object({
+    name: z.string().trim().min(2).max(120),
+    email: z.string().trim().email().max(180),
+    phone: z.string().trim().max(80).optional().or(z.literal('')),
+    subject: z.string().trim().min(2).max(160),
+    message: z.string().trim().min(10).max(4000),
+    consentPrivacy: z.boolean(),
+    turnstileToken: z.string().trim().max(4000).optional(),
+    locale: z.enum(['de', 'en']).optional(),
+    website: z.string().trim().max(200).optional().or(z.literal('')),
+  })
+  .refine((value) => value.consentPrivacy, {
+    message: 'Datenschutz-Einwilligung ist erforderlich.',
+    path: ['consentPrivacy'],
+  })
+
+const getHeaderValue = (req: PayloadRequest, key: string): string => {
+  const headers = (req as { headers?: unknown }).headers
+
+  if (!headers) return ''
+
+  if (typeof (headers as Headers).get === 'function') {
+    return String((headers as Headers).get(key) || '')
+  }
+
+  if (typeof headers === 'object') {
+    const source = headers as Record<string, string | string[] | undefined>
+    const direct = source[key] || source[key.toLowerCase()]
+    if (Array.isArray(direct)) return String(direct[0] || '')
+    return String(direct || '')
+  }
+
+  return ''
+}
+
+const getClientIp = (req: PayloadRequest): string => {
+  const forwarded = getHeaderValue(req, 'x-forwarded-for')
+  if (forwarded) {
+    return forwarded.split(',')[0].trim()
+  }
+
+  const realIp = getHeaderValue(req, 'x-real-ip')
+  if (realIp) return realIp.trim()
+
+  return 'unknown'
 }
 
 const formatProduct = (doc: any) => ({
@@ -278,6 +341,194 @@ export const submitRequestHandler: Endpoint['handler'] = async (req) => {
   }
 }
 
+export const siteConfigHandler: Endpoint['handler'] = async (req) => {
+  try {
+    const [siteSettings, contactSettings, rentalSettings, legalSettings] = await Promise.all([
+      req.payload.findGlobal({
+        slug: 'site-settings',
+        depth: 0,
+        req,
+        overrideAccess: true,
+      }),
+      req.payload.findGlobal({
+        slug: 'contact-settings',
+        depth: 0,
+        req,
+        overrideAccess: true,
+      }),
+      req.payload.findGlobal({
+        slug: 'rental-settings',
+        depth: 0,
+        req,
+        overrideAccess: true,
+      }),
+      req.payload.findGlobal({
+        slug: 'legal-settings',
+        depth: 0,
+        req,
+        overrideAccess: true,
+      }),
+    ])
+
+    return Response.json({
+      success: true,
+      data: {
+        site: {
+          siteName: siteSettings?.siteName || 'Alles Saniert',
+          websiteUrl: siteSettings?.websiteUrl || 'https://www.allessaniert.at',
+          defaultLocale: siteSettings?.defaultLocale || 'de',
+          seo: {
+            metaTitleDe: siteSettings?.seo?.metaTitleDe || '',
+            metaDescriptionDe: siteSettings?.seo?.metaDescriptionDe || '',
+            metaTitleEn: siteSettings?.seo?.metaTitleEn || '',
+            metaDescriptionEn: siteSettings?.seo?.metaDescriptionEn || '',
+            robotsPolicy: siteSettings?.seo?.robotsPolicy || 'index_follow',
+          },
+          tracking: {
+            gtmId: siteSettings?.tracking?.gtmId || '',
+            ga4MeasurementId: siteSettings?.tracking?.ga4MeasurementId || '',
+          },
+        },
+        contact: {
+          legalCompanyName: contactSettings?.legalCompanyName || '',
+          brandName: contactSettings?.brandName || '',
+          street: contactSettings?.street || '',
+          postalCode: contactSettings?.postalCode || '',
+          city: contactSettings?.city || '',
+          country: contactSettings?.country || '',
+          phone: contactSettings?.phone || '',
+          email: contactSettings?.email || '',
+        },
+        rental: {
+          priceDisclaimer: rentalSettings?.priceDisclaimer || '',
+        },
+        legal: {
+          impressumDe: legalSettings?.impressumDe || '',
+          impressumEn: legalSettings?.impressumEn || '',
+          privacyDe: legalSettings?.privacyDe || '',
+          privacyEn: legalSettings?.privacyEn || '',
+        },
+      },
+    })
+  } catch (error) {
+    return errorResponse(error, 'Website-Einstellungen konnten nicht geladen werden.')
+  }
+}
+
+export const submitContactInquiryHandler: Endpoint['handler'] = async (req) => {
+  try {
+    const body = await parseBody(req)
+    const parsed = contactInquirySchema.safeParse(body)
+
+    if (!parsed.success) {
+      throw new PricingValidationError(parsed.error.issues.map((issue) => issue.message).join(' | '))
+    }
+
+    const input = parsed.data
+
+    if (input.website) {
+      return Response.json(
+        {
+          success: true,
+          message: 'Vielen Dank fuer Ihre Anfrage.',
+          mode: 'honeypot',
+        },
+        { status: 202 },
+      )
+    }
+
+    const clientIp = getClientIp(req)
+    const rateLimit = contactRateLimiter.consume(clientIp)
+
+    if (!rateLimit.allowed) {
+      return Response.json(
+        {
+          success: false,
+          message: 'Zu viele Anfragen in kurzer Zeit. Bitte spaeter erneut versuchen.',
+        },
+        { status: 429 },
+      )
+    }
+
+    const turnstileResult = await verifyTurnstileToken({
+      token: input.turnstileToken,
+      remoteIp: clientIp === 'unknown' ? undefined : clientIp,
+    })
+
+    if (!turnstileResult.success) {
+      return Response.json(
+        {
+          success: false,
+          message: turnstileResult.message || 'Sicherheitspruefung fehlgeschlagen.',
+        },
+        { status: 400 },
+      )
+    }
+
+    const [contactSettings, rentalSettings] = await Promise.all([
+      req.payload.findGlobal({
+        slug: 'contact-settings',
+        depth: 0,
+        req,
+        overrideAccess: true,
+      }),
+      req.payload.findGlobal({
+        slug: 'rental-settings',
+        depth: 0,
+        req,
+        overrideAccess: true,
+      }),
+    ])
+
+    const recipient =
+      contactSettings?.inquiryRecipientEmail ||
+      rentalSettings?.requestNotificationEmail ||
+      process.env.REQUEST_NOTIFICATION_EMAIL ||
+      'office@allessaniert.at'
+
+    const locale = input.locale || 'de'
+    const subjectPrefix = locale === 'en' ? 'Website Contact Inquiry' : 'Kontaktanfrage Website'
+
+    const mailText = [
+      `${subjectPrefix}`,
+      '',
+      `Name: ${input.name}`,
+      `E-Mail: ${input.email}`,
+      `Telefon: ${input.phone || 'nicht angegeben'}`,
+      `Betreff: ${input.subject}`,
+      '',
+      'Nachricht:',
+      input.message,
+      '',
+      `IP (zur Missbrauchspraevention): ${clientIp}`,
+    ].join('\n')
+
+    const mailResult = await sendRequestNotification({
+      to: recipient,
+      subject: `${subjectPrefix} - ${input.subject}`,
+      text: mailText,
+    })
+
+    return Response.json(
+      {
+        success: true,
+        message: locale === 'en' ? 'Your request has been sent.' : 'Ihre Anfrage wurde gesendet.',
+        data: {
+          emailResult: mailResult,
+          security: {
+            turnstile: turnstileResult.mode,
+            rateLimitRemaining: rateLimit.remaining,
+            rateLimitResetAt: rateLimit.resetAt,
+          },
+        },
+      },
+      { status: 201 },
+    )
+  } catch (error) {
+    return errorResponse(error, 'Kontaktanfrage konnte nicht verarbeitet werden.')
+  }
+}
+
 export const publicEndpoints: Endpoint[] = [
   {
     path: '/catalog/products',
@@ -303,5 +554,15 @@ export const publicEndpoints: Endpoint[] = [
     path: '/catalog/requests',
     method: 'post',
     handler: submitRequestHandler,
+  },
+  {
+    path: '/public/site-config',
+    method: 'get',
+    handler: siteConfigHandler,
+  },
+  {
+    path: '/public/contact',
+    method: 'post',
+    handler: submitContactInquiryHandler,
   },
 ]

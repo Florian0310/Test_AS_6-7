@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="de">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Cookie-Einstellungen | Alles Saniert</title>
+    <meta name="description" content="Cookie-Einwilligungen verwalten und widerrufen." />
+    <link rel="canonical" href="https://www.allessaniert.at/cookie-einstellungen/" />
+    <link rel="icon" type="image/svg+xml" href="../favicon.svg" />
+    <link rel="stylesheet" href="../assets/vendor/icons.css" />
+    <link rel="stylesheet" href="../styles.css" />
+  </head>
+  <body>
+    <a class="skip-link" href="#main-content">Zum Inhalt springen</a>
+    <header class="header">
+      <nav class="nav container">
+        <a class="brand-logo" href="../index.html" aria-label="Alles Saniert Startseite">
+          <span class="brand-text"><strong>ALLES SANIERT</strong><small>SCHROEDER GESNBR</small></span>
+        </a>
+        <div class="nav-menu" data-nav-menu>
+          <ul class="nav-list">
+            <li><a class="nav-link" href="../cookie-richtlinie/index.html">Cookie-Richtlinie</a></li>
+            <li><a class="nav-link" href="../en/cookie-settings/index.html" lang="en">EN</a></li>
+          </ul>
+          <button class="icon-btn nav-close" type="button" data-close-menu aria-label="Menue schliessen"><i class="ri-close-line"></i></button>
+        </div>
+        <div class="nav-actions">
+          <button class="icon-btn nav-menu-toggle" type="button" data-open-menu aria-label="Menue oeffnen"><i class="ri-menu-line"></i></button>
+        </div>
+      </nav>
+    </header>
+
+    <main id="main-content" class="legal-main">
+      <article class="legal-card">
+        <h1>Cookie-Einstellungen</h1>
+        <p>
+          Hier koennen Sie Ihre Einwilligung fuer Analytics verwalten oder widerrufen. Die Website bleibt auch ohne
+          Analytics vollstaendig nutzbar.
+        </p>
+
+        <form class="consent-settings" data-consent-settings-form>
+          <div class="consent-settings__row">
+            <div>
+              <strong>Notwendig</strong>
+              <div class="consent-settings__meta">Anbieter: Alles Saniert | Zweck: Sicherheit und Consent-Speicherung | Speicherdauer: bis Widerruf</div>
+            </div>
+            <input type="checkbox" checked disabled />
+          </div>
+
+          <div class="consent-settings__row">
+            <div>
+              <strong>Analytics</strong>
+              <div class="consent-settings__meta">Anbieter: Google (GTM / GA4) | Zweck: Reichweitenmessung | Speicherdauer: je nach Google-Konfiguration</div>
+            </div>
+            <input type="checkbox" data-consent-analytics />
+          </div>
+
+          <div class="cookie-banner__actions">
+            <button class="btn-primary" type="button" data-consent-save>Auswahl speichern</button>
+            <button class="btn-secondary" type="button" data-consent-revoke>Einwilligung widerrufen</button>
+          </div>
+
+          <p class="contact-status is-info" data-consent-status role="status" aria-live="polite"></p>
+        </form>
+      </article>
+    </main>
+
+    <script src="../app-config.js"></script>
+    <script src="../consent.js"></script>
+    <script src="../script.js"></script>
+  </body>
+</html>
