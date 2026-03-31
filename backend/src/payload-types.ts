@@ -645,6 +645,18 @@ export interface SiteSetting {
      */
     popularProducts?: (number | Product)[] | null;
   };
+  catalog?: {
+    headlineDe?: string | null;
+    headlineEn?: string | null;
+    introDe?: string | null;
+    introEn?: string | null;
+    searchPlaceholderDe?: string | null;
+    searchPlaceholderEn?: string | null;
+    categoriesTitleDe?: string | null;
+    categoriesTitleEn?: string | null;
+    productsTitleDe?: string | null;
+    productsTitleEn?: string | null;
+  };
   updatedAt?: string | null;
   createdAt?: string | null;
 }
@@ -732,6 +744,20 @@ export interface SiteSettingsSelect<T extends boolean = true> {
         popularSectionTitleEn?: T;
         popularSectionSubtitleEn?: T;
         popularProducts?: T;
+      };
+  catalog?:
+    | T
+    | {
+        headlineDe?: T;
+        headlineEn?: T;
+        introDe?: T;
+        introEn?: T;
+        searchPlaceholderDe?: T;
+        searchPlaceholderEn?: T;
+        categoriesTitleDe?: T;
+        categoriesTitleEn?: T;
+        productsTitleDe?: T;
+        productsTitleEn?: T;
       };
   updatedAt?: T;
   createdAt?: T;

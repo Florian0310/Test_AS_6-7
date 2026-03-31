@@ -3,11 +3,21 @@
   const PAYLOAD_URL = String(appConfig.PAYLOAD_URL || 'http://localhost:3001').replace(/\/$/, '');
   const PAYLOAD_API_PREFIX = String(appConfig.PAYLOAD_API_PREFIX || '/api');
   const API_BASE = `${PAYLOAD_URL}${PAYLOAD_API_PREFIX.startsWith('/') ? PAYLOAD_API_PREFIX : `/${PAYLOAD_API_PREFIX}`}`;
-  const FALLBACK_IMAGE = '/assets/images/aboutUsTwo.jpg';
+  const FALLBACK_IMAGE = `data:image/svg+xml,${encodeURIComponent(
+    '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 300"><rect width="400" height="300" fill="#e8edf5"/><rect x="40" y="40" width="320" height="220" rx="18" fill="#d8e0ec"/><path d="M70 220l75-70 52 44 67-62 66 88H70z" fill="#9aaecb"/><circle cx="148" cy="118" r="22" fill="#aec0d9"/></svg>',
+  )}`;
   const ISO_DATE_PATTERN = /^\d{4}-\d{2}-\d{2}$/;
   const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   const IS_EN = document.documentElement.lang && document.documentElement.lang.startsWith('en');
   const PRICE_LOCALE = IS_EN ? 'en-AT' : 'de-AT';
+  const GERMAN_CATEGORY_LABELS = {
+    'fliesen-kleben-duebel': 'Fliesen / Kleben / Dübel',
+    'geruest-montagehilfen': 'Gerüst & Montagehilfen',
+    'kleinwerkzeug-hilfsgeraete': 'Kleinwerkzeug / Hilfsgeräte',
+    'messen-pruefen': 'Messen & Prüfen',
+    'werkzeuge-waermedaemmverbundsysteme': 'Werkzeuge für Wärmedämmverbundsysteme',
+  };
+
   const TEXT = {
     de: {
       allProducts: 'Alle Produkte',
@@ -21,7 +31,6 @@
       noToolsCategory: 'Keine Werkzeuge für diese Kategorie gefunden.',
       noToolsFilter: 'Keine Werkzeuge gefunden. Bitte Filter zurücksetzen.',
       loadingTools: 'Lade Werkzeuge aus dem CMS...',
-      toolCountLoaded: (count) => `${count} Werkzeug(e) geladen.`,
       backendUnavailable: 'Backend nicht erreichbar. Bitte Payload starten und URL prüfen.',
       productsLoadError: 'Produkte konnten nicht geladen werden.',
       searchError: 'Unbekannter Fehler',
@@ -39,8 +48,7 @@
       invalidSlug: 'Kein Werkzeug-Slug übergeben.',
       productLoaded: 'Werkzeugdaten geladen.',
       periodHint: 'Bitte gültigen Zeitraum und Menge eingeben.',
-      availableWindow: (qty, startDate, endDate) =>
-        `Verfügbar: ${qty} Stück im Zeitraum ${startDate} bis ${endDate}.`,
+      availableWindow: (qty, startDate, endDate) => `Verfügbar: ${qty} Stück im Zeitraum ${startDate} bis ${endDate}.`,
       unavailableWindow: (qty) => `Nicht verfügbar. Nur ${qty} Stück verfügbar.`,
       availabilityError: 'Verfügbarkeit konnte nicht geladen werden.',
       invalidName: 'Bitte gültigen Namen eingeben.',
@@ -71,7 +79,6 @@
       noToolsCategory: 'No tools found for this category.',
       noToolsFilter: 'No tools found. Please reset filters.',
       loadingTools: 'Loading tools from CMS...',
-      toolCountLoaded: (count) => `${count} tool(s) loaded.`,
       backendUnavailable: 'Backend unavailable. Please start Payload and verify URL.',
       productsLoadError: 'Products could not be loaded.',
       searchError: 'Unknown error',
@@ -99,7 +106,7 @@
       invalidQuantity: 'Please enter a valid quantity.',
       privacyRequired: 'Please accept the privacy policy.',
       requestSending: 'Sending request...',
-      requestSuccess: 'Thank you. Your request has been saved as \"Open\".',
+      requestSuccess: 'Thank you. Your request has been saved as "Open".',
       requestFail: 'Request could not be sent.',
       requestNotAvailable: 'Request not sent: selected period or quantity is not available.',
       noRelatedTools: 'No additional tools found in this category.',
@@ -109,13 +116,13 @@
       descriptionMissing: 'No description available.',
     },
   };
+
   const t = (key, ...args) => {
     const dict = IS_EN ? TEXT.en : TEXT.de;
     const value = dict[key];
     if (typeof value === 'function') return value(...args);
     return value || key;
   };
-
   const clampText = (value, maxLength = 200) => String(value || '').trim().slice(0, maxLength);
 
   const toFiniteNumber = (value, fallback = 0) => {
@@ -238,14 +245,26 @@
     };
   };
 
+  const normalizeCategoryName = (name, slug) => {
+    const normalizedName = clampText(name, 120);
+    const normalizedSlug = clampText(slug, 120);
+    if (IS_EN) return normalizedName;
+    if (normalizedSlug && GERMAN_CATEGORY_LABELS[normalizedSlug]) {
+      return GERMAN_CATEGORY_LABELS[normalizedSlug];
+    }
+    return normalizedName;
+  };
+
   const normalizeCategory = (entry) => {
     const category = entry && typeof entry === 'object' ? entry : null;
     if (!category) return null;
 
+    const slug = clampText(category.slug, 120);
+
     return {
       id: category.id,
-      name: clampText(category.name, 120),
-      slug: clampText(category.slug, 120),
+      name: normalizeCategoryName(category.name, slug),
+      slug,
       toolCount: toNonNegativeInteger(category.toolCount, 0),
     };
   };
@@ -375,6 +394,7 @@
         heroText: source?.rental?.heroText || '',
         priceDisclaimer: source?.rental?.priceDisclaimer || '',
         homepage: source?.site?.homepage || {},
+        catalog: source?.site?.catalog || {},
       };
     },
 
@@ -463,6 +483,10 @@
     const searchForm = page.querySelector('[data-tools-search-form]');
     const searchInput = page.querySelector('[data-tools-search]');
     const resetFilterButton = page.querySelector('[data-reset-filter]');
+    const headlineNode = page.querySelector('[data-shop-headline]');
+    const introNode = page.querySelector('[data-shop-intro]');
+    const categoriesTitleNode = page.querySelector('[data-shop-categories-title]');
+    const productsTitleNode = page.querySelector('[data-shop-products-title]');
 
     const urlState = new URLSearchParams(window.location.search);
     let activeCategory = urlState.get('category') || '';
@@ -471,6 +495,35 @@
     if (searchInput) {
       searchInput.value = activeSearch;
     }
+
+    const applyCatalogTextsFromSettings = (settings) => {
+      const catalog = settings?.catalog || {};
+      const localizedHeadline = IS_EN ? catalog.headlineEn : catalog.headlineDe;
+      const localizedIntro = IS_EN ? catalog.introEn : catalog.introDe;
+      const localizedSearchPlaceholder = IS_EN ? catalog.searchPlaceholderEn : catalog.searchPlaceholderDe;
+      const localizedCategoriesTitle = IS_EN ? catalog.categoriesTitleEn : catalog.categoriesTitleDe;
+      const localizedProductsTitle = IS_EN ? catalog.productsTitleEn : catalog.productsTitleDe;
+
+      if (headlineNode && localizedHeadline) {
+        headlineNode.textContent = clampText(localizedHeadline, 120);
+      }
+
+      if (introNode && localizedIntro) {
+        introNode.textContent = clampText(localizedIntro, 240);
+      }
+
+      if (searchInput && localizedSearchPlaceholder) {
+        searchInput.setAttribute('placeholder', clampText(localizedSearchPlaceholder, 80));
+      }
+
+      if (categoriesTitleNode && localizedCategoriesTitle) {
+        categoriesTitleNode.textContent = clampText(localizedCategoriesTitle, 80);
+      }
+
+      if (productsTitleNode && localizedProductsTitle) {
+        productsTitleNode.textContent = clampText(localizedProductsTitle, 80);
+      }
+    };
 
     const updateUrl = () => {
       const next = new URLSearchParams();
@@ -686,6 +739,15 @@
         updateUrl();
         loadData();
       });
+    }
+
+    try {
+      const settings = await RentalApi.getSiteSettings();
+      if (settings) {
+        applyCatalogTextsFromSettings(settings);
+      }
+    } catch (_error) {
+      // Fallback: statische Texte bleiben erhalten.
     }
 
     await loadData();

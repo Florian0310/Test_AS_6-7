@@ -55,6 +55,8 @@ Bereich `Preise und Tarife` im Produkt:
 ### `Website-Einstellungen`
 - SEO-Defaults
 - Tracking IDs (GTM / GA4)
+- Startseite: "Beliebte Produkte" (Titel, Untertitel, Produktauswahl)
+- Sortiment/Katalog: Ueberschrift, Einleitung, Such-Placeholder und Bereichstitel (DE/EN)
 
 ### `Kontakt-Einstellungen`
 - Firmenname, Adresse, Telefon, E-Mail
@@ -72,6 +74,7 @@ Wichtig:
 - Analytics nur nach Consent aktivieren
 - IDs in `Website-Einstellungen` eintragen
 - Cookie-Einstellungen im Frontend pruefen
+- Statistik im Admin basiert auf internen Daten (Produkte/Kategorien/Anfragen), nicht auf externem Tracking
 
 ## 9) Typische Fehler
 

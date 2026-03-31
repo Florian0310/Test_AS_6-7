@@ -40,6 +40,9 @@ Kernfunktionen:
 - `GET /api/public/site-config`
 - `POST /api/public/contact`
 
+### Admin
+- `GET /api/admin/statistics` (nur fuer eingeloggte Benutzer)
+
 ## 4. Preislogik
 
 Reihenfolge:
@@ -62,7 +65,21 @@ Zusatzlogik:
 - Rate-Limiting (In-Memory)
 - E-Mail-Versand ueber bestehende Mail-Logik
 
-## 6. Installation und Start
+## 6. Statistikdaten und DSGVO-Hinweis
+
+Die Dashboard-Statistik im Payload-Admin (Schnellstatistik) wird direkt aus den eigenen Collections berechnet:
+- `products` (aktive Produkte)
+- `categories` (aktive Kategorien)
+- `requests` (offene Anfragen + 7-Tage-Fenster)
+
+Es werden dafuer keine externen Trackinganbieter (z. B. Google Analytics) und keine zusaetzlichen personenbezogenen Profile benoetigt.
+
+Wichtig fuer DSGVO:
+- Statistik nur in aggregierter Form anzeigen
+- keine Speicherung zusaetzlicher personenbezogener Rohdaten nur fuer Dashboard-Zwecke
+- IP-Adressen aus Kontaktanfragen nur zur Missbrauchspraevention verwenden und nicht fuer Marketing-Tracking zweckentfremden
+
+## 7. Installation und Start
 
 ```powershell
 cd backend
@@ -75,7 +92,7 @@ npm run seed
 npm run dev
 ```
 
-## 7. Relevante ENV-Variablen
+## 8. Relevante ENV-Variablen
 
 ```env
 REQUEST_NOTIFICATION_EMAIL=office@allessaniert.at
@@ -92,7 +109,7 @@ CONTACT_RATE_LIMIT_WINDOW_MS=600000
 CONTACT_RATE_LIMIT_MAX=8
 ```
 
-## 8. Migration Strapi -> Payload
+## 9. Migration Strapi -> Payload
 
 Entfernt:
 - Strapi-Abhaengigkeiten
@@ -104,7 +121,7 @@ Ersetzt durch Payload:
 - Custom Endpoints unter `/api/catalog/*` und `/api/public/*`
 - TypeScript-basierte Services (`pricingService`, `requestService`, `emailService`, `turnstileService`)
 
-## 9. Tests
+## 10. Tests
 
 ```powershell
 cd backend

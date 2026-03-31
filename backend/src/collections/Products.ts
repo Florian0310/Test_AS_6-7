@@ -1,6 +1,15 @@
-﻿import type { CollectionConfig } from 'payload'
+import type { CollectionConfig } from 'payload'
 import { isAuthenticated, isAuthenticatedOrActiveFilter } from '../utils/access'
 import { slugFieldHook } from '../utils/slug'
+
+const resolveFrontendURL = () =>
+  (process.env.FRONTEND_PUBLIC_URL || 'http://localhost:8000').replace(/\/$/, '')
+
+const toProductPreviewURL = (rawSlug: unknown) => {
+  const slug = String(rawSlug || '').trim()
+  if (!slug) return null
+  return `${resolveFrontendURL()}/sortiment/produkt-hilti-sf-6-a22.html?slug=${encodeURIComponent(slug)}`
+}
 
 export const Products: CollectionConfig = {
   slug: 'products',
@@ -17,6 +26,10 @@ export const Products: CollectionConfig = {
   admin: {
     useAsTitle: 'title',
     defaultColumns: ['articleNumber', 'title', 'category', 'isActive', 'availabilityStatus', 'updatedAt'],
+    preview: (doc) => toProductPreviewURL(doc?.slug),
+    livePreview: {
+      url: ({ data }) => toProductPreviewURL(data?.slug),
+    },
   },
   fields: [
     {
@@ -86,21 +99,21 @@ export const Products: CollectionConfig = {
     },
     {
       name: 'availabilityStatus',
-      label: 'Verfügbarkeitsstatus',
+      label: 'Ver\u00fcgbarkeitsstatus',
       type: 'select',
       required: true,
       defaultValue: 'available',
       options: [
         {
-          label: 'Verfügbar',
+          label: 'Ver\u00fcgbar',
           value: 'available',
         },
         {
-          label: 'Begrenzt verfügbar',
+          label: 'Begrenzt verf\u00fcgbar',
           value: 'limited',
         },
         {
-          label: 'Aktuell nicht verfügbar',
+          label: 'Aktuell nicht verf\u00fcgbar',
           value: 'unavailable',
         },
       ],
@@ -149,19 +162,19 @@ export const Products: CollectionConfig = {
         },
         {
           name: 'cleaningFee',
-          label: 'Reinigungsgebühr (EUR)',
+          label: 'Reinigungsgeb\u00fchr (EUR)',
           type: 'number',
           min: 0,
         },
         {
           name: 'insuranceRequired',
-          label: 'Geräteversicherung verpflichtend',
+          label: 'Ger\u00e4teversicherung verpflichtend',
           type: 'checkbox',
           defaultValue: true,
         },
         {
           name: 'insuranceRateOverride',
-          label: 'Versicherungssatz Override (z. B. 0.10 für 10%)',
+          label: 'Versicherungssatz Override (z. B. 0.10 f\u00fcr 10%)',
           type: 'number',
           min: 0,
           max: 1,
@@ -176,9 +189,9 @@ export const Products: CollectionConfig = {
         },
         {
           name: 'consumableCostNote',
-          label: 'Hinweis zu Treibstoff / Verschleiß',
+          label: 'Hinweis zu Treibstoff / Verschlei\u00df',
           type: 'textarea',
-          defaultValue: 'Preise exklusive Treibstoff und Verschleißkosten.',
+          defaultValue: 'Preise exklusive Treibstoff und Verschlei\u00dfkosten.',
         },
       ],
     },

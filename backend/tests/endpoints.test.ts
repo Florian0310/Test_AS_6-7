@@ -79,6 +79,10 @@ const makePayload = () => {
           defaultLocale: 'de',
           seo: {},
           tracking: {},
+          catalog: {
+            headlineDe: 'Werkzeuge & Maschinen',
+            introDe: 'Alle Inhalte werden aus Payload geladen.',
+          },
         }
       }
 
@@ -200,6 +204,7 @@ describe('API Endpoints', () => {
     expect(res.status).toBe(200)
     expect(body.success).toBe(true)
     expect(body.data.site.siteName).toBe('Alles Saniert')
+    expect(body.data.site.catalog.headlineDe).toBe('Werkzeuge & Maschinen')
   })
 
   it('validiert Kontaktanfrage ohne Einwilligung', async () => {

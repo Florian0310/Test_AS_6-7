@@ -1614,6 +1614,8 @@ img {
   display: grid;
   grid-template-columns: repeat(4, minmax(190px, 1fr));
   gap: 14px;
+  grid-auto-rows: 1fr;
+  align-items: stretch;
 }
 
 .shop-product-card {
@@ -1624,7 +1626,7 @@ img {
   display: flex;
   flex-direction: column;
   gap: 8px;
-  height: 100%;
+  min-height: 100%;
 }
 
 .shop-product-image {
@@ -1659,14 +1661,16 @@ img {
   margin: 0;
   color: #1f2937;
   font-size: 1.06rem;
-  min-height: 2.5em;
+  min-height: 2.6em;
+  line-height: 1.28;
 }
 
 .shop-product-card dl {
   margin: 4px 0 0;
   display: grid;
-  gap: 8px;
+  gap: 7px;
   margin-top: auto;
+  min-height: 5.8em;
 }
 
 .shop-product-card dl div {
@@ -1692,16 +1696,19 @@ img {
 }
 
 .btn-price {
-  margin-top: 12px;
+  margin-top: auto;
   display: inline-flex;
   justify-content: center;
   align-items: center;
   min-height: 42px;
+  min-width: 124px;
+  padding: 0 14px;
   border-radius: 10px;
   background: var(--brand-orange);
   color: #fff;
   font-weight: 700;
   align-self: flex-start;
+  white-space: nowrap;
 }
 
 .product-detail-head {
@@ -2413,6 +2420,10 @@ img {
   background: #111a2d;
 }
 
+:root[data-theme='dark'] .contact-left {
+  background: linear-gradient(180deg, #041d78 0%, #071653 100%);
+}
+
 :root[data-theme='dark'] .product-image-wrap,
 :root[data-theme='dark'] .shop-product-image,
 :root[data-theme='dark'] .shop-mini-grid article,
@@ -2599,6 +2610,10 @@ img {
 
   .contact-right {
     background: #111a2d;
+  }
+
+  .contact-left {
+    background: linear-gradient(180deg, #041d78 0%, #071653 100%);
   }
 
   .product-image-wrap,

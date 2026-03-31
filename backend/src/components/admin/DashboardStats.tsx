@@ -100,6 +100,9 @@ export const DashboardStats = async ({ payload }: DashboardStatsProps) => {
         <StatCard label="Offene Anfragen" value={toLabelValue(openRequests)} />
         <StatCard label="Anfragen (7 Tage)" value={toLabelValue(requestsLast7Days)} />
       </div>
+      <p style={{ margin: '0.75rem 0 0', fontSize: '0.78rem', opacity: 0.78 }}>
+        Quelle: Live-Auswertung der Collections Produkte, Kategorien und Anfragen (keine externe Analytics-Plattform).
+      </p>
     </section>
   )
 }

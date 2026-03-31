@@ -1,66 +1,61 @@
 # Alles Saniert - Frontend + Payload CMS Backend
 
-Dieses Projekt kombiniert ein bestehendes statisches Frontend mit einem Payload-CMS-Backend.
+Dieses Repository enthaelt:
+- ein bestehendes statisches Frontend (HTML/CSS/JS)
+- ein Payload-CMS-Backend in `backend/`
 
-Wichtig:
-- Strapi wurde entfernt.
-- Payload CMS ist die einzige aktive Backend-/CMS-Lösung.
+Strapi wurde vollstaendig entfernt. Payload ist die einzige CMS-/Backend-Loesung.
 
-## Projektziel
+## Projektzweck
 
-Die Plattform bildet einen Anfrage-Checkout für Werkzeugverleih ab:
+Das System ist ein Anfrage-Checkout fuer Werkzeugverleih (kein Payment-Checkout):
 - Produkte und Kategorien anzeigen
-- Mietdauer/Zeitraum erfassen
-- Preis serverseitig berechnen
+- Mietzeitraum erfassen
+- Preise serverseitig berechnen
 - Anfrage speichern
-- Betreiber wird per E-Mail informiert
-- manuelle Annahme/Ablehnung durch Betreiber
+- Betreiber per E-Mail informieren
+- manuelle Annahme/Ablehnung im Betrieb
 
-Kein Zahlungs-Checkout und kein Warenkorb mit Payment.
+## Architektur (Kurz)
 
-## Technischer Stand
+- Frontend: statisch, konsumiert Payload-APIs
+- Backend: Payload + Next.js App Router + TypeScript
+- DB (lokal): SQLite (`backend/data/payload.sqlite`)
+- Medien: Payload `media` Collection
+- Preislogik: Utility/Service im Backend
+
+## Strapi -> Payload (abgeschlossen)
+
+Entfernt:
+- Strapi-Abhaengigkeiten
+- Strapi-Modelle/Config/Annahmen
+
+Ersetzt durch Payload:
+- Collections: `users`, `media`, `categories`, `products`, `requests`
+- Globals: `rental-settings`, `site-settings`, `contact-settings`, `legal-settings`
+- API-Endpunkte unter `/api/catalog/*`, `/api/public/*`, `/api/admin/statistics`
+
+## Wichtige Features
 
 ### Frontend
-- Statisches HTML/CSS/JS im Repo-Root
-- DE/EN-Frontend mit Sprach-Autodetect auf der Startseite:
+- DE/EN mit Sprach-Autodetect auf der Startseite
   - Standard: Deutsch
-  - Bei englischer Browser-Sprache automatische EN-Startseite
-- Consent-Banner mit Opt-in (notwendig + analytics)
-- Google Tag Manager / GA4 nur nach Consent
-- Cookie-Einstellungen Seiten:
+  - Wenn Browser-Sprache Englisch: EN-Startseite
+- Consent-Banner (Opt-in)
+- GTM/GA4 nur nach Consent
+- Cookie-Einstellungsseiten:
   - `/cookie-einstellungen/` (DE)
   - `/en/cookie-settings/` (EN)
-- Rechtsseiten:
-  - `/impressum/`, `/datenschutz/`, `/cookie-richtlinie/`, `/barrierefreiheit/`
-  - `/en/imprint/`, `/en/privacy-policy/`, `/en/cookie-policy/`, `/en/accessibility-statement/`
-- Keine externen Google-Font Requests
-- Kein externes Icon-CDN (lokale Icon-Styles)
-- Startseite: „Beliebte Produkte“ wird aus Payload-Global gepflegt
-- Sortiment: aufgeräumte Filter-UI, konsistente Kartenhöhen, bereinigte Debug-Ausgaben
+- Keine externen Google-Fonts
+- Lokale Icon-CSS (kein CDN)
+- Katalogtexte koennen aus Payload gepflegt werden (DE/EN)
+- Startseite: "Beliebte Produkte" aus Payload auswahlbar
 
-### Backend
-- Payload CMS + Next.js App Router in `backend/`
-- SQLite für lokale Entwicklung
-- Collections:
-  - `users`, `media`, `categories`, `products`, `requests`
-- Globals:
-  - `rental-settings`
-  - `site-settings`
-  - `contact-settings`
-  - `legal-settings`
-- Admin-Verbesserungen:
-  - Branding (Logo/Icon)
-  - Dashboard-Intro
-  - Dashboard-Schnellstatistik (aktive Produkte/Kategorien, offene Anfragen, 7-Tage-Anfragen)
-- Public Endpoints:
-  - `GET /api/catalog/products`
-  - `GET /api/catalog/products/slug/:slug`
-  - `GET /api/catalog/categories`
-  - `POST /api/catalog/pricing/calculate`
-  - `POST /api/catalog/requests`
-  - `GET /api/public/site-config`
-  - `POST /api/public/contact`
-  - `GET /api/admin/statistics` (nur authentifiziert)
+### Payload Admin
+- Branding (Logo/Icon)
+- Dashboard-Intro
+- Schnellstatistik (aktive Produkte, aktive Kategorien, offene Anfragen, Anfragen letzte 7 Tage)
+- Preview-/Live-Preview-Konfiguration fuer Produkte und Website-Einstellungen
 
 ## Setup
 
@@ -70,18 +65,19 @@ Kein Zahlungs-Checkout und kein Warenkorb mit Payment.
 cd backend
 Copy-Item .env.example .env
 npm install
-npm run generate:importmap
 npm run generate:types
 npm run migrate
 npm run seed
 npm run dev
 ```
 
+Wichtig: `generate:importmap` laeuft automatisch ueber `predev` / `prebuild` / `prestart`.
+
 Backend URLs:
 - Admin: `http://localhost:3001/admin`
 - API: `http://localhost:3001/api`
 
-### 2) Frontend
+### 2) Frontend lokal starten
 
 ```powershell
 cd ..
@@ -91,21 +87,20 @@ python -m http.server 8000
 Frontend URL:
 - `http://localhost:8000`
 
-## Wichtige Konfigurationsdateien
+## NPM Scripts (Backend)
 
-### Frontend `app-config.js`
-
-```js
-window.APP_CONFIG = Object.freeze({
-  PAYLOAD_URL: 'http://localhost:3001',
-  PAYLOAD_API_PREFIX: '/api',
-  GTM_ID: '',
-  GA4_MEASUREMENT_ID: '',
-  TURNSTILE_SITE_KEY: '',
-});
+```powershell
+npm run dev
+npm run build
+npm run start
+npm run generate:types
+npm run generate:importmap
+npm run migrate
+npm run seed
+npm test
 ```
 
-### Backend `.env` (Auszug)
+## ENV Variablen (Auszug)
 
 ```env
 PAYLOAD_SECRET=change-me-in-production
@@ -131,34 +126,75 @@ CONTACT_RATE_LIMIT_WINDOW_MS=600000
 CONTACT_RATE_LIMIT_MAX=8
 ```
 
-## Consent und Tracking
+## API Endpunkte
 
-- Consent Mode v2 wird mit `denied` als Default gesetzt.
-- Ohne Einwilligung kein Analytics-Tracking.
-- Nach Opt-in werden GTM/GA4 dynamisch geladen.
-- Consent kann auf den Cookie-Einstellungsseiten geaendert oder widerrufen werden.
+### Katalog
+- `GET /api/catalog/products`
+- `GET /api/catalog/products/slug/:slug`
+- `GET /api/catalog/categories`
+- `POST /api/catalog/pricing/calculate`
+- `POST /api/catalog/requests`
 
-## Formular- und Spam-Schutz
+### Oeffentlich
+- `GET /api/public/site-config`
+- `POST /api/public/contact`
 
-- Kontaktformular sendet an `POST /api/public/contact`
-- Validierung client- und serverseitig
-- Honeypot-Feld gegen einfache Bots
-- Cloudflare Turnstile-Unterstuetzung
-- In-Memory Rate-Limiting im Backend
+### Admin
+- `GET /api/admin/statistics` (nur authentifiziert)
 
-## Preislogik (Backend)
+## Preislogik
 
-Tarife pro Produkt:
+Tarife je Produkt:
 - Tarif I: Tagespreis
 - Tarif II: 3-Tages-Preis
 - Tarif III: Wochenpreis (7 Tage)
 
 Berechnung:
-- zuerst 7-Tage-Bloecke
-- dann 3-Tage-Bloecke
-- dann Resttage
-- Versicherung standardmäßig 10%
-- Kaution/Reinigungsgebuehr separat
+1. 7-Tages-Bloecke
+2. 3-Tages-Bloecke
+3. Resttage
+
+Zusatzkosten:
+- Pflichtversicherung (standardmaessig 10%, konfigurierbar)
+- optionale Kaution
+- optionale Reinigungsgebuehr
+
+## Anfrage-Checkout
+
+Ablauf:
+1. Produkt abrufen
+2. Mietdauer/Zeitraum eingeben
+3. Preis serverseitig berechnen
+4. Anfrage validieren und speichern
+5. E-Mail an Betreiber ausloesen/vorbereiten
+6. Status im Backend pflegen
+
+## Consent / Tracking
+
+- Default Consent Mode: denied
+- Kein Analytics-Tracking ohne Zustimmung
+- Nach Opt-in: GTM/GA4 werden dynamisch aktiviert
+- Einwilligung kann auf den Cookie-Seiten geaendert oder widerrufen werden
+
+## Sicherheit
+
+- Kontaktformular mit Validierung (Client + Server)
+- Honeypot gegen einfache Bots
+- Cloudflare Turnstile
+- In-Memory Rate-Limit fuer Kontakt-Endpunkt
+- Security Header in Next-Konfiguration
+
+## Admin-Statistikdaten und DSGVO
+
+Die Dashboard-Schnellstatistik basiert ausschliesslich auf internen Collections:
+- `products`
+- `categories`
+- `requests`
+
+Hinweis:
+- keine externe Analytics-Quelle fuer diese Kennzahlen notwendig
+- nur aggregierte Darstellung verwenden
+- keine zusaetzliche personenbezogene Speicherung fuer Statistikzwecke
 
 ## Tests
 
@@ -170,33 +206,23 @@ npm test
 Abgedeckt:
 - Preisberechnung
 - Anfrageprozess
-- API-Endpunkte inkl. Contact-/Site-Config-Erweiterung
+- API-Endpunkte
 
-## Build / Production
+## Frontend-Anbindung (Payload statt Strapi)
 
-```powershell
-cd backend
-npm run build
-npm run start
-```
-
-## Frontend-Anbindung an Payload (statt Strapi)
-
-- `shop.js` nutzt Payload-Endpoints unter `/api/catalog/*`
-- Site-/Kontaktdaten können über `/api/public/site-config` geladen werden
-- „Beliebte Produkte“ werden im Payload-Global `site-settings > Startseite > Beliebte Produkte` gewählt
+- `shop.js` nutzt Payload unter `/api/catalog/*`
+- Site-/Kontaktdaten kommen aus `/api/public/site-config`
 - Kontaktformular nutzt `/api/public/contact`
+- Beliebte Produkte werden im Global `site-settings` gepflegt
 
-## Wichtiger Hinweis zu GitHub Push
+## Git-Hinweis
 
-Das Repo ignoriert nun u.a.:
+Folgende grosse Artefakte sollten nicht ins Repository:
 - `backend/.next/`
 - `backend/node_modules/`
 - `backend/data/`
 
-Damit werden keine grossen Build-Cache-Dateien mehr mitgepusht.
-
-## Weiterfuehrende Doku
+## Weitere Doku
 
 - `docs/BACKEND_DOKUMENTATION.md`
 - `docs/ENDNUTZER_PFLEGEANLEITUNG.md`

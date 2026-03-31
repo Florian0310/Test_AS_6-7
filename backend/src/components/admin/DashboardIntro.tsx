@@ -12,7 +12,7 @@ export const DashboardIntro = () => {
       <h2 style={{ margin: 0, fontSize: '1.05rem', fontWeight: 700 }}>Alles Saniert CMS</h2>
       <p style={{ margin: '0.35rem 0 0', opacity: 0.9, lineHeight: 1.45 }}>
         Produkte, Kategorien und Anfragen zentral verwalten. Die Startseite kann unter
-        <strong> Website-Einstellungen</strong> inkl. „Beliebte Produkte“ direkt gepflegt werden.
+        <strong> Website-Einstellungen</strong> inklusive <strong>Beliebte Produkte</strong> direkt gepflegt werden.
       </p>
     </section>
   )

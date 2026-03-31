@@ -5,8 +5,11 @@
   "description": "Payload CMS Backend fuer Alles Saniert Werkzeugverleih",
   "type": "module",
   "scripts": {
+    "predev": "npm run generate:importmap",
     "dev": "next dev -p 3001 --webpack",
+    "prebuild": "npm run generate:importmap",
     "build": "next build",
+    "prestart": "npm run generate:importmap",
     "start": "next start -p 3001",
     "generate:types": "payload generate:types",
     "generate:importmap": "payload generate:importmap",

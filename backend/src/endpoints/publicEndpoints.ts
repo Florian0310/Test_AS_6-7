@@ -75,12 +75,45 @@ const getClientIp = (req: PayloadRequest): string => {
   return 'unknown'
 }
 
+const repairTextEncoding = (value: unknown): string => {
+  if (typeof value !== 'string') return String(value || '')
+
+  const normalized = value
+    .replace(/\u00C3\u201E/g, 'Ä')
+    .replace(/\u00C3\u2013/g, 'Ö')
+    .replace(/\u00C3\u0153/g, 'Ü')
+    .replace(/\u00C3\u00A4/g, 'ä')
+    .replace(/\u00C3\u00B6/g, 'ö')
+    .replace(/\u00C3\u00BC/g, 'ü')
+    .replace(/\u00C3\u0178/g, 'ß')
+    .replace(/\u00E2\u20AC\u017E/g, '„')
+    .replace(/\u00E2\u20AC\u015C/g, '“')
+    .replace(/\u00E2\u20AC\u02DC/g, '‘')
+    .replace(/\u00E2\u20AC\u2122/g, '’')
+    .replace(/\u00E2\u20AC\u201C/g, '–')
+    .replace(/\u00E2\u20AC\u201D/g, '—')
+
+  if (/[\u00C2\u00C3\u00E2]/.test(normalized)) {
+    try {
+      const bytes = Uint8Array.from(Array.from(normalized).map((char) => char.charCodeAt(0) & 0xff))
+      const decoded = new TextDecoder('utf-8', { fatal: false }).decode(bytes)
+      if (decoded && !decoded.includes('�') && !/[\u00C2\u00C3\u00E2]/.test(decoded)) {
+        return decoded
+      }
+    } catch (_error) {
+      // Falls Dekodierung fehlschlaegt, Original beibehalten.
+    }
+  }
+
+  return normalized
+}
+
 const formatProduct = (doc: any) => ({
   id: doc.id,
-  title: doc.title,
+  title: repairTextEncoding(doc.title),
   slug: doc.slug,
-  articleNumber: doc.articleNumber,
-  shortDescription: doc.shortDescription,
+  articleNumber: repairTextEncoding(doc.articleNumber),
+  shortDescription: repairTextEncoding(doc.shortDescription),
   longDescription: doc.longDescription,
   availabilityStatus: doc.availabilityStatus,
   isActive: doc.isActive,
@@ -88,7 +121,7 @@ const formatProduct = (doc: any) => ({
     doc.category && typeof doc.category === 'object'
       ? {
           id: doc.category.id,
-          name: doc.category.name,
+          name: repairTextEncoding(doc.category.name),
           slug: doc.category.slug,
         }
       : doc.category,
@@ -100,7 +133,7 @@ const formatProduct = (doc: any) => ({
             ? {
                 id: image.id,
                 url: image.url,
-                alt: image.alt,
+                alt: repairTextEncoding(image.alt),
               }
             : null,
         )
@@ -295,9 +328,9 @@ export const listCategoriesHandler: Endpoint['handler'] = async (req) => {
 
         return {
           id: category.id,
-          name: category.name,
+          name: repairTextEncoding(category.name),
           slug: category.slug,
-          description: category.description,
+          description: repairTextEncoding(category.description),
           sortOrder: category.sortOrder,
           toolCount,
         }
@@ -464,10 +497,10 @@ export const siteConfigHandler: Endpoint['handler'] = async (req) => {
           websiteUrl: siteSettings?.websiteUrl || 'https://www.allessaniert.at',
           defaultLocale: siteSettings?.defaultLocale || 'de',
           seo: {
-            metaTitleDe: siteSettings?.seo?.metaTitleDe || '',
-            metaDescriptionDe: siteSettings?.seo?.metaDescriptionDe || '',
-            metaTitleEn: siteSettings?.seo?.metaTitleEn || '',
-            metaDescriptionEn: siteSettings?.seo?.metaDescriptionEn || '',
+            metaTitleDe: repairTextEncoding(siteSettings?.seo?.metaTitleDe || ''),
+            metaDescriptionDe: repairTextEncoding(siteSettings?.seo?.metaDescriptionDe || ''),
+            metaTitleEn: repairTextEncoding(siteSettings?.seo?.metaTitleEn || ''),
+            metaDescriptionEn: repairTextEncoding(siteSettings?.seo?.metaDescriptionEn || ''),
             robotsPolicy: siteSettings?.seo?.robotsPolicy || 'index_follow',
           },
           tracking: {
@@ -475,36 +508,58 @@ export const siteConfigHandler: Endpoint['handler'] = async (req) => {
             ga4MeasurementId: siteSettings?.tracking?.ga4MeasurementId || '',
           },
           homepage: {
-            popularSectionTitleDe: siteSettings?.homepage?.popularSectionTitleDe || 'Beliebte Produkte',
-            popularSectionSubtitleDe:
+            popularSectionTitleDe: repairTextEncoding(
+              siteSettings?.homepage?.popularSectionTitleDe || 'Beliebte Produkte',
+            ),
+            popularSectionSubtitleDe: repairTextEncoding(
               siteSettings?.homepage?.popularSectionSubtitleDe || 'Die Favoriten unserer Kunden diese Woche.',
-            popularSectionTitleEn: siteSettings?.homepage?.popularSectionTitleEn || 'Popular Products',
-            popularSectionSubtitleEn:
+            ),
+            popularSectionTitleEn: repairTextEncoding(siteSettings?.homepage?.popularSectionTitleEn || 'Popular Products'),
+            popularSectionSubtitleEn: repairTextEncoding(
               siteSettings?.homepage?.popularSectionSubtitleEn || 'Top picks from our customers this week.',
+            ),
             popularProducts,
+          },
+          catalog: {
+            headlineDe: repairTextEncoding(siteSettings?.catalog?.headlineDe || 'Werkzeuge & Maschinen'),
+            headlineEn: repairTextEncoding(siteSettings?.catalog?.headlineEn || 'Tools & Machines'),
+            introDe: repairTextEncoding(
+              siteSettings?.catalog?.introDe ||
+              'Alle Inhalte werden aus Payload CMS geladen. Sie k\u00f6nnen direkt nach Kategorien und Begriffen filtern.',
+            ),
+            introEn: repairTextEncoding(
+              siteSettings?.catalog?.introEn ||
+              'All content is loaded from Payload CMS. You can filter by category and search terms directly.',
+            ),
+            searchPlaceholderDe: repairTextEncoding(siteSettings?.catalog?.searchPlaceholderDe || 'Werkzeug suchen...'),
+            searchPlaceholderEn: repairTextEncoding(siteSettings?.catalog?.searchPlaceholderEn || 'Search tools...'),
+            categoriesTitleDe: repairTextEncoding(siteSettings?.catalog?.categoriesTitleDe || 'Kategorien'),
+            categoriesTitleEn: repairTextEncoding(siteSettings?.catalog?.categoriesTitleEn || 'Categories'),
+            productsTitleDe: repairTextEncoding(siteSettings?.catalog?.productsTitleDe || 'Produkte'),
+            productsTitleEn: repairTextEncoding(siteSettings?.catalog?.productsTitleEn || 'Products'),
           },
         },
         contact: {
-          legalCompanyName: contactSettings?.legalCompanyName || '',
-          brandName: contactSettings?.brandName || '',
-          street: contactSettings?.street || '',
+          legalCompanyName: repairTextEncoding(contactSettings?.legalCompanyName || ''),
+          brandName: repairTextEncoding(contactSettings?.brandName || ''),
+          street: repairTextEncoding(contactSettings?.street || ''),
           postalCode: contactSettings?.postalCode || '',
-          city: contactSettings?.city || '',
-          country: contactSettings?.country || '',
-          phone: contactSettings?.phone || '',
-          email: contactSettings?.email || '',
+          city: repairTextEncoding(contactSettings?.city || ''),
+          country: repairTextEncoding(contactSettings?.country || ''),
+          phone: repairTextEncoding(contactSettings?.phone || ''),
+          email: repairTextEncoding(contactSettings?.email || ''),
         },
         rental: {
-          companyName: rentalSettings?.companyName || 'Alles Saniert',
-          heroHeadline: rentalSettings?.heroHeadline || '',
-          heroText: rentalSettings?.heroText || '',
-          priceDisclaimer: rentalSettings?.priceDisclaimer || '',
+          companyName: repairTextEncoding(rentalSettings?.companyName || 'Alles Saniert'),
+          heroHeadline: repairTextEncoding(rentalSettings?.heroHeadline || ''),
+          heroText: repairTextEncoding(rentalSettings?.heroText || ''),
+          priceDisclaimer: repairTextEncoding(rentalSettings?.priceDisclaimer || ''),
         },
         legal: {
-          impressumDe: legalSettings?.impressumDe || '',
-          impressumEn: legalSettings?.impressumEn || '',
-          privacyDe: legalSettings?.privacyDe || '',
-          privacyEn: legalSettings?.privacyEn || '',
+          impressumDe: repairTextEncoding(legalSettings?.impressumDe || ''),
+          impressumEn: repairTextEncoding(legalSettings?.impressumEn || ''),
+          privacyDe: repairTextEncoding(legalSettings?.privacyDe || ''),
+          privacyEn: repairTextEncoding(legalSettings?.privacyEn || ''),
         },
       },
     })
