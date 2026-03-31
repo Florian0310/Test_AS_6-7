@@ -26,7 +26,7 @@ const dataDir = path.resolve(dirname, 'data')
 mkdirSync(dataDir, { recursive: true })
 
 const databaseURL = process.env.DATABASE_URI || 'file:./data/payload.sqlite'
-const frontendURL = process.env.FRONTEND_PUBLIC_URL || 'http://localhost:8000'
+const frontendURL = process.env.FRONTEND_PUBLIC_URL || 'http://localhost:3000'
 const adminEmail = process.env.PAYLOAD_ADMIN_EMAIL || 'admin@example.com'
 const adminPassword = process.env.PAYLOAD_ADMIN_PASSWORD || 'ChangeMe123!'
 

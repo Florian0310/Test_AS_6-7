@@ -7,6 +7,7 @@
   --bg-light: #f5f5f5;
   --white: #ffffff;
   --focus-ring: #4f7cd8;
+  --anchor-offset: 114px;
   color-scheme: light;
 }
 
@@ -23,6 +24,7 @@ html {
   -webkit-text-size-adjust: 100%;
   text-size-adjust: 100%;
   scroll-behavior: smooth;
+  scroll-padding-top: var(--anchor-offset);
 }
 
 body {
@@ -393,7 +395,7 @@ img {
 }
 
 #rentInstructions {
-  scroll-margin-top: 104px;
+  scroll-margin-top: calc(var(--anchor-offset) + 12px);
 }
 
 .section-title {
@@ -612,6 +614,8 @@ img {
   display: grid;
   grid-template-columns: repeat(3, minmax(240px, 1fr));
   gap: 22px;
+  grid-auto-rows: 1fr;
+  align-items: stretch;
 }
 
 .product-card {
@@ -659,6 +663,7 @@ img {
   margin: 0 0 8px;
   font-size: 1.28rem;
   line-height: 1.25;
+  min-height: 2.5em;
 }
 
 .product-content p {
@@ -673,6 +678,7 @@ img {
   justify-content: space-between;
   align-items: end;
   margin-top: auto;
+  gap: 12px;
 }
 
 .product-footer small {
@@ -2493,6 +2499,87 @@ img {
   color: #e5e7eb;
 }
 
+:root[data-theme='dark'] .search {
+  background-color: rgba(2, 6, 23, 0.54);
+}
+
+:root[data-theme='dark'] .search-form i,
+:root[data-theme='dark'] .search-input {
+  color: #e2e8f0;
+}
+
+:root[data-theme='dark'] .search-input::placeholder,
+:root[data-theme='dark'] .shop-search-form input::placeholder,
+:root[data-theme='dark'] .field input::placeholder,
+:root[data-theme='dark'] .field textarea::placeholder,
+:root[data-theme='dark'] .field-inline input::placeholder,
+:root[data-theme='dark'] .field-inline textarea::placeholder {
+  color: #90a1bc;
+}
+
+:root[data-theme='dark'] .section-soft {
+  background: linear-gradient(180deg, #111a2d 0%, #0b1220 100%);
+}
+
+:root[data-theme='dark'] .hero p {
+  color: rgba(255, 255, 255, 0.93);
+}
+
+:root[data-theme='dark'] .hero-badge {
+  border-color: rgba(255, 255, 255, 0.45);
+  background: rgba(255, 255, 255, 0.14);
+  color: #ffd7a1;
+}
+
+:root[data-theme='dark'] .btn-ghost {
+  border-color: rgba(255, 255, 255, 0.42);
+  background: rgba(255, 255, 255, 0.1);
+}
+
+:root[data-theme='dark'] .product-cart {
+  background: #1f325d;
+}
+
+:root[data-theme='dark'] .service-card {
+  background: linear-gradient(180deg, #122038 0%, #0f1a2f 100%);
+  border-color: #30425d;
+}
+
+:root[data-theme='dark'] .service-card .service-icon {
+  background: rgba(147, 181, 255, 0.2);
+  color: #b4caff;
+}
+
+:root[data-theme='dark'] .service-card p {
+  color: #a9b7ca;
+}
+
+:root[data-theme='dark'] .forestry-panel {
+  border-color: #30425d;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.45);
+}
+
+:root[data-theme='dark'] .legal-card p,
+:root[data-theme='dark'] .legal-card li,
+:root[data-theme='dark'] .legal-card strong,
+:root[data-theme='dark'] .legal-card a,
+:root[data-theme='dark'] .cookie-banner__content p,
+:root[data-theme='dark'] .consent-settings__meta,
+:root[data-theme='dark'] .contact-status {
+  color: #c6d5e9;
+}
+
+:root[data-theme='dark'] .legal-card a {
+  color: #a9c4ff;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+:root[data-theme='dark'] .contact-info-item {
+  background: rgba(255, 255, 255, 0.06);
+  border-color: rgba(148, 163, 184, 0.28);
+}
+
 @media (prefers-color-scheme: dark) {
   :root {
     --bg-light: #0b1220;
@@ -3051,9 +3138,25 @@ img {
     flex-direction: column;
     align-items: flex-start;
   }
+
+  :root[data-theme='dark'] .nav-menu {
+    background: #0f1729;
+    border-top: 1px solid #334155;
+  }
+
+  :root[data-theme='dark'] .nav-link,
+  :root[data-theme='dark'] .nav-link:hover,
+  :root[data-theme='dark'] .nav-link.active,
+  :root[data-theme='dark'] .nav-close {
+    color: #e5e7eb;
+  }
 }
 
 @media (max-width: 640px) {
+  :root {
+    --anchor-offset: 98px;
+  }
+
   .hero {
     min-height: 510px;
     background-position: 60% center;

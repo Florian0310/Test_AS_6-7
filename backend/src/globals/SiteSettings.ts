@@ -1,7 +1,11 @@
 import type { GlobalConfig } from 'payload'
 
 const resolveFrontendURL = () =>
-  (process.env.FRONTEND_PUBLIC_URL || 'http://localhost:8000').replace(/\/$/, '')
+  (
+    process.env.FRONTEND_PREVIEW_URL ||
+    process.env.FRONTEND_PUBLIC_URL ||
+    'http://localhost:3000'
+  ).replace(/\/$/, '')
 
 export const SiteSettings: GlobalConfig = {
   slug: 'site-settings',
@@ -11,13 +15,13 @@ export const SiteSettings: GlobalConfig = {
     update: ({ req }) => Boolean(req.user),
   },
   admin: {
-    preview: () => `${resolveFrontendURL()}/index.html`,
+    preview: () => `${resolveFrontendURL()}/`,
     livePreview: {
       url: ({ locale }) => {
         const localeKey = String(locale || '').toLowerCase()
         return localeKey.startsWith('en')
-          ? `${resolveFrontendURL()}/en/index.html`
-          : `${resolveFrontendURL()}/index.html`
+          ? `${resolveFrontendURL()}/en/`
+          : `${resolveFrontendURL()}/`
       },
     },
   },

@@ -3,7 +3,11 @@ import { isAuthenticated, isAuthenticatedOrActiveFilter } from '../utils/access'
 import { slugFieldHook } from '../utils/slug'
 
 const resolveFrontendURL = () =>
-  (process.env.FRONTEND_PUBLIC_URL || 'http://localhost:8000').replace(/\/$/, '')
+  (
+    process.env.FRONTEND_PREVIEW_URL ||
+    process.env.FRONTEND_PUBLIC_URL ||
+    'http://localhost:3000'
+  ).replace(/\/$/, '')
 
 const toProductPreviewURL = (rawSlug: unknown) => {
   const slug = String(rawSlug || '').trim()

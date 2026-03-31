@@ -151,9 +151,49 @@
     return path;
   };
 
+  const getProjectRootPath = () => {
+    const normalizedPath = String(window.location.pathname || '/').replace(/\\/g, '/');
+    const markers = [
+      '/en/',
+      '/sortiment/',
+      '/forestry-work/',
+      '/about-us/',
+      '/contact/',
+      '/impressum/',
+      '/datenschutz/',
+      '/cookie-richtlinie/',
+      '/cookie-einstellungen/',
+      '/barrierefreiheit/',
+    ];
+
+    for (const marker of markers) {
+      const index = normalizedPath.indexOf(marker);
+      if (index > -1) {
+        return normalizedPath.slice(0, index + 1) || '/';
+      }
+    }
+
+    return normalizedPath.replace(/\/[^/]*$/, '/') || '/';
+  };
+
+  const toSiteRootLink = (pathFromRoot) => {
+    const normalizedTarget = String(pathFromRoot || '').replace(/^\/+/, '');
+    if (!normalizedTarget) return window.location.href;
+
+    const rootPath = getProjectRootPath().replace(/\/+$/, '/');
+    const joinedPath = `${rootPath}${normalizedTarget}`.replace(/([^:]\/)\/+/g, '$1');
+
+    if (window.location.protocol === 'file:') {
+      return `${joinedPath}`;
+    }
+
+    return joinedPath.startsWith('/') ? joinedPath : `/${joinedPath}`;
+  };
+
   const toSafeProductLink = (slug) => {
     const safeSlug = clampText(slug, 120);
-    return `/sortiment/produkt-hilti-sf-6-a22.html?slug=${encodeURIComponent(safeSlug)}`;
+    const baseLink = toSiteRootLink('sortiment/produkt-hilti-sf-6-a22.html');
+    return `${baseLink}?slug=${encodeURIComponent(safeSlug)}`;
   };
 
   const clearChildren = (element) => {

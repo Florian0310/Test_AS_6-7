@@ -79,10 +79,19 @@ Backend URLs:
 
 ### 2) Frontend lokal starten
 
+Option A (falls eigenes Frontend auf Port 3000 laeuft):
+- `http://localhost:3000`
+
+Option B (statisches Frontend aus diesem Repo):
+
 ```powershell
 cd ..
 python -m http.server 8000
 ```
+
+Dann im Backend `.env` setzen:
+- `FRONTEND_PUBLIC_URL=http://localhost:8000`
+- `FRONTEND_PREVIEW_URL=http://localhost:8000`
 
 Frontend URL:
 - `http://localhost:8000`
@@ -106,8 +115,9 @@ npm test
 PAYLOAD_SECRET=change-me-in-production
 DATABASE_URI=file:./data/payload.sqlite
 PAYLOAD_PUBLIC_SERVER_URL=http://localhost:3001
-FRONTEND_PUBLIC_URL=http://localhost:8000
-FRONTEND_ALLOWED_ORIGINS=http://localhost:8000,http://127.0.0.1:8000
+FRONTEND_PUBLIC_URL=http://localhost:3000
+FRONTEND_PREVIEW_URL=http://localhost:3000
+FRONTEND_ALLOWED_ORIGINS=http://localhost:3000,http://127.0.0.1:3000,http://localhost:8000,http://127.0.0.1:8000
 
 PAYLOAD_ADMIN_EMAIL=admin@example.com
 PAYLOAD_ADMIN_PASSWORD=ChangeMe123!
