@@ -1,11 +1,13 @@
+import { isAdmin } from '../utils/access'
 import type { GlobalConfig } from 'payload'
 
 export const RentalSettings: GlobalConfig = {
   slug: 'rental-settings',
   label: 'Vermietungs-Einstellungen',
+  admin: {group:'Einstellungen'},
   access: {
-    read: ({ req }) => Boolean(req.user),
-    update: ({ req }) => Boolean(req.user),
+    read: isAdmin,
+    update: isAdmin,
   },
   fields: [
     {

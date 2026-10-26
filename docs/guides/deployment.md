@@ -19,7 +19,7 @@ Die vorhandenen Vorlagen unter `deploy/` und die Header in `scripts/dev/serve.mj
 
 1. Mit unterstütztem Node und Backend-Lockfile installieren. Eigenes starkes Secret bereitstellen und lokale/Bootstrap-Zugangsdaten ersetzen.
 2. Expliziten persistenten `DATABASE_URI` und dauerhaften Medienpfad (`MEDIA_DIR`) außerhalb austauschbarer Releases festlegen.
-3. Konsistente Datenbank- und Mediensicherung erstellen. Migrationen zuerst auf einer Kopie prüfen; keine destruktiven frischen Migrationen/Seeds auf Bestandsdaten. Dieses Refactoring benötigt keine neue Migration.
+3. Konsistente Datenbank- und Mediensicherung erstellen. Migrationen zuerst auf einer Kopie prüfen; keine destruktiven frischen Migrationen/Seeds auf Bestandsdaten. Die Rollen-Version benötigt `20261026_163132_cms_roles`, bevor das neue CMS auf den Bestand zugreift. Frühere Konten behalten Adminrechte, neue Konten werden User. Für lokale Altinstallationen steht der begrenzte [Upgrade-Helfer](cms.md) bereit; Produktion kontrolliert mit `npm --prefix backend run migrate` aktualisieren.
 4. `npm --prefix backend run build` erzeugt das Standalone-Paket; `postbuild` ergänzt Assets/native Bibliotheken und schließt dotenv aus. `npm --prefix backend run start` nutzt den vorgesehenen Wrapper. Secrets aus geschützter Backend-Konfiguration oder Dienst-Umgebung laden.
 5. Öffentliche Backend-/Frontend-/Preview-URLs und erlaubte Origins auf exakte HTTPS-Ziele begrenzen. Backendport nur hinter dem Proxy verfügbar machen. Forwarded-Header nur bei einem vertrauenswürdigen überschreibenden Proxy akzeptieren.
 6. Bootstrap ausschalten, Schreibrechte begrenzen und Dienstneustart/Logs prüfen.

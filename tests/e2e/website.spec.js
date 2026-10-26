@@ -5,6 +5,9 @@ const settle = async page => {await page.waitForLoadState('networkidle');};
 const reject = async page => {const button=page.locator('[data-consent-accept-necessary]');if(await button.count()) await button.click();};
 
 test('fixed corporate appearance and header search route to the focused catalog',async({page})=>{
+  const catalogResponse=await page.request.get('http://localhost:3001/api/catalog/products?locale=en&limit=12');
+  expect(catalogResponse.ok()).toBe(true);
+  const catalog=await catalogResponse.json();
   await page.addInitScript(()=>localStorage.setItem('as_theme_mode_v1','dark'));
   await page.emulateMedia({colorScheme:'dark'}); await page.goto('/en/'); await reject(page);
   await expect(page.locator('[data-theme-toggle], .search-panel, [data-open-search]')).toHaveCount(0);
@@ -16,7 +19,7 @@ test('fixed corporate appearance and header search route to the focused catalog'
   await expect(page).toHaveURL(/search=DRILLING/);
   await input.fill('no-matching-tool-999'); await expect(page.locator('[data-shop-feedback]')).toContainText('No');
   await page.locator('[data-clear-search]').click();await expect(input).toHaveValue('');
-  await expect(page.locator('.product-card')).toHaveCount(4);
+  await expect(page.locator('.product-card')).toHaveCount(Math.min(12,catalog.total));
   await page.locator('.product-card h3 a').filter({hasText:'Hilti'}).click();
   await expect(page.locator('[data-tool-description]')).toContainText('Cordless');
 });

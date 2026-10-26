@@ -5,6 +5,7 @@ permissions:
 jobs:
   verify:
     runs-on: ubuntu-latest
+    timeout-minutes: 20
     env:
       # Disposable CI data only; never use this value in production.
       PAYLOAD_SECRET: ci-isolated-database-only-7db828fad8391ac9c95a62815
@@ -35,3 +36,20 @@ jobs:
           npm --prefix backend run dev > backend.log 2>&1 &
           node -e "(async()=>{for(let i=0;i<90;i++){try{if((await fetch('http://localhost:3001/api/catalog/products')).ok)return}catch{}await new Promise(r=>setTimeout(r,1000))}process.exit(1)})()"
       - run: npm run test:e2e
+      - name: Verify CMS roles and login on a database copy
+        run: npm run test:cms
+        env:
+          CMS_TEST_SOURCE: backend/data/ci.sqlite
+      - name: Preserve test diagnostics
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: website-quality-results
+          retention-days: 7
+          if-no-files-found: ignore
+          path: |
+            artifacts/*.json
+            artifacts/*.png
+            test-results/
+            frontend.log
+            backend.log

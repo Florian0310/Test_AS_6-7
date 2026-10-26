@@ -1,5 +1,5 @@
 ﻿import type { CollectionConfig } from 'payload'
-import { isAuthenticated, isAuthenticatedOrActiveFilter } from '../utils/access'
+import { isAdmin, isAdminUser, isAuthenticatedOrActiveFilter } from '../utils/access'
 import { slugFieldHook } from '../utils/slug'
 import { englishFields } from '../utils/catalogLocale'
 
@@ -11,12 +11,14 @@ export const Categories: CollectionConfig = {
   },
   access: {
     read: isAuthenticatedOrActiveFilter,
-    create: isAuthenticated,
-    update: isAuthenticated,
-    delete: isAuthenticated,
+    create: isAdmin,
+    update: isAdmin,
+    delete: isAdmin,
   },
   admin: {
     useAsTitle: 'name',
+    group: 'Inhalte',
+    hidden: ({user}) => !isAdminUser(user),
     defaultColumns: ['name', 'slug', 'sortOrder', 'isActive', 'updatedAt'],
   },
   fields: [

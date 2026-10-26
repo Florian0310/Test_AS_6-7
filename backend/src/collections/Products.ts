@@ -30,6 +30,7 @@ export const Products: CollectionConfig = {
   },
   admin: {
     useAsTitle: 'title',
+    group: 'Inhalte',
     defaultColumns: ['articleNumber', 'title', 'category', 'isActive', 'availabilityStatus', 'updatedAt'],
     preview: (doc) => toProductPreviewURL(doc?.slug),
     livePreview: {

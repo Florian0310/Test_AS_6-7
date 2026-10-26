@@ -35,6 +35,7 @@ Nach jeder Quellenänderung einschließlich Browser-JavaScript `npm run build`, 
 | Reiner Katalogzustand | `npm run test:frontend` |
 | Backend / Typen | `npm --prefix backend test`, `npm --prefix backend run typecheck` |
 | Chrome-Browser | `npm run test:e2e` – Preflight prüft beide Dienste |
+| CMS-Rollen / CRUD / Login | `npm run test:cms` – vorher Backend-Produktionsbuild; isolierte SQLite-/Medienkopie, Port 3002 |
 | Produktionsbuild | `npm --prefix backend run build` mit gültigem Secret |
 | Produktion auf Kopie | `node scripts/check/production.mjs` – Windows, Python/SQLite |
 | Zugriffsregeln | `node scripts/check/api.mjs` |
@@ -48,3 +49,5 @@ Responsive Matrix: 320, 375, 390, 430, 768, 1024, 1280, 1440 und 1920 Pixel übe
 Artefakte liegen in `artifacts/` und werden nicht veröffentlicht. Fehlende CSS-/Textänderungen erfordern einen erneuten Build. „Backend unavailable“ erfordert einen laufenden Backend-Prozess; der erste Aufruf kann noch kompilieren. Fehlende Bilder im CMS korrigieren; Platzhalter ersetzen keine redaktionelle Bildfreigabe.
 
 `npm run test:migrations` ist ein vorhandenes separates Prüfwerkzeug für frische Daten und das frühere Upgrade-Szenario. Es benötigt `backend/data/pre-audit-backup.sqlite`, erzeugt eigene Kopien und ist kein Schritt des normalen Starts oder dieses Strukturumbaus. Die Arbeitsdatenbank nicht anstelle der Sicherung einsetzen.
+
+Das Backend erzeugt seine gemeinsame Palette über `generate:theme` vor `dev` und `build` aus `frontend/styles/tokens.css`. Bei der ersten Übernahme des Rollenfelds eine bestehende lokale Installation vor dem Dev-Start mit dem [CMS-Upgrade](cms.md) sichern/migrieren. Rollenrechte und ihre bewussten Grenzen sind dort dokumentiert.

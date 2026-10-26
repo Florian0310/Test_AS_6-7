@@ -1,5 +1,6 @@
 ﻿import type { CollectionConfig, FieldHook } from 'payload'
-import { isAuthenticated } from '../utils/access'
+import { adminFieldAccess, isAdmin, isAdminUser, isAuthenticated, isCMSUser } from '../utils/access'
+import { restrictRequestUpdate } from '../hooks/requestAccess'
 import { randomUUID } from 'node:crypto'
 
 const requestNumberHook: FieldHook = ({ value }) => {
@@ -21,13 +22,16 @@ export const Requests: CollectionConfig = {
   },
   access: {
     read: isAuthenticated,
-    create: isAuthenticated,
-    update: isAuthenticated,
-    delete: isAuthenticated,
+    create: isAdmin,
+    update: ({req}) => isAdminUser(req.user) || (isCMSUser(req.user) ? {status:{in:['new','in_progress','answered','accepted']}} : false),
+    delete: isAdmin,
   },
+  hooks: {beforeOperation:[restrictRequestUpdate]},
   admin: {
     useAsTitle: 'requestNumber',
     defaultColumns: ['requestNumber', 'status', 'customerName', 'customerEmail', 'createdAt'],
+    group: 'Mietverwaltung',
+    components: {edit:{beforeDocumentControls:['./components/admin/AcceptRequest#AcceptRequest'],SaveButton:'./components/admin/RequestSaveButton#RequestSaveButton'}},
   },
   fields: [
     {
@@ -50,6 +54,7 @@ export const Requests: CollectionConfig = {
       type: 'select',
       required: true,
       defaultValue: 'new',
+      admin: {components:{Field:'./components/admin/RequestStatusField#RequestStatusField'}},
       options: [
         { label: 'Neu', value: 'new' },
         { label: 'In Bearbeitung', value: 'in_progress' },
@@ -107,9 +112,15 @@ export const Requests: CollectionConfig = {
       name: 'emailResult',
       label: 'E-Mail-Versand',
       type: 'json',
+      access: {read:adminFieldAccess},
       admin: {
         readOnly: true,
       },
     },
   ],
+}
+
+// Request prices, customer details and product snapshots remain immutable for normal users.
+for (const field of Requests.fields) {
+  if ('name' in field && field.type !== 'ui' && field.name !== 'status') field.access = {...field.access,update:adminFieldAccess}
 }

@@ -7,6 +7,8 @@ import { buildConfig } from 'payload'
 import { sqliteAdapter } from '@payloadcms/db-sqlite'
 import { lexicalEditor } from '@payloadcms/richtext-lexical'
 import sharp from 'sharp'
+import { de } from '@payloadcms/translations/languages/de'
+import { en } from '@payloadcms/translations/languages/en'
 
 import { Users } from './src/collections/Users'
 import { Media } from './src/collections/Media'
@@ -54,6 +56,7 @@ const allowedFrontendOrigins = Array.from(
 )
 
 export default buildConfig({
+  i18n: {supportedLanguages:{de,en},fallbackLanguage:'de'},
   secret,
   upload: { limits: { fileSize: 8 * 1024 * 1024 }, requestSizeLimit: 10 * 1024 * 1024 },
   serverURL: process.env.PAYLOAD_PUBLIC_SERVER_URL || 'http://localhost:3001',
@@ -76,7 +79,11 @@ export default buildConfig({
   csrf: allowedFrontendOrigins,
   admin: {
     user: Users.slug,
+    theme: 'light',
+    avatar: 'default',
     components: {
+      beforeLogin: ['./components/admin/LoginIntro#LoginIntro'],
+      afterNavLinks: ['./components/admin/AdminIdentity#AdminIdentity'],
       graphics: {
         Logo: './components/admin/BrandLogo#BrandLogo',
         Icon: './components/admin/BrandIcon#BrandIcon',
@@ -98,7 +105,7 @@ export default buildConfig({
     // Bootstrap is an explicit one-time operation. Never create a known default account.
     if (process.env.BOOTSTRAP_ADMIN !== 'true') {
       if (production) {
-        const users = await payload.find({collection:'users',limit:1,depth:0,overrideAccess:true})
+        const users = await payload.find({collection:'users',where:{role:{equals:'admin'}},limit:1,depth:0,overrideAccess:true})
         if (!users.docs.length) throw new Error('Initialize the administrator explicitly before serving production traffic.')
       }
       return
@@ -125,6 +132,7 @@ export default buildConfig({
           email: adminEmail,
           password: adminPassword,
           name: 'Admin',
+          role: 'admin',
         },
       })
       payload.logger.info(`Admin-Benutzer erstellt: ${adminEmail}`)

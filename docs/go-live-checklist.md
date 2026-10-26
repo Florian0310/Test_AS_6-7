@@ -40,7 +40,10 @@ Stand 26.10.2026. **Entscheidung: NO-GO für öffentliche Produktion.** Lokaler 
 | Betrieb: externe Backups und vollständige Wiederherstellung | NOT TESTED | Lokale Sicherung/Migration getestet, Medien und externe Recovery noch offen |
 | Monitoring: Alarmierung, Logs und Ausfallüberwachung | NOT TESTED | Kein produktives Monitoringkonto oder Alarmziel konfiguriert |
 | Wartbarkeit: Lint, Typecheck, Regressionen, reproduzierbare Inhalte | PASS | Lokale Prüfungen und Generatoren vorhanden |
-| Wartbarkeit: Remote-CI erfolgreich | NOT TESTED | Workflow angelegt, kein Push/Remote-Lauf |
+| Wartbarkeit: Remote-CI erfolgreich | FAIL | Bisherige Läufe #2/#3 scheiterten an einer festen Produktanzahl im Test; lokal mit frischen Seeds korrigiert, erneuter Remote-Nachweis ausstehend; [Bericht](reports/cms-rbac.md) |
+| CMS: Admin-/User-Rollen und serverseitiger Schutz | PASS | 59 Backend-Tests, 10 isolierte CMS-Tests, Bestandsmigration und Schutz des letzten Admins |
+| CMS: Login und eigene Dashboard-Komponenten | PASS | Responsive und Axe-AA geprüft |
+| CMS: nativer Dashboard-Layout-Wähler | FAIL | Zwei Payload-Befunde: unbeschriftete Combobox und fokussierbares aria-hidden-Element; im CMS-Bericht ausdrücklich erfasst |
 | Datenqualität: nur freigegebene Produktdaten | FAIL | Zwei Testprodukte und fehlende eigene Bilder/Übersetzungen im erhaltenen lokalen Bestand |
 
 Vor GO müssen alle FAIL-Punkte behoben und die produktionskritischen NOT-TESTED-Punkte tatsächlich geprüft werden. Eine technische Freigabe ersetzt die erforderliche juristische Prüfung nicht. Nichts wurde veröffentlicht, committed oder gepusht.

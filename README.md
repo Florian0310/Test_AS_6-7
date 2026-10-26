@@ -46,6 +46,8 @@ npm --prefix backend ci
 
 Nur bei neuer Einrichtung `backend/.env.example` nach `backend/.env` kopieren und ein eigenes zufälliges `PAYLOAD_SECRET` mit mindestens 32 Zeichen setzen. Vorhandene Konfiguration und Daten niemals überschreiben. Migrationen/optionale Seeds für eine neue Umgebung sind in [Entwicklung](docs/guides/development.md) beschrieben.
 
+Bestehende lokale Datenbanken vor dem ersten Start der Rollen-Version bei gestopptem Backend mit `npm --prefix backend run upgrade:cms` sichern und migrieren. Vorhandene Konten behalten Adminrechte; neue Konten erhalten standardmäßig die Userrolle. Details: [CMS und Rollen](docs/guides/cms.md).
+
 Zwei Terminals im Repository öffnen:
 
 ```powershell
@@ -84,6 +86,7 @@ Der Frontend-Start baut zunächst `dist/` und liefert ausschließlich diese Ausg
 | `npm --prefix backend test` | Backend-Tests ausführen |
 | `npm --prefix backend run typecheck` | Backend-Typprüfung |
 | `npm run test:e2e` | Chrome-Browsertests; beide Dienste müssen laufen |
+| `npm run test:cms` | Login und RBAC/CRUD beider Rollen auf isolierter Datenbank-/Medienkopie; Backend-Produktionsbuild erforderlich |
 | `npm run test:api` | Zugriffsregeln, Header und ungültige Eingaben prüfen |
 | `npm --prefix backend run build` | Produktionspaket mit gültigem Secret bauen |
 | `npm run test:production` | Produktionsprüfung auf Datenbankkopie; Windows/Python erforderlich |
@@ -100,6 +103,8 @@ Prüfbefunde stehen unter `artifacts/`. Migrationstests mit `npm run test:migrat
 - [Entwicklung und Tests](docs/guides/development.md)
 - [Deployment und Betrieb](docs/guides/deployment.md)
 - [Änderungen der Projektstruktur](docs/reports/structure-cleanup.md)
+- [CMS, Rollen und Bedienung](docs/guides/cms.md)
+- [CMS-Überarbeitung und CI-Korrektur](docs/reports/cms-rbac.md)
 - [Go-Live-Checkliste](docs/go-live-checklist.md)
 
 **Go-Live bleibt NO-GO:** Produktive Infrastruktur/Secrets, reale E-Mail-Zustellung, rechtliche/steuerliche Angaben und Produktfreigaben sind noch offen. Diese Strukturänderung veröffentlicht nichts und verändert keine Geschäftsfunktionen oder bestehenden CMS-Daten.

@@ -1,3 +1,4 @@
+import { isAdmin } from '../utils/access'
 import type { GlobalConfig } from 'payload'
 
 const defaultImpressumDe = `Firmenname: Willy Schröder
@@ -39,9 +40,10 @@ If you encounter barriers, please contact us at office@allessaniert.at.`
 export const LegalSettings: GlobalConfig = {
   slug: 'legal-settings',
   label: 'Rechtstexte',
+  admin: {group:'Einstellungen'},
   access: {
-    read: ({ req }) => Boolean(req.user),
-    update: ({ req }) => Boolean(req.user),
+    read: isAdmin,
+    update: isAdmin,
   },
   fields: [
     {

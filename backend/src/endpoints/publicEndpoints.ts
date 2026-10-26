@@ -1,3 +1,4 @@
+import { isCMSUser } from '../utils/access'
 import { parsePublicBody, guardPublicPost, PublicHttpError, header, clientKey } from '../utils/http'
 import { localizeProduct, categoryEnglish, normalizeSearch } from '../utils/catalogLocale'
 import type { Endpoint, PayloadRequest } from 'payload'
@@ -125,7 +126,7 @@ const countDocuments = async (
       collection,
       req,
       where,
-      overrideAccess: true,
+      overrideAccess: false,
     })
 
     return Number(countResult?.totalDocs || 0)
@@ -137,7 +138,7 @@ const countDocuments = async (
     limit: 0,
     req,
     where,
-    overrideAccess: true,
+    overrideAccess: false,
   })
 
   return Number(docsResult?.totalDocs || 0)
@@ -517,7 +518,7 @@ export const siteConfigHandler: Endpoint['handler'] = async (req) => {
 
 export const adminStatisticsHandler: Endpoint['handler'] = async (req) => {
   try {
-    if (!req.user) {
+    if (!isCMSUser(req.user)) {
       return Response.json({ success: false, message: 'Nicht autorisiert.' }, { status: 401 })
     }
 

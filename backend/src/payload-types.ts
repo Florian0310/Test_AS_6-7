@@ -139,6 +139,10 @@ export interface UserAuthOperations {
  */
 export interface User {
   id: number;
+  /**
+   * Admins verwalten das gesamte CMS. User bearbeiten Produkte und nehmen Anfragen an.
+   */
+  role: 'admin' | 'user';
   name: string;
   updatedAt: string;
   createdAt: string;
@@ -416,6 +420,7 @@ export interface PayloadMigration {
  * via the `definition` "users_select".
  */
 export interface UsersSelect<T extends boolean = true> {
+  role?: T;
   name?: T;
   updatedAt?: T;
   createdAt?: T;

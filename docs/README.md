@@ -4,6 +4,8 @@
 
 - [Architektur](guides/architecture.md): Komponenten, Datenzugriff und Build.
 - [Entwicklung](guides/development.md): Einrichtung, Quellen und Prüfungen.
+- [CMS und Rollen](guides/cms.md): Freigaben, Bedienung und Bestandsupgrade.
+- [CMS-/CI-Bericht](reports/cms-rbac.md): Implementierung, Tests und GitHub-Fehlerursache.
 - [Deployment](guides/deployment.md): öffentlicher Export, Backend und Betrieb.
 - [Go-Live-Checkliste](go-live-checklist.md): maßgebliche Freigabematrix.
 - [Strukturänderungen](reports/structure-cleanup.md): dieser Aufräumauftrag und seine Nachweise.

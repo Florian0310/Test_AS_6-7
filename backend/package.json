@@ -5,9 +5,9 @@
   "description": "Payload CMS Backend fuer Alles Saniert Werkzeugverleih",
   "type": "module",
   "scripts": {
-    "predev": "npm run generate:importmap",
+    "predev": "npm run generate:theme && npm run generate:importmap",
     "dev": "next dev -p 3001 --hostname 127.0.0.1 --webpack",
-    "prebuild": "npm run generate:importmap",
+    "prebuild": "npm run generate:theme && npm run generate:importmap",
     "build": "next build",
     "start": "node scripts/start.mjs",
     "generate:types": "payload generate:types",
@@ -19,12 +19,15 @@
     "test:watch": "vitest",
     "typecheck": "tsc --noEmit",
     "migrate:create": "payload migrate:create",
-    "postbuild": "node scripts/package.mjs"
+    "postbuild": "node scripts/package.mjs",
+    "generate:theme": "node scripts/generate-theme.mjs",
+    "upgrade:cms": "node scripts/upgrade-cms.mjs"
   },
   "dependencies": {
     "@payloadcms/db-sqlite": "3.92.0",
     "@payloadcms/next": "3.92.0",
     "@payloadcms/richtext-lexical": "3.92.0",
+    "@payloadcms/translations": "3.92.0",
     "dotenv": "^16.4.5",
     "next": "16.4.3",
     "nodemailer": "10.2.1",

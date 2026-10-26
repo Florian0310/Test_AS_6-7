@@ -1,5 +1,6 @@
 import type { CollectionConfig } from 'payload'
-import { isAuthenticated } from '../utils/access'
+import { adminFieldAccess, adminOrSelf, isAdmin, isAdminUser, isCMSUser } from '../utils/access'
+import { protectRoleAssignment, protectLastAdminChange, protectLastAdminDelete } from '../hooks/userAccess'
 
 export const Users: CollectionConfig = {
   slug: 'users',
@@ -10,21 +11,34 @@ export const Users: CollectionConfig = {
     cookies: { secure: process.env.NODE_ENV === 'production', sameSite: 'Lax' },
   },
   access: {
-    read: isAuthenticated,
-    create: isAuthenticated,
-    update: isAuthenticated,
-    delete: isAuthenticated,
-    admin: ({ req }) => Boolean(req.user),
+    read: adminOrSelf,
+    create: isAdmin,
+    update: adminOrSelf,
+    delete: isAdmin,
+    admin: ({ req }) => isCMSUser(req.user),
   },
+  hooks: {beforeOperation:[protectRoleAssignment],beforeChange:[protectLastAdminChange],beforeDelete:[protectLastAdminDelete]},
   labels: {
     singular: 'Benutzer',
     plural: 'Benutzer',
   },
   admin: {
     useAsTitle: 'name',
-    defaultColumns: ['name', 'email', 'updatedAt'],
+    defaultColumns: ['name', 'email', 'role', 'updatedAt'],
+    group: 'Administration',
+    hidden: ({user}) => !isAdminUser(user),
   },
   fields: [
+    {
+      name: 'role',
+      label: 'Rolle',
+      type: 'select',
+      required: true,
+      defaultValue: 'user',
+      options: [{label:'Administrator (Admin)',value:'admin'},{label:'Benutzer (User)',value:'user'}],
+      access: {create:adminFieldAccess,update:adminFieldAccess},
+      admin: {position:'sidebar',description:'Admins verwalten das gesamte CMS. User bearbeiten Produkte und nehmen Anfragen an.'},
+    },
     {
       name: 'name',
       label: 'Name',

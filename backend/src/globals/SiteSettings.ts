@@ -1,3 +1,4 @@
+import { isAdmin } from '../utils/access'
 import type { GlobalConfig } from 'payload'
 
 const resolveFrontendURL = () =>
@@ -11,10 +12,11 @@ export const SiteSettings: GlobalConfig = {
   slug: 'site-settings',
   label: 'Website-Einstellungen',
   access: {
-    read: ({ req }) => Boolean(req.user),
-    update: ({ req }) => Boolean(req.user),
+    read: isAdmin,
+    update: isAdmin,
   },
   admin: {
+    group: 'Einstellungen',
     preview: () => `${resolveFrontendURL()}/`,
     livePreview: {
       url: ({ locale }) => {

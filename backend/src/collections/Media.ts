@@ -1,5 +1,5 @@
 import type { CollectionConfig } from 'payload'
-import { isAuthenticated } from '../utils/access'
+import { isAdmin, isAuthenticated } from '../utils/access'
 
 const fallbackAltFromFilename = (raw: string) =>
   raw
@@ -18,7 +18,7 @@ export const Media: CollectionConfig = {
     read: () => true,
     create: isAuthenticated,
     update: isAuthenticated,
-    delete: isAuthenticated,
+    delete: isAdmin,
   },
   upload: {
     staticDir: process.env.MEDIA_DIR || 'media',
@@ -44,6 +44,7 @@ export const Media: CollectionConfig = {
   },
   admin: {
     useAsTitle: 'alt',
+    group: 'Inhalte',
     defaultColumns: ['filename', 'alt', 'updatedAt'],
   },
   hooks: {

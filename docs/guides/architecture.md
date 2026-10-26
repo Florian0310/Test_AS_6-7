@@ -1,6 +1,6 @@
 # Architektur
 
-Stand: 26.10.2026. Bestehenden Stack beibehalten; keine Datenmodellmigration und kein Frontend-Framework eingeführt.
+Stand: 26.10.2026. Bestehenden Stack beibehalten; kein Frontend-Framework eingeführt. Das CMS ergänzt ein Rollenfeld mit versionierter SQLite-Migration; weitere Collections bleiben erhalten.
 
 ## Build und Seiten
 
@@ -47,6 +47,6 @@ Feste helle Markendarstellung in Dunkelblau, Weiß und Orange. Tokens liegen in 
 
 ## Backend und Datenerhalt
 
-Bestehende Collections: Users, Media, Categories, Products und Requests; Globals: Website, Kontakt, Rechtliches und Mieteinstellungen. Endpunkte delegieren Preisberechnung, Speicherung, Benachrichtigung und Turnstile an Services. Zugriffsregeln und Validierung bleiben in Utils/Collections. Keine Collection-Felder, Migrationen oder Bestandsdatensätze wurden verändert.
+Bestehende Collections: Users, Media, Categories, Products und Requests; Globals: Website, Kontakt, Rechtliches und Mieteinstellungen. Endpunkte delegieren Preisberechnung, Speicherung, Benachrichtigung und Turnstile an Services. Zugriffsregeln und Validierung bleiben in Utils/Collections; dedizierte Hooks sichern Rollenvergabe und Anfrageannahme. Die CMS-Erweiterung ergänzt `users.role`, während bestehende Daten erhalten bleiben. Siehe [Rollen und Migration](cms.md).
 
 SQLite und Medien liegen außerhalb des Frontend-Webroots. Vorhandene Größen-/Origin-Prüfungen, Rate-Limits und Header bleiben erhalten. Prozesslokale Rate-Limits benötigen bei mehreren Instanzen einen gemeinsamen Speicher; diese Skalierungsentscheidung ist noch offen.

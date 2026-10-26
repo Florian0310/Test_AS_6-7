@@ -1,6 +1,7 @@
 import type { ReactNode } from 'react'
 import '@payloadcms/next/css'
 import './payload-fallback.css'
+import './admin.css'
 import config from '../../payload.config'
 import { RootLayout as PayloadRootLayout } from '@payloadcms/next/layouts'
 

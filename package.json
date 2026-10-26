@@ -16,7 +16,8 @@
     "test:api": "node scripts/check/api.mjs",
     "test:production": "node scripts/check/production.mjs",
     "test:migrations": "node scripts/check/migrations.mjs",
-    "test:docs": "node scripts/check/docs.mjs"
+    "test:docs": "node scripts/check/docs.mjs",
+    "test:cms": "node scripts/check/cms.mjs"
   },
   "devDependencies": {
     "@axe-core/playwright": "^4.11.0",
