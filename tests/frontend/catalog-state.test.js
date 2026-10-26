@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { readCatalogState, catalogQuery, toggleCategory } from '../../frontend/lib/catalog-state.js';
-import { counterpart, productPath } from '../../frontend/config/routes.js';
+import { readCatalogState, catalogQuery, toggleCategory } from '../../frontend/src/lib/catalog-state.js';
+import { counterpart, productPath } from '../../frontend/src/config/routes.js';
 
 test('shared links retain the correct localized route and escape product slugs', () => {
   assert.equal(counterpart('/sortiment/', 'en'), '/en/catalog/');

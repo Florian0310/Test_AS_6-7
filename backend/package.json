@@ -9,7 +9,7 @@
     "dev": "next dev -p 3001 --hostname 127.0.0.1 --webpack",
     "prebuild": "npm run generate:importmap",
     "build": "next build",
-    "start": "node ../tools/start-backend.mjs",
+    "start": "node scripts/start.mjs",
     "generate:types": "payload generate:types",
     "generate:importmap": "payload generate:importmap",
     "migrate": "payload migrate",
@@ -19,7 +19,7 @@
     "test:watch": "vitest",
     "typecheck": "tsc --noEmit",
     "migrate:create": "payload migrate:create",
-    "postbuild": "node ../tools/package-backend.mjs"
+    "postbuild": "node scripts/package.mjs"
   },
   "dependencies": {
     "@payloadcms/db-sqlite": "3.92.0",
@@ -38,7 +38,6 @@
   "devDependencies": {
     "@types/node": "^22.7.5",
     "@types/nodemailer": "^6.4.16",
-    "supertest": "^7.0.0",
     "tsx": "^4.19.2",
     "typescript": "^5.6.3",
     "vitest": "^4.1.2"
