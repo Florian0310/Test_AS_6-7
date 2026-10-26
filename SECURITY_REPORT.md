@@ -1,3 +1,5 @@
+> Historischer Audit vor dem aktuellen Refactoring. Aktuelle UI, Architektur und Messergebnisse: [Refactoring-Bericht](docs/REFACTORING_REPORT.md). Aktueller Freigabestatus: [Go-Live-Checkliste](GO_LIVE_CHECKLIST.md).
+
 # Sicherheitsbericht
 
 Stand 26.10.2026. Prüfbereich: lokale statische Website, Payload/Next-Backend, Konfiguration und Abhängigkeiten. Keine fremden Ziele oder destruktiven Angriffstests.

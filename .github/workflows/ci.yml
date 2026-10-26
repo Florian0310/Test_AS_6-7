@@ -24,7 +24,7 @@ jobs:
       - run: npm ci
       - run: npm ci
         working-directory: backend
-      - run: npm run lint && npm run test:static
+      - run: npm run build && npm run lint && npm run test:static && npm run test:frontend
       - run: npm test && npm run typecheck && npm run build && npm run migrate && npm run seed
         working-directory: backend
       - run: npm audit --audit-level=moderate && npm --prefix backend audit --audit-level=moderate

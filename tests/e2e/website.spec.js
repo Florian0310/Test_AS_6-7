@@ -4,32 +4,20 @@ import fs from 'node:fs/promises';
 const settle = async page => {await page.waitForLoadState('networkidle');};
 const reject = async page => {const button=page.locator('[data-consent-accept-necessary]');if(await button.count()) await button.click();};
 
-test('theme: light/dark/auto persistence, OS changes and icon visibility',async({page})=>{
+test('fixed corporate appearance and header search route to the focused catalog',async({page})=>{
+  await page.addInitScript(()=>localStorage.setItem('as_theme_mode_v1','dark'));
   await page.emulateMedia({colorScheme:'dark'}); await page.goto('/en/'); await reject(page);
-  const select=page.locator('[data-theme-toggle]');
-  await expect(page.locator('html')).toHaveAttribute('data-theme','dark');
-  await select.selectOption('light'); await expect(page.locator('html')).toHaveAttribute('data-theme','light');
-  await page.reload(); await expect(select).toHaveValue('light');
-  await select.selectOption('dark');
-  expect(await page.locator('.benefit img').first().evaluate(el=>getComputedStyle(el).filter)).toContain('invert(1)');
-  await select.selectOption('auto'); await page.emulateMedia({colorScheme:'light'});
-  await expect(page.locator('html')).toHaveAttribute('data-theme','light');
-  await page.emulateMedia({colorScheme:'dark'}); await expect(page.locator('html')).toHaveAttribute('data-theme','dark');
-});
-
-test('search: live localized products/categories, umlauts, keyboard, focus and close',async({page})=>{
-  await page.goto('/en/'); await reject(page);
-  const trigger=page.locator('[data-open-search]'); await trigger.click();
-  const input=page.locator('.search-input');await expect(input).toBeFocused();
-  await input.fill('drilling'); await expect(page.locator('.search-results a').first()).toContainText('Hilti');
-  await input.press('ArrowDown'); await expect(page.locator('.search-results a').first()).toBeFocused();
-  await page.keyboard.press('Escape');await expect(trigger).toBeFocused();await expect(page.locator('body')).not.toHaveClass(/no-scroll/);
-  await trigger.click(); await input.fill('no-matching-tool-999'); await expect(page.locator('.search-feedback')).toContainText('No matching');
-  await input.fill(''); await expect(page.locator('.search-feedback')).toContainText('Enter a search');
-  await page.locator('[data-close-search]').click();await expect(trigger).toBeFocused();
-  await trigger.click();await input.fill('Hilti');await expect(page.locator('.search-results a').first()).toBeVisible();await input.press('Enter');
-  await expect(page).toHaveURL(/en\/catalog\/product.html\?slug=hilti/);
-  await expect(page.locator('[data-tool-name]')).toHaveText('Hilti SF 6-A22');
+  await expect(page.locator('[data-theme-toggle], .search-panel, [data-open-search]')).toHaveCount(0);
+  expect(await page.locator('html').evaluate(el=>getComputedStyle(el).colorScheme)).toBe('light');
+  await page.locator('[data-catalog-search-link]').click();
+  const input=page.locator('[data-tools-search]'); await expect(input).toBeFocused();
+  await input.fill('DRILLING'); await expect(page.locator('.product-card')).toHaveCount(1);
+  await expect(page.locator('.product-card h3')).toContainText('Hilti');
+  await expect(page).toHaveURL(/search=DRILLING/);
+  await input.fill('no-matching-tool-999'); await expect(page.locator('[data-shop-feedback]')).toContainText('No');
+  await page.locator('[data-clear-search]').click();await expect(input).toHaveValue('');
+  await expect(page.locator('.product-card')).toHaveCount(4);
+  await page.locator('.product-card h3 a').filter({hasText:'Hilti'}).click();
   await expect(page.locator('[data-tool-description]')).toContainText('Cordless');
 });
 
@@ -97,13 +85,17 @@ test('category counts match filters including empty categories and All products'
   }
 });
 
-test('API failure is understandable and search remains dismissible',async({page})=>{
-  await page.route('**/api/catalog/products**',route=>route.abort());await page.goto('/en/');await reject(page);await page.locator('[data-open-search]').click();await page.locator('.search-input').fill('drill');
-  await expect(page.locator('.search-feedback')).toContainText('unavailable');await page.keyboard.press('Escape');await expect(page.locator('[data-open-search]')).toBeFocused();
+test('API failure offers recovery without losing the search',async({page})=>{
+  let fail=true;
+  await page.route('**/api/catalog/products?**',route=>fail ? route.abort() : route.continue());
+  await page.goto('/en/catalog/?search=Hilti');await reject(page);
+  await expect(page.locator('[data-shop-feedback]')).toContainText('unavailable');
+  await expect(page.locator('[data-tools-search]')).toHaveValue('Hilti');
+  fail=false;await page.locator('[data-catalog-retry]').click();await expect(page.locator('.product-card')).toHaveCount(1);
 });
 
 test('mobile navigation keyboard trap, focus return, responsive widths',async({page})=>{
-  for(const width of [320,375,390,768,1024,1440,1920]) {
+  for(const width of [320,375,390,430,768,1024,1280,1440,1920]) {
     await page.setViewportSize({width,height:900});
     for(const route of ['/en/','/en/catalog/','/en/cookie-settings/','/en/catalog/product.html?slug=hilti-sf-6-a22']) {
       await page.goto(route);await reject(page);await settle(page);
@@ -116,16 +108,18 @@ test('mobile navigation keyboard trap, focus return, responsive widths',async({p
   await page.keyboard.press('Escape');await expect(page.locator('[data-open-menu]')).toBeFocused();
 });
 
-test('axe AA on main flows in both languages and themes, with screenshots',async({page})=>{
+test('axe AA on all public routes in both languages, with screenshots',async({page})=>{
   test.setTimeout(120000);
   await fs.mkdir('artifacts',{recursive:true});const report=[];
-  for(const theme of ['light','dark']) for(const route of ['/','/en/','/sortiment/','/en/catalog/','/cookie-einstellungen/','/en/cookie-settings/','/contact/','/en/contact/','/sortiment/produkt-hilti-sf-6-a22.html','/en/catalog/product.html','/about-us/','/en/about-us/','/forestry-work/','/en/forestry/','/impressum/','/en/imprint/','/datenschutz/','/en/privacy-policy/','/cookie-richtlinie/','/en/cookie-policy/','/barrierefreiheit/','/en/accessibility-statement/','/bildnachweise/','/en/image-credits/']) {
-    await page.goto(route);await reject(page);await page.locator('[data-theme-toggle]').selectOption(theme);await settle(page);
+  for(const route of ['/','/en/','/sortiment/','/en/catalog/','/cookie-einstellungen/','/en/cookie-settings/','/contact/','/en/contact/','/sortiment/produkt-hilti-sf-6-a22.html','/en/catalog/product.html','/about-us/','/en/about-us/','/forestry-work/','/en/forestry/','/impressum/','/en/imprint/','/datenschutz/','/en/privacy-policy/','/cookie-richtlinie/','/en/cookie-policy/','/barrierefreiheit/','/en/accessibility-statement/','/bildnachweise/','/en/image-credits/','/sortiment/reservierung.html','/en/catalog/request.html','/404.html']) {
+    await page.goto(route);await reject(page);await settle(page);
     const results=await new AxeBuilder({page}).withTags(['wcag2a','wcag2aa','wcag21aa','wcag22aa']).analyze();
-    const violations=results.violations.map(v=>({id:v.id,impact:v.impact,nodes:v.nodes.map(n=>n.target)}));report.push({theme,route,violations});
-    expect.soft(violations,`${theme} ${route}`).toEqual([]);
+    const violations=results.violations.map(v=>({id:v.id,impact:v.impact,nodes:v.nodes.map(n=>n.target)}));report.push({route,violations});
+    expect.soft(violations,route).toEqual([]);
   }
   await fs.writeFile('artifacts/axe-after.json',JSON.stringify(report,null,2));
-  await page.goto('/en/');await reject(page);await page.locator('[data-theme-toggle]').selectOption('dark');await settle(page);await page.screenshot({path:'artifacts/after-home-dark.png',fullPage:true});
-  await page.locator('[data-open-search]').click();await page.locator('.search-input').fill('drill');await expect(page.locator('.search-results a').first()).toBeVisible();await page.screenshot({path:'artifacts/after-search-dark.png'});
+  for(const [route,name,width] of [['/en/','home',1440],['/sortiment/','catalog',1440],['/en/catalog/','catalog-mobile',390],['/en/catalog/product.html?slug=hilti-sf-6-a22','detail-mobile',390]]) {
+    await page.setViewportSize({width,height:900});await page.goto(route);await reject(page);await settle(page);
+    await page.screenshot({path:`artifacts/refactor-${name}.png`,fullPage:true});
+  }
 });

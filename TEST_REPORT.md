@@ -1,3 +1,5 @@
+> Historischer Audit vor dem aktuellen Refactoring. Aktuelle UI, Architektur und Messergebnisse: [Refactoring-Bericht](docs/REFACTORING_REPORT.md). Aktueller Freigabestatus: [Go-Live-Checkliste](GO_LIVE_CHECKLIST.md).
+
 # Testbericht
 
 Stand 26.10.2026. Ergebnisse betreffen den lokal geprüften Stand, keine produktive Domain. Die Rohdaten liegen in artifacts/ und den Dependency-Audit-Dateien im Backend.

@@ -1,0 +1,118 @@
+﻿<!doctype html>
+<html lang="de-AT">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content="Kontaktseite von Schröder - Alles Saniert. Anfrage sicher per Formular senden." />
+    <meta name="robots" content="index, follow" />
+    <title>Kontakt | Alles Saniert</title>
+    <link rel="icon" type="image/svg+xml" href="../favicon.svg" />
+    <link rel="stylesheet" href="../assets/vendor/icons.css" />
+    <link rel="stylesheet" href="../styles.css" /><link rel="canonical" href="https://www.allessaniert.at/contact/" /><link rel="alternate" hreflang="de-AT" href="https://www.allessaniert.at/contact/" /><link rel="alternate" hreflang="en" href="https://www.allessaniert.at/en/contact/" /><link rel="alternate" hreflang="x-default" href="https://www.allessaniert.at/contact/" /></head>
+  <body>
+    <a class="skip-link" href="#main-content">Zum Inhalt springen</a>
+
+
+
+
+    <main id="main-content" class="contact-main">
+      <section class="contact-split">
+        <aside class="contact-left">
+          <div class="contact-left-inner">
+            <h1>Bereit f&uuml;r Ihr n&auml;chstes Projekt?</h1>
+            <p>
+              Ob Renovierung oder Forstarbeit - wir liefern die Technik, die Sie weiterbringt. Melden Sie sich direkt
+              bei uns.
+            </p>
+
+            <div class="contact-info-list">
+              <article class="contact-info-item">
+                <div class="icon-box"><i class="ri-phone-fill"></i></div>
+                <div>
+                  <span>Telefon</span>
+                  <strong data-company-phone>+43 650 3021328</strong>
+                  <small>Mo-Fr 07:00 - 18:00 Uhr</small>
+                </div>
+              </article>
+              <article class="contact-info-item">
+                <div class="icon-box"><i class="ri-mail-fill"></i></div>
+                <div>
+                  <span>E-Mail</span>
+                  <strong data-company-email>office@allessaniert.at</strong>
+                  <small>Antwort innerhalb von 24h</small>
+                </div>
+              </article>
+            </div>
+          </div>
+        </aside>
+
+        <section class="contact-right">
+          <div class="contact-form-wrap">
+            <h2>Nachricht senden</h2>
+            <p>F&uuml;llen Sie das Formular aus und unser Team meldet sich umgehend bei Ihnen.</p>
+
+            <form class="contact-form" data-contact-form novalidate>
+              <div class="field-grid">
+                <label class="field">
+                  <span>Vorname</span>
+                  <input name="first_name" type="text" placeholder="Max" required />
+                </label>
+                <label class="field">
+                  <span>Nachname</span>
+                  <input name="last_name" type="text" placeholder="Mustermann" />
+                </label>
+              </div>
+
+              <div class="field-grid">
+                <label class="field">
+                  <span>E-Mail</span>
+                  <input name="email" type="email" placeholder="max@beispiel.at" required />
+                </label>
+                <label class="field">
+                  <span>Telefon</span>
+                  <input name="phone" type="tel" placeholder="+43 650 3021328" />
+                </label>
+              </div>
+
+              <label class="field">
+                <span>Betreff</span>
+                <select name="subject">
+                  <option>Mietanfrage f&uuml;r Werkzeuge</option>
+                  <option>Forstarbeiten</option>
+                  <option>Allgemeine Anfrage</option>
+                </select>
+              </label>
+
+              <label class="field">
+                <span>Nachricht</span>
+                <textarea name="message" rows="5" placeholder="Wie k&ouml;nnen wir Ihnen helfen?" required></textarea>
+              </label>
+
+              <div class="consent"><label class="consent-check"><input type="checkbox" name="privacy_consent" required /><span>Ich habe die <a class="consent-link" href="../datenschutz/">Datenschutzhinweise</a> gelesen.</span></label></div>
+              <p class="consent-meta">Pflichtfelder sind markiert. Ihre Daten werden nur zur Bearbeitung der Anfrage genutzt.</p>
+
+              <label class="visually-hidden-field" aria-hidden="true">
+                <span>Website</span>
+                <input type="text" name="website" tabindex="-1" autocomplete="off" />
+              </label>
+
+              <input type="hidden" name="turnstileToken" />
+              <div data-turnstile-container></div>
+
+              <div class="contact-actions">
+                <button class="btn-primary" type="submit">Senden</button>
+              </div>
+              <p class="contact-status is-info" data-contact-status role="status" aria-live="polite">
+                Ihre Anfrage wird sicher übermittelt.
+              </p>
+            </form>
+          </div>
+        </section>
+      </section>
+    </main>
+</body>
+</html>
+
+
+
+

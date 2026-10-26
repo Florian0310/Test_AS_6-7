@@ -90,7 +90,11 @@ const formatProduct = (source: any, en = false) => {
           image && typeof image === 'object'
             ? {
                 id: image.id,
-                url: image.sizes?.card?.url || image.url,
+                url: image.sizes?.card?.url && (!image.filesize || image.sizes.card.filesize < image.filesize) ? image.sizes.card.url : image.url,
+                originalUrl: image.url,
+                thumbnailUrl: image.sizes?.thumb?.url || image.sizes?.card?.url || image.url,
+                width: image.width,
+                height: image.height,
                 alt: repairTextEncoding(image.alt),
               }
             : null,
@@ -186,9 +190,10 @@ export const listProductsHandler: Endpoint['handler'] = async (req) => {
       }
     }
 
-    const page = Math.max(1, Math.min(10000, Number(req.query?.page) || 1))
-    const limit = Math.max(1, Math.min(100, Number(req.query?.limit) || 100))
+    const page = Math.max(1, Math.min(10000, Math.floor(Number(req.query?.page)) || 1))
+    const limit = Math.max(1, Math.min(100, Math.floor(Number(req.query?.limit)) || 100))
     const en = isEnglish(req)
+    const sortKey = req.query?.sort === 'price-asc' ? 'pricing.dailyPrice' : req.query?.sort === 'price-desc' ? '-pricing.dailyPrice' : 'title'
     const products = await req.payload.find({
       collection: 'products',
       depth: 1,
@@ -197,7 +202,7 @@ export const listProductsHandler: Endpoint['handler'] = async (req) => {
       req,
       overrideAccess: false,
       where,
-      sort: ['title'],
+      sort: [sortKey],
     })
 
     const terms = normalizeSearch(searchTerm).split(/\s+/).filter(Boolean)
@@ -207,6 +212,9 @@ export const listProductsHandler: Endpoint['handler'] = async (req) => {
         localized.title,localized.shortDescription,localized.category?.name].join(' '))
       return terms.every(term => haystack.includes(term))
     }) : products.docs
+    if (searchTerm) filtered.sort((a: any,b: any) => sortKey === 'title'
+      ? localizeProduct(a,en).title.localeCompare(localizeProduct(b,en).title, en ? 'en' : 'de')
+      : (Number(a.pricing?.dailyPrice || 0) - Number(b.pricing?.dailyPrice || 0)) * (sortKey.startsWith('-') ? -1 : 1))
     return Response.json({
       success: true,
       data: (searchTerm ? filtered.slice((page-1)*limit,page*limit) : filtered).map(doc => formatProduct(doc,en)),
@@ -243,7 +251,8 @@ export const listCategoriesHandler: Endpoint['handler'] = async (req) => {
     const categories = await req.payload.find({
       collection: 'categories',
       depth: 0,
-      limit: 200,
+      limit: 0,
+      pagination: false,
       req,
       where: {
         isActive: {
@@ -275,6 +284,7 @@ export const listCategoriesHandler: Endpoint['handler'] = async (req) => {
     return Response.json({
       success: true,
       data: categoryData,
+      total: products.docs.length,
     })
   } catch (error) {
     return errorResponse(error, 'Kategorien konnten nicht geladen werden.')

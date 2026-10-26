@@ -1,17 +1,16 @@
+import { documentPage } from './templates/shell.mjs';
 import fs from 'node:fs/promises';
-const escape = text => String(text).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 export async function buildPages() {
   const routes = [['impressum','imprint'],['datenschutz','privacy-policy'],['cookie-richtlinie','cookie-policy'],['barrierefreiheit','accessibility-statement'],['cookie-einstellungen','cookie-settings'],['bildnachweise','image-credits']];
   for (const locale of ['de','en']) {
     const t=JSON.parse(await fs.readFile(`locales/${locale}.json`,'utf8'));
-    const en=locale==='en', home=en?'/en/':'/', catalog=en?'/en/catalog/':'/sortiment/', privacy=en?'/en/privacy-policy/':'/datenschutz/';
-    const header=`<header class="header"><nav class="nav container"><a class="brand-logo" href="${home}"><span class="brand-text"><strong>ALLES SANIERT</strong><small>WILLY SCHRÖDER</small></span></a><div class="nav-menu" data-nav-menu><ul class="nav-list"><li><a class="nav-link" href="${catalog}">${t.catalog}</a></li><li><a class="nav-link" href="${en?'/en/forestry/':'/forestry-work/'}">${t.forestry}</a></li><li><a class="nav-link" href="${en?'/en/about-us/':'/about-us/'}">${t.about}</a></li><li><a class="nav-link" href="${en?'/en/contact/':'/contact/'}">${t.contact}</a></li></ul><button class="icon-btn nav-close" data-close-menu type="button" aria-label="${t.closeMenu}"><i class="ri-close-line"></i></button></div><div class="nav-actions"><button class="icon-btn" data-open-search type="button" aria-label="${t.search}"><i class="ri-search-line"></i></button><button class="icon-btn nav-menu-toggle" data-open-menu type="button" aria-label="${t.openMenu}"><i class="ri-menu-line"></i></button></div></nav></header><div class="search" data-search><form class="search-form"><i class="ri-search-line"></i><input class="search-input" type="search" /></form><button class="icon-btn search-close" data-close-search type="button" aria-label="${t.closeSearch}"><i class="ri-close-line"></i></button></div>`;
-    const footer=`<footer class="footer"><div class="container"><h2>Alles Saniert</h2><ul class="footer-list"><li><a href="${catalog}">${t.catalog}</a></li>${routes.map(([de,enPath],i)=>`<li><a href="${en?'/en/'+enPath:'/'+de}/">${t.legalTitles[i]}</a></li>`).join('')}</ul><p>© 2026 Alles Saniert</p></div></footer>`;
+    const en=locale==='en', catalog=en?'/en/catalog/':'/sortiment/', privacy=en?'/en/privacy-policy/':'/datenschutz/';
     const write=async (file,title,body,counterpart,extra='')=>{
       await fs.mkdir(file.slice(0,file.lastIndexOf('/'))||'.',{recursive:true});
       const url='/'+file.replace(/index\.html$/,'');
-      const html=`<!doctype html><html lang="${en?'en':'de-AT'}"><head><meta charset="utf-8" /><script src="/theme.js"></script><meta name="viewport" content="width=device-width, initial-scale=1" /><title>${escape(title)} | Alles Saniert</title><meta name="description" content="${escape(title+' – '+t.description)}" /><link rel="canonical" href="https://www.allessaniert.at${url}" /><link rel="alternate" hreflang="${en?'en':'de-AT'}" href="https://www.allessaniert.at${url}" /><link rel="alternate" hreflang="${en?'de-AT':'en'}" href="https://www.allessaniert.at${counterpart}" /><link rel="icon" href="/favicon.svg" type="image/svg+xml" /><link rel="stylesheet" href="/assets/vendor/icons.css" /><link rel="stylesheet" href="/styles.css" /></head><body><a class="skip-link" href="#main-content">${t.skip}</a>${header}<main id="main-content" ${extra}>${body}</main>${footer}<script src="/app-config.js"></script><script src="/consent.js"></script><script src="/i18n.js"></script><script src="/script.js"></script><script src="/shop.js"></script></body></html>`;
-      await fs.writeFile(file,html.replace(/<script src="\/(?!theme\.js)/g, '<script defer src="/'));
+      const html = documentPage({locale, path:url, title, content:body, mainAttributes:extra});
+      await fs.writeFile(file, html);
+
     };
     for(let i=0;i<routes.length;i++) {
       const pair=routes[i],file=(en?'en/'+pair[1]:pair[0])+'/index.html';
@@ -27,4 +26,3 @@ export async function buildPages() {
     if(en) for(const [slug,title,content] of [['about-us',t.about,t.aboutContent],['forestry',t.forestry,t.forestryContent]]) await write(`en/${slug}/index.html`,title,`<article class="legal-card"><h1>${title}</h1>${content}</article>`,slug==='forestry'?'/forestry-work/':'/about-us/','class="legal-main"');
   }
 }
-await buildPages();

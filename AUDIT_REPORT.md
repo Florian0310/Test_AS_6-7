@@ -1,3 +1,5 @@
+> Historischer Audit vor dem aktuellen Refactoring. Aktuelle UI, Architektur und Messergebnisse: [Refactoring-Bericht](docs/REFACTORING_REPORT.md). Aktueller Freigabestatus: [Go-Live-Checkliste](GO_LIVE_CHECKLIST.md).
+
 # Website-Audit – Alles Saniert
 
 Prüfdatum: 26.10.2026. Lokales Repository, keine Veröffentlichung.

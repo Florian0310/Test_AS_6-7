@@ -1,0 +1,113 @@
+﻿<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content="Contact page of Schröder - Alles Saniert. Send your request securely via form." />
+    <meta name="robots" content="index, follow" />
+    <title>Contact | Alles Saniert</title>
+    <link rel="icon" type="image/svg+xml" href="../../favicon.svg" />
+    <link rel="stylesheet" href="../../assets/vendor/icons.css" />
+    <link rel="stylesheet" href="../../styles.css" /><link rel="canonical" href="https://www.allessaniert.at/en/contact/" /><link rel="alternate" hreflang="de-AT" href="https://www.allessaniert.at/contact/" /><link rel="alternate" hreflang="en" href="https://www.allessaniert.at/en/contact/" /><link rel="alternate" hreflang="x-default" href="https://www.allessaniert.at/contact/" /></head>
+  <body>
+    <a class="skip-link" href="#main-content">Skip to content</a>
+
+
+
+
+    <main id="main-content" class="contact-main">
+      <section class="contact-split">
+        <aside class="contact-left">
+          <div class="contact-left-inner">
+            <h1>Ready for your next project?</h1>
+            <p>
+              Whether renovation or forestry work: we provide the right equipment to move your project forward.
+            </p>
+
+            <div class="contact-info-list">
+              <article class="contact-info-item">
+                <div class="icon-box"><i class="ri-phone-fill"></i></div>
+                <div>
+                  <span>Phone</span>
+                  <strong data-company-phone>+43 650 3021328</strong>
+                  <small>Mon-Fri 07:00 - 18:00</small>
+                </div>
+              </article>
+              <article class="contact-info-item">
+                <div class="icon-box"><i class="ri-mail-fill"></i></div>
+                <div>
+                  <span>Email</span>
+                  <strong data-company-email>office@allessaniert.at</strong>
+                  <small>Reply within 24h</small>
+                </div>
+              </article>
+            </div>
+          </div>
+        </aside>
+
+        <section class="contact-right">
+          <div class="contact-form-wrap">
+            <h2>Send a message</h2>
+            <p>Fill out the form and our team will get back to you quickly.</p>
+
+            <form class="contact-form" data-contact-form novalidate>
+              <div class="field-grid">
+                <label class="field">
+                  <span>First name</span>
+                  <input name="first_name" type="text" placeholder="Max" required />
+                </label>
+                <label class="field">
+                  <span>Last name</span>
+                  <input name="last_name" type="text" placeholder="Mustermann" />
+                </label>
+              </div>
+
+              <div class="field-grid">
+                <label class="field">
+                  <span>Email</span>
+                  <input name="email" type="email" placeholder="max@example.com" required />
+                </label>
+                <label class="field">
+                  <span>Phone</span>
+                  <input name="phone" type="tel" placeholder="+43 650 3021328" />
+                </label>
+              </div>
+
+              <label class="field">
+                <span>Subject</span>
+                <select name="subject">
+                  <option>Tool rental request</option>
+                  <option>Forestry services</option>
+                  <option>General request</option>
+                </select>
+              </label>
+
+              <label class="field">
+                <span>Message</span>
+                <textarea name="message" rows="5" placeholder="How can we help you?" required></textarea>
+              </label>
+
+              <div class="consent"><label class="consent-check"><input type="checkbox" name="privacy_consent" required /><span>I have read the <a class="consent-link" href="../privacy-policy/">privacy notice</a>.</span></label></div>
+              <p class="consent-meta">Required fields are marked. Your data is only used to process your request.</p>
+
+              <label class="visually-hidden-field" aria-hidden="true">
+                <span>Website</span>
+                <input type="text" name="website" tabindex="-1" autocomplete="off" />
+              </label>
+
+              <input type="hidden" name="turnstileToken" />
+              <div data-turnstile-container></div>
+
+              <div class="contact-actions">
+                <button class="btn-primary" type="submit">Send</button>
+              </div>
+              <p class="contact-status is-info" data-contact-status role="status" aria-live="polite">
+                Your request is sent securely.
+              </p>
+            </form>
+          </div>
+        </section>
+      </section>
+    </main>
+</body>
+</html>

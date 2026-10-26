@@ -1,0 +1,49 @@
+.container { width: min(1200px, calc(100% - 32px)); margin-inline: auto; }
+.header { position: sticky; top: 0; z-index: 50; background: var(--surface); border-bottom: 1px solid var(--border); }
+.nav { display: flex; min-height: 80px; align-items: center; justify-content: space-between; gap: var(--space-6); }
+.brand-logo { display: inline-flex; flex-shrink: 0; align-items: center; background: var(--brand-blue); color: white; border-radius: var(--radius-sm); padding: 10px 14px; }
+.brand-text { display: grid; text-align: center; gap: 3px; line-height: 1.15; white-space: nowrap; }
+.brand-text strong { font-size: 1rem; font-weight: 850; letter-spacing: .035em; }
+.brand-text small { font-size: .65rem; font-weight: 650; letter-spacing: .12em; text-transform: uppercase; }
+.nav-list { display: flex; list-style: none; align-items: center; gap: clamp(16px, 2vw, 28px); padding: 0; margin: 0; }
+.nav-link { display: inline-flex; align-items: center; min-height: 44px; font-weight: 650; color: var(--text-dark); text-decoration: none; border-bottom: 3px solid transparent; }
+.nav-link:hover, .nav-link[aria-current='page'] { color: var(--brand-blue); border-color: var(--brand-orange); }
+.nav-actions { display: flex; align-items: center; gap: var(--space-2); flex-shrink: 0; }
+.icon-btn, .locale-switch { width: 44px; height: 44px; display: inline-flex; align-items: center; justify-content: center; background: var(--surface); color: var(--brand-blue); border: 1px solid var(--border); border-radius: var(--radius-sm); cursor: pointer; font: inherit; text-decoration: none; }
+.icon-btn:hover, .locale-switch:hover { background: var(--surface-soft); border-color: var(--brand-blue); }
+.icon-btn i { font-size: 1.35rem; }
+.locale-switch { font-weight: 750; font-size: .875rem; }
+.nav-menu-toggle, .nav-close { display: none; }
+.footer { background: #081b55; color: #fff; padding: var(--space-12) 0 var(--space-6); margin-top: var(--space-12); }
+.footer-grid { display: grid; grid-template-columns: 1.2fr .9fr 1fr 1.2fr; gap: var(--space-8); }
+.footer-col { min-width: 0; }
+.brand-logo--footer { padding: 0; background: transparent; }
+.brand-logo--footer .brand-text { text-align: left; }
+.footer-col h2 { font-size: 1rem; margin: 0 0 var(--space-4); font-weight: 750; color: white; }
+.footer-brand-text { font-size: .9375rem; max-width: 30ch; color: #dce5ff; margin: var(--space-4) 0 0; }
+.footer-list { display: grid; gap: 4px; list-style: none; margin: 0; padding: 0; }
+.footer-list a { display: inline-block; padding-block: 7px; color: #e7edff; text-decoration: none; overflow-wrap: anywhere; }
+.footer-list a:hover { color: #fff; text-decoration: underline; text-underline-offset: 4px; }
+.footer-list li { overflow-wrap: anywhere; color: #e7edff; }
+.footer address { font-style: normal; }
+.footer-bottom { border-top: 1px solid #ffffff30; margin-top: var(--space-8); padding-top: var(--space-6); color: #dce5ff; font-size: var(--font-small); }
+.footer-bottom p { margin: 0; }
+@media(max-width: 1023px) {
+  .nav { min-height: 72px; gap: var(--space-3); }
+  .nav-menu-toggle, .nav-close { display: inline-flex; }
+  .nav-menu { position: fixed; inset: 0; min-height: 100dvh; background: var(--surface); padding: 88px 24px 32px; z-index: 60; visibility: hidden; transform: translateY(-105%); opacity: 0; transition: transform .2s ease, opacity .2s ease; overflow-y: auto; }
+  .nav-menu.open { visibility: visible; transform: translateY(0); opacity: 1; }
+  .nav-list { flex-direction: column; align-items: stretch; gap: var(--space-2); }
+  .nav-link { padding: 14px 12px; font-size: 1.125rem; border-radius: var(--radius-sm); }
+  .nav-close { position: absolute; right: 20px; top: 16px; }
+  .footer-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media(max-width: 600px) {
+  .nav { gap: var(--space-2); }
+  .brand-logo { padding: 9px 10px; }
+  .brand-text strong { font-size: .875rem; }
+  .brand-text small { font-size: .55rem; }
+  .nav-actions { gap: 4px; }
+  .footer-grid { grid-template-columns: minmax(0, 1fr); gap: var(--space-8); }
+  .brand-logo--footer { padding: 0; }
+}

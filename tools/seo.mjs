@@ -1,6 +1,7 @@
 import fs from 'node:fs/promises';
-const pairs=[['/','/en/'],['/sortiment/','/en/catalog/'],['/contact/','/en/contact/'],['/about-us/','/en/about-us/'],['/forestry-work/','/en/forestry/'],['/impressum/','/en/imprint/'],['/datenschutz/','/en/privacy-policy/'],['/cookie-richtlinie/','/en/cookie-policy/'],['/cookie-einstellungen/','/en/cookie-settings/'],['/barrierefreiheit/','/en/accessibility-statement/'],['/bildnachweise/','/en/image-credits/'],['/sortiment/produkt-hilti-sf-6-a22.html','/en/catalog/product.html'],['/sortiment/reservierung.html','/en/catalog/request.html']];
-const domain='https://www.allessaniert.at';
+import { routePairs as pairs } from '../frontend/config/routes.js';
+import { site } from '../frontend/config/site.js';
+const domain=site.origin;
 for(const pair of pairs) for(const route of pair) {
   const file=(route.endsWith('/')?route+'index.html':route).slice(1);
   let html=await fs.readFile(file,'utf8');

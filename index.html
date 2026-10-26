@@ -2,7 +2,6 @@
 <html lang="de-AT">
   <head>
     <meta charset="utf-8" />
-    <script src="theme.js"></script>
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Alles Saniert | Werkzeugverleih &amp; Forstarbeiten</title>
     <meta
@@ -21,51 +20,28 @@
     <link rel="icon" type="image/svg+xml" href="favicon.svg" />
     <link rel="stylesheet" href="assets/vendor/icons.css" />
     <link rel="stylesheet" href="styles.css" />
-  <link rel="preload" as="image" media="(min-width: 601px)" href="assets/images/bannerBackground.webp" fetchpriority="high" /><link rel="canonical" href="https://www.allessaniert.at/" /><link rel="alternate" hreflang="de-AT" href="https://www.allessaniert.at/" /><link rel="alternate" hreflang="en" href="https://www.allessaniert.at/en/" /><link rel="alternate" hreflang="x-default" href="https://www.allessaniert.at/" /><link rel="preload" as="image" media="(max-width: 600px)" href="assets/images/bannerBackground-mobile.webp" fetchpriority="high" /></head>
+  <link rel="preload" as="image" media="(min-width: 601px)" href="assets/images/bannerBackground.webp" fetchpriority="high" /><link rel="preload" as="image" media="(max-width: 600px)" href="assets/images/bannerBackground-mobile.webp" fetchpriority="high" /><link rel="canonical" href="https://www.allessaniert.at/" /><link rel="alternate" hreflang="de-AT" href="https://www.allessaniert.at/" /><link rel="alternate" hreflang="en" href="https://www.allessaniert.at/en/" /><link rel="alternate" hreflang="x-default" href="https://www.allessaniert.at/" /></head>
   <body class="home-page">
     <a class="skip-link" href="#main-content">Zum Inhalt springen</a>
-    <header class="header">
-      <nav class="nav container">
-        <a class="brand-logo" href="index.html">
-          <span class="brand-text">
-            <strong>ALLES SANIERT</strong>
-            <small>WILLY SCHRÖDER</small>
-          </span>
-        </a>
-        <div class="nav-menu" data-nav-menu>
-          <ul class="nav-list">
-            <li><a class="nav-link" href="sortiment/index.html">Sortiment</a></li>
-            <li><a class="nav-link" href="forestry-work/index.html">Forstarbeiten</a></li>
-            <li><a class="nav-link" href="about-us/index.html">&Uuml;ber uns</a></li>
-            <li><a class="nav-link" href="contact/index.html">Kontakt</a></li>
-            <li><a class="nav-link" href="en/index.html" lang="en" data-locale-switch="en">EN</a></li>
-          </ul>
-          <button class="icon-btn nav-close" type="button" data-close-menu aria-label="Men&uuml; schlie&szlig;en">
-            <i class="ri-close-line"></i>
-          </button>
-        </div>
-        <div class="nav-actions">
-          <button class="icon-btn nav-search-toggle" type="button" data-open-search aria-label="Suche &ouml;ffnen">
-            <i class="ri-search-line"></i>
-          </button>
-          <button class="icon-btn nav-menu-toggle" type="button" data-open-menu aria-label="Men&uuml; &ouml;ffnen">
-            <i class="ri-menu-line"></i>
-          </button>
-        </div>
-      </nav>
-    </header>
 
-    <div class="search" data-search>
-      <form class="search-form">
-        <i class="ri-search-line"></i>
-        <input class="search-input" type="search" placeholder="Wonach suchen Sie?" />
-      </form>
-      <button class="icon-btn search-close" type="button" data-close-search aria-label="Suche schlie&szlig;en">
-        <i class="ri-close-line"></i>
-      </button>
+
+
+
+    <header class="header" data-site-header>
+  <nav class="nav container" aria-label="Hauptnavigation">
+    <a class="brand-logo" href="/"><span class="brand-text"><strong>ALLES SANIERT</strong><small>WILLY SCHRÖDER</small></span></a>
+    <div class="nav-menu" id="site-navigation" data-nav-menu>
+      <ul class="nav-list"><li><a class="nav-link" href="/sortiment/">Sortiment</a></li><li><a class="nav-link" href="/forestry-work/">Forstarbeiten</a></li><li><a class="nav-link" href="/about-us/">Über uns</a></li><li><a class="nav-link" href="/contact/">Kontakt</a></li></ul>
+      <button class="icon-btn nav-close" data-close-menu type="button" aria-label="Menü schließen"><i class="ri-close-line" aria-hidden="true"></i></button>
     </div>
-
-    <main id="main-content">
+    <div class="nav-actions">
+      <a class="icon-btn" data-catalog-search-link href="/sortiment/?focus=search" aria-label="Im Sortiment suchen"><i class="ri-search-line" aria-hidden="true"></i></a>
+      <a class="locale-switch" data-locale-switch="en" href="/en/" lang="en" aria-label="Switch to English">EN</a>
+      <button class="icon-btn nav-menu-toggle" data-open-menu type="button" aria-label="Menü öffnen" aria-controls="site-navigation" aria-expanded="false"><i class="ri-menu-line" aria-hidden="true"></i></button>
+    </div>
+  </nav>
+</header>
+<main id="main-content">
       <section class="hero">
         <div class="hero-content container">
           <span class="hero-badge" data-site-hero-badge>Im Piestingtal</span>
@@ -96,23 +72,7 @@
               <p class="section-subtitle" data-popular-subtitle>Die Favoriten unserer Kunden diese Woche.</p>
             </div>
           </div>
-          <div class="product-row" data-popular-grid>
-            <article class="product-card">
-              <div class="product-image-wrap">
-                <img loading="lazy" decoding="async" src="assets/images/aboutUsTwo.webp" alt="Werkzeug" />
-              </div>
-              <div class="product-content">
-                <span class="product-category">Wird geladen</span>
-                <h3><a href="sortiment/index.html">Beliebtes Produkt</a></h3>
-                <p>Produktdaten werden aus Payload geladen.</p>
-                <div class="product-footer">
-                  <div><small>Tagesmiete ab</small><strong>--</strong></div>
-                  <button class="product-cart" type="button" aria-label="Zum Produkt">
-                    <i class="ri-arrow-right-line"></i>
-                  </button>
-                </div>
-              </div>
-            </article>
+          <div class="product-row" data-popular-grid><p class="tool-empty">Geräte werden geladen …</p>
           </div>
         </div>
       </section>
@@ -166,85 +126,24 @@
         </div>
       </section>
     </main>
-
-    <footer class="footer">
-      <div class="container">
-        <div class="footer-grid">
-          <div class="footer-col">
-            <h3 class="footer-brand-title" data-company-brand-name>Alles Saniert</h3>
-            <div class="footer-brand-sub">Willy Schröder</div>
-            <p class="footer-brand-text">
-              Ihr zuverl&auml;ssiger Partner f&uuml;r professionellen Werkzeugverleih im Piestingtal. Hochwertige
-              Maschinen, faire Preise.
-            </p></div>
-          <div class="footer-col">
-            <h3>Service</h3>
-            <ul class="footer-list">
-              <li><a href="#rentInstructions">Mieten: so geht's</a></li>
-              <li><a href="sortiment/index.html">Sortiment</a></li>
-              <li><a href="contact/index.html">Kontaktformular</a></li>
-              <li><a href="cookie-einstellungen/index.html">Cookie-Einstellungen</a></li>
-            </ul>
-          </div>
-          <div class="footer-col">
-            <h3>Rechtliches</h3>
-            <ul class="footer-list">
-              <li><a href="impressum/index.html">Impressum</a></li>
-              <li><a href="datenschutz/index.html">Datenschutz</a></li>
-              <li><a href="cookie-richtlinie/index.html">Cookie-Richtlinie</a></li>
-              <li><a href="barrierefreiheit/index.html">Barrierefreiheit</a></li><li><a href="bildnachweise/index.html">Bildnachweise</a></li>
-              <li><a href="en/index.html" lang="en" data-locale-switch="en">English Version</a></li>
-            </ul>
-          </div>
-          <div class="footer-col">
-            <h3>Kontakt</h3>
-            <ul class="footer-list">
-              <li class="footer-contact-item">
-                <i class="ri-map-pin-2-fill"></i>
-                <span data-company-address>Fotzebenweg 3<br />2763 Pernitz</span>
-              </li>
-              <li class="footer-contact-item">
-                <i class="ri-phone-fill"></i>
-                <a href="tel:+436503021328" data-company-phone>+43 650 3021328</a>
-              </li>
-              <li class="footer-contact-item">
-                <i class="ri-mail-fill"></i>
-                <a href="mailto:office@allessaniert.at" data-company-email>office@allessaniert.at</a>
-              </li>
-            </ul>
-          </div>
-        </div>
-        <div class="footer-bottom">
-          <p>&copy; 2026 Alles Saniert Willy Schröder. Alle Rechte vorbehalten.</p></div>
-      </div>
-    </footer>
-
-    <script type="application/ld+json">
-      {
-        "@context": "https://schema.org",
-        "@type": "LocalBusiness",
-        "name": "Schröder - Alles Saniert",
-        "legalName": "Willy Schröder",
-        "address": {
-          "@type": "PostalAddress",
-          "streetAddress": "Fotzebenweg 3",
-          "postalCode": "2763",
-          "addressLocality": "Pernitz",
-          "addressCountry": "AT"
-        },
-        "telephone": "+43 650 3021328",
-        "email": "office@allessaniert.at",
-        "url": "https://www.allessaniert.at",
-        "description": "Werkzeugverleih sowie Dienstleistungen inklusive Forstarbeiten."
-      }
-    </script>
-
-    <script defer src="app-config.js"></script>
-    <script defer src="consent.js"></script>
-    <script defer src="i18n.js"></script>
-    <script defer src="script.js"></script>
-    <script defer src="shop.js"></script>
-  </body>
+<footer class="footer" data-site-footer>
+  <div class="container">
+    <div class="footer-grid">
+      <div class="footer-col"><a class="brand-logo brand-logo--footer" href="/"><span class="brand-text"><strong>ALLES SANIERT</strong><small data-company-legal-name>WILLY SCHRÖDER</small></span></a><p class="footer-brand-text">Werkzeuge und Geräte für Ihre Projekte im Piestingtal. Persönlich beraten, unkompliziert anfragen.</p></div>
+      <div class="footer-col"><h2>Service</h2><ul class="footer-list">
+        <li><a href="/sortiment/">Sortiment</a></li><li><a href="/#rentInstructions">Mieten: so geht’s</a></li><li><a href="/forestry-work/">Forstarbeiten</a></li><li><a href="/contact/">Kontakt</a></li>
+      </ul></div>
+      <div class="footer-col"><h2>Rechtliches</h2><ul class="footer-list"><li><a href="/impressum/">Impressum</a></li><li><a href="/datenschutz/">Datenschutz</a></li><li><a href="/cookie-richtlinie/">Cookie-Richtlinie</a></li><li><a href="/barrierefreiheit/">Barrierefreiheit</a></li><li><a href="/cookie-einstellungen/">Cookie-Einstellungen</a></li><li><a href="/bildnachweise/">Bildnachweise</a></li></ul></div>
+      <div class="footer-col"><h2>Kontakt</h2><address><ul class="footer-list">
+        <li data-company-legal-name>Willy Schröder</li><li data-company-address>Fotzebenweg 3, 2763 Pernitz</li>
+        <li><a href="tel:+436503021328" data-company-phone>+43 650 3021328</a></li><li><a href="mailto:office@allessaniert.at" data-company-email>office@allessaniert.at</a></li>
+      </ul></address></div>
+    </div>
+    <div class="footer-bottom"><p>© 2026 Alles Saniert · Willy Schröder</p></div>
+  </div>
+</footer>
+<script type="module" src="/frontend/main.js"></script>
+</body>
 </html>
 
 

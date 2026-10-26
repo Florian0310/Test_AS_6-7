@@ -1,3 +1,5 @@
+> Historischer Audit vor dem aktuellen Refactoring. Aktuelle UI, Architektur und Messergebnisse: [Refactoring-Bericht](docs/REFACTORING_REPORT.md). Aktueller Freigabestatus: [Go-Live-Checkliste](GO_LIVE_CHECKLIST.md).
+
 # Performancebericht
 
 Prüfdatum 26.10.2026. Vergleich: EN-Startseite auf localhost:8000, Chrome/Lighthouse 13, Standard-Mobile-Profil und simulierte Drosselung, frische Browserumgebung. Backend und Frontend lokal. Keine Feldmessung und kein P75-/INP-Nachweis.

@@ -115,6 +115,34 @@ const makePayload = () => {
   }
 }
 
+describe('catalog refactoring contracts', () => {
+  it('whitelists sort fields and floors pagination', async () => {
+    for (const [sort,expected] of [['price-asc','pricing.dailyPrice'],['price-desc','-pricing.dailyPrice'],['users.password','title']]) {
+      const payload = makePayload()
+      await listProductsHandler({payload,query:{sort,page:'2.8',limit:'12.7'}} as any)
+      expect(payload.find).toHaveBeenCalledWith(expect.objectContaining({collection:'products',page:2,limit:12,sort:[expected]}))
+    }
+  })
+  it('combines category and accent-insensitive description search before pagination', async () => {
+    const payload = makePayload()
+    const docs = [3,1,2].map(price => ({...productDoc,id:String(price),title:`Gerät ${price}`,shortDescription:'ÖL für SÄGEN',pricing:{dailyPrice:price}}))
+    payload.find.mockImplementation(async (args:any) => args.collection === 'categories'
+      ? {docs:[{id:'cat-1'}],totalDocs:1} as any : {docs,totalDocs:3} as any)
+    const response = await listProductsHandler({payload,query:{category:'bohren-stemmen',search:'oel sagen',sort:'price-asc',page:'2',limit:'1'}} as any)
+    const body = await response.json()
+    expect(body.total).toBe(3)
+    expect(body.data.map((doc:any) => doc.id)).toEqual(['2'])
+    expect(body.hasNextPage).toBe(true)
+    expect(payload.find).toHaveBeenCalledWith(expect.objectContaining({collection:'products',where:{isActive:{equals:true},category:{equals:'cat-1'}}}))
+  })
+  it('keeps media originals separate from small card and thumbnail variants', async () => {
+    const payload = makePayload()
+    payload.find.mockResolvedValue({docs:[{...productDoc,images:[{id:1,url:'/original.png',filesize:100000,sizes:{card:{url:'/card.webp',filesize:10000},thumb:{url:'/thumb.webp'}},alt:'Drill'}]}],totalDocs:1} as any)
+    const result = await listProductsHandler({payload,query:{}} as any)
+    expect((await result.json()).data[0].images[0]).toMatchObject({url:'/card.webp',originalUrl:'/original.png',thumbnailUrl:'/thumb.webp',alt:'Drill'})
+  })
+})
+
 describe('API Endpoints', () => {
   it('liefert Produktliste', async () => {
     const payload = makePayload()

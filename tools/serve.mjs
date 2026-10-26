@@ -4,8 +4,8 @@ import { fileURLToPath } from 'node:url';
 import { stat, realpath, readFile } from 'node:fs/promises';
 import { gzipSync } from 'node:zlib';
 const root = fileURLToPath(new URL('../', import.meta.url));
-const publicDirs = new Set(['assets','en','sortiment','about-us','contact','forestry-work','impressum','datenschutz','cookie-einstellungen','cookie-richtlinie','barrierefreiheit','bildnachweise']);
-const publicFiles = new Set(['index.html','404.html','favicon.svg','styles.css','script.js','shop.js','consent.js','theme.js','i18n.js','app-config.js','robots.txt','sitemap.xml']);
+const publicDirs = new Set(['assets','frontend','en','sortiment','about-us','contact','forestry-work','impressum','datenschutz','cookie-einstellungen','cookie-richtlinie','barrierefreiheit','bildnachweise']);
+const publicFiles = new Set(['index.html','404.html','favicon.svg','styles.css','script.js','shop.js','consent.js','i18n.js','app-config.js','robots.txt','sitemap.xml']);
 const types = {'.html':'text/html; charset=utf-8','.css':'text/css; charset=utf-8','.js':'text/javascript; charset=utf-8','.svg':'image/svg+xml','.webp':'image/webp','.png':'image/png','.jpg':'image/jpeg','.jpeg':'image/jpeg','.xml':'application/xml','.txt':'text/plain; charset=utf-8','.woff2':'font/woff2'};
 const csp = "default-src 'self'; script-src 'self' https://challenges.cloudflare.com https://www.googletagmanager.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: http://localhost:3001 https://www.allessaniert.at; connect-src 'self' http://localhost:3001 https://www.google-analytics.com https://region1.google-analytics.com; frame-src https://challenges.cloudflare.com; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'self' http://localhost:3001";
 http.createServer(async (req,res)=>{

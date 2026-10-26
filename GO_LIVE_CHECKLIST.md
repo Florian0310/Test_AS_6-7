@@ -1,5 +1,6 @@
 # Go-live-Checkliste
 
+Aktuelle Architektur, Funktionsänderungen und Nachweise: [Refactoring-Bericht](docs/REFACTORING_REPORT.md), [Entwicklung](docs/DEVELOPMENT.md), [Deployment](docs/DEPLOYMENT.md).
 Stand 26.10.2026. **Entscheidung: NO-GO für öffentliche Produktion.** Lokaler Entwicklungs-/Reviewbetrieb ist möglich. PASS gilt ausschließlich für die explizit beschriebene Prüfung, nicht für einen ganzen Themenbereich oder die produktive Infrastruktur.
 
 | Bereich / Kriterium | Status | Nachweis / nächste Voraussetzung |
@@ -20,18 +21,18 @@ Stand 26.10.2026. **Entscheidung: NO-GO für öffentliche Produktion.** Lokaler 
 | Rechtliches: Bruttopreise, Pflichtkosten und Mietbedingungen | FAIL | Steuerstatus, Preisfreigabe und juristische Vertragsprüfung erforderlich |
 | Rechtliches: BaFG-Ausnahme/Anwendbarkeit verbindlich geklärt | NOT TESTED | Betriebsgröße und juristische Einordnung fehlen |
 | Rechtliches: Lizenzbelege sämtlicher Assets | NOT TESTED | Vorhandene Urheberangaben erhalten, Nutzungsrechte nicht extern verifiziert |
-| A11y: 24 Seiten, beide Themes, axe-AA-Regeln | PASS | 48 Prüfungen ohne gemeldete Verstöße |
+| A11y: 27 Seiten, feste Markendarstellung, axe-AA | PASS | 27 aktuelle Prüfungen ohne gemeldete Verstöße; Refactoring-Bericht |
 | A11y: Tastaturabläufe der Hauptinteraktionen | PASS | Automatisierte echte Tastendrücke inkl. Fokusfalle/Rückgabe |
 | A11y: vollständiger manueller WCAG-/Screenreader-Audit | NOT TESTED | Automatisierte Tests ersetzen diese Abnahme nicht |
-| Performance: Lighthouse-Laborziele | PASS | Einzellauf 98/100/100/100; siehe Messgrenzen |
+| Performance: Lighthouse-Laborziele | PASS | Aktuell 100/100/100/100, CLS 0; Messgrenzen im Refactoring-Bericht |
 | Performance: reale P75-CWV einschließlich INP | NOT TESTED | Keine Felddaten oder echte Hostingmessung |
 | SEO: interne Ziele, Canonical/hreflang, Sitemap und 404 | PASS | 26 Seiten statisch geprüft, 404 per HTTP; EN-Labor-SEO 100 |
 | SEO: Indexierung und Produkt-SEO auf echter Domain | NOT TESTED | Search-Console-/Domainzugriff fehlt; dynamische Slug-Seiten abschließend prüfen |
-| Responsive: sieben Breiten über vier Hauptseiten | PASS | Kein horizontaler Überlauf in geprüfter Matrix |
+| Responsive: neun Breiten über vier Hauptseiten | PASS | 320 bis 1920 Pixel; kein horizontaler Überlauf in geprüfter Matrix |
 | Responsive: reale Geräte, Landscape, Zoom 200 % | NOT TESTED | Separate manuelle Geräteprüfung erforderlich |
 | Mehrsprachigkeit: UI/Routen, Filter/Slug und Formularwechsel | PASS | EN-Zielseiten ergänzt; E2E bestanden |
 | Mehrsprachigkeit: alle redaktionellen CMS-Inhalte freigegeben | FAIL | Testprodukte/englische Beschreibungen und technische Spezifikationen prüfen |
-| Theme: Hell/Dunkel/Auto, Persistenz und Systemwechsel | PASS | E2E und Screenshots |
+| Design: feste helle Markendarstellung | PASS | Theme-Umschaltung und Suchmodal auftragsgemäß entfernt; Header-Suche führt zum Katalog |
 | Cookie-Management: speichern, widerrufen, verlassen, Sync | PASS | E2E; notwendige Einstellungen und Rückweg vorhanden |
 | Deployment: sicherer Export und Standalone-Paket | PASS | Öffentliche Dateien getrennt; native Bibliotheken/Assets enthalten; dotenv ausgeschlossen |
 | Deployment: Migration frisch + bestehende Kopie | PASS | Integritätsprüfung und Bestandszahlen unverändert |
