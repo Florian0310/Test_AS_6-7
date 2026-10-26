@@ -26,9 +26,14 @@ const dataDir = path.resolve(dirname, 'data')
 mkdirSync(dataDir, { recursive: true })
 
 const databaseURL = process.env.DATABASE_URI || 'file:./data/payload.sqlite'
-const frontendURL = process.env.FRONTEND_PUBLIC_URL || 'http://localhost:3000'
-const adminEmail = process.env.PAYLOAD_ADMIN_EMAIL || 'admin@example.com'
-const adminPassword = process.env.PAYLOAD_ADMIN_PASSWORD || 'ChangeMe123!'
+const frontendURL = process.env.FRONTEND_PUBLIC_URL || 'http://localhost:8000'
+const adminEmail = process.env.PAYLOAD_ADMIN_EMAIL
+const adminPassword = process.env.PAYLOAD_ADMIN_PASSWORD
+const production = process.env.NODE_ENV === 'production'
+const secret = process.env.PAYLOAD_SECRET || ''
+if (!secret || (production && (secret.length < 32 || /change-me|example|development/i.test(secret)))) {
+  throw new Error('PAYLOAD_SECRET must be a strong, unique secret (at least 32 characters in production).')
+}
 
 const normalizedEnvOrigins = (process.env.FRONTEND_ALLOWED_ORIGINS || '')
   .split(',')
@@ -42,19 +47,20 @@ const devOrigins = [
   'http://127.0.0.1:3000',
   'http://127.0.0.1:5500',
   'http://127.0.0.1:8000',
-  'null',
 ]
 
 const allowedFrontendOrigins = Array.from(
-  new Set([frontendURL, ...devOrigins, ...normalizedEnvOrigins].filter(Boolean)),
+  new Set([frontendURL, ...(production ? [] : devOrigins), ...normalizedEnvOrigins].filter(origin => origin && origin !== 'null')),
 )
 
 export default buildConfig({
-  secret: process.env.PAYLOAD_SECRET || 'change-me-in-production',
+  secret,
+  upload: { limits: { fileSize: 8 * 1024 * 1024 }, requestSizeLimit: 10 * 1024 * 1024 },
   serverURL: process.env.PAYLOAD_PUBLIC_SERVER_URL || 'http://localhost:3001',
   sharp,
   editor: lexicalEditor(),
   db: sqliteAdapter({
+    push: process.env.NODE_ENV !== 'production',
     client: {
       url: databaseURL,
     },
@@ -89,6 +95,17 @@ export default buildConfig({
     outputFile: path.resolve(dirname, 'src/payload-types.ts'),
   },
   onInit: async (payload) => {
+    // Bootstrap is an explicit one-time operation. Never create a known default account.
+    if (process.env.BOOTSTRAP_ADMIN !== 'true') {
+      if (production) {
+        const users = await payload.find({collection:'users',limit:1,depth:0,overrideAccess:true})
+        if (!users.docs.length) throw new Error('Initialize the administrator explicitly before serving production traffic.')
+      }
+      return
+    }
+    if (!adminEmail || !adminPassword || adminPassword.length < 16 || /changeme|password|example/i.test(adminPassword)) {
+      throw new Error('Admin bootstrap requires an explicit email and a strong password of at least 16 characters.')
+    }
     const existing = await payload.find({
       collection: 'users',
       where: {
@@ -113,22 +130,5 @@ export default buildConfig({
       payload.logger.info(`Admin-Benutzer erstellt: ${adminEmail}`)
     }
 
-    await payload.updateGlobal({
-      slug: 'rental-settings',
-      overrideAccess: true,
-      data: {
-        requestNotificationEmail:
-          process.env.REQUEST_NOTIFICATION_EMAIL || 'office@allessaniert.at',
-      },
-    })
-
-    await payload.updateGlobal({
-      slug: 'contact-settings',
-      overrideAccess: true,
-      data: {
-        inquiryRecipientEmail:
-          process.env.REQUEST_NOTIFICATION_EMAIL || 'office@allessaniert.at',
-      },
-    })
   },
 })

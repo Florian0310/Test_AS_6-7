@@ -1,0 +1,23 @@
+{
+  "name": "alles-saniert-website",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "node tools/serve.mjs",
+    "test:e2e": "playwright test",
+    "test:static": "node tools/check-site.mjs",
+    "perf": "node tools/measure.mjs",
+    "lint": "eslint .",
+    "build:content": "node tools/build-content.mjs && node tools/seo.mjs",
+    "export": "node tools/export-site.mjs"
+  },
+  "devDependencies": {
+    "@axe-core/playwright": "^4.11.0",
+    "@eslint/js": "^10.0.1",
+    "@playwright/test": "^1.58.0",
+    "eslint": "^10.13.0",
+    "globals": "^17.13.0",
+    "lighthouse": "^13.0.0",
+    "node": "^24.22.1"
+  }
+}

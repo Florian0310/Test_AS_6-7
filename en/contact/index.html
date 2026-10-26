@@ -2,23 +2,23 @@
 <html lang="en">
   <head>
     <meta charset="utf-8" />
+    <script src="../../theme.js"></script>
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="description" content="Contact page of Schröder - Alles Saniert. Send your request securely via form." />
     <meta name="robots" content="index, follow" />
-    <link rel="canonical" href="https://www.allessaniert.at/en/contact/" />
     <title>Contact | Alles Saniert</title>
     <link rel="icon" type="image/svg+xml" href="../../favicon.svg" />
     <link rel="stylesheet" href="../../assets/vendor/icons.css" />
     <link rel="stylesheet" href="../../styles.css" />
-  </head>
+  <link rel="canonical" href="https://www.allessaniert.at/en/contact/" /><link rel="alternate" hreflang="de-AT" href="https://www.allessaniert.at/contact/" /><link rel="alternate" hreflang="en" href="https://www.allessaniert.at/en/contact/" /><link rel="alternate" hreflang="x-default" href="https://www.allessaniert.at/contact/" /></head>
   <body>
     <a class="skip-link" href="#main-content">Skip to content</a>
     <header class="header">
       <nav class="nav container">
-        <a class="brand-logo" href="../index.html" aria-label="Alles Saniert home">
+        <a class="brand-logo" href="../index.html">
           <span class="brand-text">
             <strong>ALLES SANIERT</strong>
-            <small>SCHRÖDER GESNBR</small>
+            <small>WILLY SCHRÖDER</small>
           </span>
         </a>
         <div class="nav-menu" data-nav-menu>
@@ -27,7 +27,7 @@
             <li><a class="nav-link" href="../../forestry-work/index.html">Forestry</a></li>
             <li><a class="nav-link" href="../../about-us/index.html">About us</a></li>
             <li><a class="nav-link active" href="index.html">Contact</a></li>
-            <li><a class="nav-link" href="../../index.html" lang="de" data-locale-switch="de">DE</a></li>
+            <li><a class="nav-link" href="../../index.html" lang="de-AT" data-locale-switch="de">DE</a></li>
           </ul>
           <button class="icon-btn nav-close" type="button" data-close-menu aria-label="Close menu">
             <i class="ri-close-line"></i>
@@ -126,14 +126,7 @@
                 <textarea name="message" rows="5" placeholder="How can we help you?" required></textarea>
               </label>
 
-              <div class="consent">
-                <label class="consent-check">
-                  <input type="checkbox" name="privacy_consent" required />
-                  <span>I agree to the</span>
-                </label>
-                <a class="consent-link" href="../privacy-policy/index.html">Privacy policy</a>
-                <span>.</span>
-              </div>
+              <div class="consent"><label class="consent-check"><input type="checkbox" name="privacy_consent" required /><span>I have read the <a class="consent-link" href="../privacy-policy/">privacy notice</a>.</span></label></div>
               <p class="consent-meta">Required fields are marked. Your data is only used to process your request.</p>
 
               <label class="visually-hidden-field" aria-hidden="true">
@@ -161,7 +154,7 @@
         <div class="footer-grid">
           <div class="footer-col">
             <h3 class="footer-brand-title" data-company-brand-name>Alles Saniert</h3>
-            <div class="footer-brand-sub">Schröder Gesnbr</div>
+            <div class="footer-brand-sub">Willy Schröder</div>
             <p class="footer-brand-text">
               Your trusted partner for professional tool rental in the Piesting valley. High-quality equipment and
               fair pricing.
@@ -204,13 +197,14 @@
           </div>
         </div>
         <div class="footer-bottom">
-          <p>&copy; 2026 Alles Saniert Schröder Gesnbr. All rights reserved.</p>
+          <p>&copy; 2026 Alles Saniert Willy Schröder. All rights reserved.</p>
         </div>
       </div>
     </footer>
 
-    <script src="../../app-config.js"></script>
-    <script src="../../consent.js"></script>
-    <script src="../../script.js"></script>
+    <script defer src="../../app-config.js"></script>
+    <script defer src="../../consent.js"></script>
+    <script defer src="../../i18n.js"></script>
+    <script defer src="../../script.js"></script>
   </body>
 </html>

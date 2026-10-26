@@ -11,7 +11,7 @@ export const SiteSettings: GlobalConfig = {
   slug: 'site-settings',
   label: 'Website-Einstellungen',
   access: {
-    read: () => true,
+    read: ({ req }) => Boolean(req.user),
     update: ({ req }) => Boolean(req.user),
   },
   admin: {
@@ -180,7 +180,7 @@ export const SiteSettings: GlobalConfig = {
           name: 'introEn',
           label: 'Intro Catalog (EN)',
           type: 'textarea',
-          defaultValue: 'All content is loaded from Payload CMS. You can filter by category and search terms directly.',
+          defaultValue: 'Find the right equipment by category or search term.',
         },
         {
           name: 'searchPlaceholderDe',

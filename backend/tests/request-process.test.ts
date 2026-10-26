@@ -61,6 +61,7 @@ describe('Anfrageprozess', () => {
       req: { payload: payloadMock.api } as any,
       body: {
         productId: 'prod-1',
+        consentPrivacy: true,
         name: 'Max Mustermann',
         email: 'max@example.com',
         rentalDays: 3,
@@ -81,6 +82,7 @@ describe('Anfrageprozess', () => {
         req: { payload: payloadMock.api } as any,
         body: {
           productId: 'prod-1',
+        consentPrivacy: true,
           email: 'max@example.com',
           rentalDays: 3,
         },
@@ -96,11 +98,12 @@ describe('Anfrageprozess', () => {
       req: { payload: payloadMock.api } as any,
       body: {
         productId: 'prod-1',
+        consentPrivacy: true,
         name: 'Max Mustermann',
         email: 'max@example.com',
         rentalDays: 10,
       },
-      notifyByEmail: vi.fn(async () => ({ mode: 'prepared', preview: { to: 'x', subject: 'y', text: 'z' } })),
+      notifyByEmail: vi.fn(async () => ({ mode: 'prepared' as const, preview: { to: 'x', subject: 'y', text: 'z' } })),
     })
 
     const createArgs = payloadMock.api.create.mock.calls[0][0]
@@ -115,11 +118,12 @@ describe('Anfrageprozess', () => {
       req: { payload: payloadMock.api } as any,
       body: {
         productId: 'prod-1',
+        consentPrivacy: true,
         name: 'Max Mustermann',
         email: 'max@example.com',
         rentalDays: 2,
       },
-      notifyByEmail: vi.fn(async () => ({ mode: 'prepared', preview: { to: 'x', subject: 'y', text: 'z' } })),
+      notifyByEmail: vi.fn(async () => ({ mode: 'prepared' as const, preview: { to: 'x', subject: 'y', text: 'z' } })),
     })
 
     const createArgs = payloadMock.api.create.mock.calls[0][0]
@@ -135,11 +139,12 @@ describe('Anfrageprozess', () => {
       req: { payload: payloadMock.api } as any,
       body: {
         productId: 'prod-1',
+        consentPrivacy: true,
         name: 'Max Mustermann',
         email: 'max@example.com',
         rentalDays: 1,
       },
-      notifyByEmail: vi.fn(async () => ({ mode: 'prepared', preview: { to: 'x', subject: 'y', text: 'z' } })),
+      notifyByEmail: vi.fn(async () => ({ mode: 'prepared' as const, preview: { to: 'x', subject: 'y', text: 'z' } })),
     })
 
     const createArgs = payloadMock.api.create.mock.calls[0][0]
@@ -148,13 +153,14 @@ describe('Anfrageprozess', () => {
 
   it('triggert E-Mail-Logik', async () => {
     const payloadMock = makePayload()
-    const emailMock = vi.fn(async () => ({ mode: 'prepared', preview: { to: 'x', subject: 'y', text: 'z' } }))
+    const emailMock = vi.fn(async () => ({ mode: 'prepared' as const, preview: { to: 'x', subject: 'y', text: 'z' } }))
 
     await createRequestWithPricing({
       payload: payloadMock.api as any,
       req: { payload: payloadMock.api } as any,
       body: {
         productId: 'prod-1',
+        consentPrivacy: true,
         name: 'Max Mustermann',
         email: 'max@example.com',
         rentalDays: 4,

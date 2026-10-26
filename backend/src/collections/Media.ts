@@ -21,22 +21,26 @@ export const Media: CollectionConfig = {
     delete: isAuthenticated,
   },
   upload: {
-    staticDir: 'media',
+    staticDir: process.env.MEDIA_DIR || 'media',
     imageSizes: [
       {
         name: 'thumb',
         width: 320,
         height: 320,
         crop: 'center',
+        withoutEnlargement: true,
+        formatOptions: { format: 'webp', options: { quality: 80 } },
       },
       {
         name: 'card',
         width: 800,
         height: 600,
         crop: 'center',
+        withoutEnlargement: true,
+        formatOptions: { format: 'webp', options: { quality: 80 } },
       },
     ],
-    mimeTypes: ['image/*'],
+    mimeTypes: ['image/jpeg', 'image/png', 'image/webp', 'image/avif'],
   },
   admin: {
     useAsTitle: 'alt',

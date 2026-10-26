@@ -1,12 +1,13 @@
 import type { CollectionConfig } from 'payload'
 import { isAuthenticated, isAuthenticatedOrActiveFilter } from '../utils/access'
 import { slugFieldHook } from '../utils/slug'
+import { englishFields } from '../utils/catalogLocale'
 
 const resolveFrontendURL = () =>
   (
     process.env.FRONTEND_PREVIEW_URL ||
     process.env.FRONTEND_PUBLIC_URL ||
-    'http://localhost:3000'
+    'http://localhost:8000'
   ).replace(/\/$/, '')
 
 const toProductPreviewURL = (rawSlug: unknown) => {
@@ -36,6 +37,7 @@ export const Products: CollectionConfig = {
     },
   },
   fields: [
+    englishFields('English product content'),
     {
       name: 'title',
       label: 'Titel',

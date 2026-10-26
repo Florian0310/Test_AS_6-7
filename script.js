@@ -1,5 +1,4 @@
 const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-const THEME_STORAGE_KEY = 'as_theme_mode_v1';
 const LOCALE_STORAGE_KEY = 'as_locale_pref_v1';
 const LOCALE_AUTODETECT_KEY = 'as_locale_autodetect_done_v1';
 
@@ -35,13 +34,13 @@ const setupPage = () => {
       .map((entry) => String(entry || '').toLowerCase())
       .filter(Boolean);
 
-    const hasEnglish = normalized.some((entry) => entry.startsWith('en'));
+    const hasEnglish = normalized[0]?.startsWith('en');
     return hasEnglish ? 'en' : 'de';
   };
 
   const setLocalePreferenceFromPath = () => {
     const path = String(window.location.pathname || '').toLowerCase();
-    if (path.includes('/en/')) {
+    if (path.startsWith('/en/')) {
       safeStorageSet(LOCALE_STORAGE_KEY, 'en');
       return;
     }
@@ -111,7 +110,7 @@ const setupPage = () => {
   const getFocusableElements = (container) =>
     Array.from(container.querySelectorAll(focusableSelector)).filter((element) => {
       if (!(element instanceof HTMLElement)) return false;
-      if (element.hidden || element.getAttribute('aria-hidden') === 'true') return false;
+      if (element.hidden || element.closest('[inert]') || !element.getClientRects().length) return false;
       return true;
     });
 
@@ -124,17 +123,25 @@ const setupPage = () => {
 
   const setMenuState = (isOpen) => {
     if (!menu) return;
+    const restore = menu.contains(document.activeElement);
     menu.classList.toggle('open', isOpen);
-    menu.setAttribute('aria-hidden', String(!isOpen));
+    const mobile = window.innerWidth <= 1023;
+    menu.setAttribute('aria-hidden', String(mobile && !isOpen));
+    menu.inert = mobile && !isOpen;
+    if (mobile && isOpen) requestAnimationFrame(() => getFocusableElements(menu)[0]?.focus());
     if (openMenuBtn) {
       openMenuBtn.setAttribute('aria-expanded', String(isOpen));
     }
+    if (!isOpen && restore) openMenuBtn?.focus();
     setBodyLock();
   };
 
   const setSearchState = (isOpen) => {
     if (!search) return;
+    const restore = search.contains(document.activeElement);
     search.classList.toggle('active', isOpen);
+    search.inert = !isOpen;
+    if (!isOpen && restore) openSearchBtn?.focus();
     search.setAttribute('aria-hidden', String(!isOpen));
     if (openSearchBtn) {
       openSearchBtn.setAttribute('aria-expanded', String(isOpen));
@@ -188,11 +195,12 @@ const setupPage = () => {
   };
 
   const trapFocusInDialog = (event) => {
-    if (!activeDialog || event.key !== 'Tab') return;
-    const focusable = getFocusableElements(activeDialog);
+    const container = activeDialog || (search?.classList.contains('active') ? search : null) || (menu?.classList.contains('open') ? menu : null);
+    if (!container || event.key !== 'Tab') return;
+    const focusable = getFocusableElements(container);
     if (!focusable.length) {
       event.preventDefault();
-      activeDialog.focus();
+      container.focus();
       return;
     }
 
@@ -212,73 +220,74 @@ const setupPage = () => {
   };
 
   const setupThemeToggle = () => {
-    const navActions = document.querySelector('.nav-actions');
-    if (!navActions || navActions.querySelector('[data-theme-toggle]')) return;
-
-    const button = document.createElement('button');
-    button.type = 'button';
-    button.className = 'theme-toggle';
-    button.setAttribute('data-theme-toggle', 'true');
-    const isEnglish = document.documentElement.lang && document.documentElement.lang.startsWith('en');
-
-    const applyTheme = (mode) => {
-      if (mode === 'dark') {
-        document.documentElement.setAttribute('data-theme', 'dark');
-      } else {
-        document.documentElement.removeAttribute('data-theme');
-      }
-
-      button.textContent = mode === 'dark' ? (isEnglish ? 'Dark' : 'Dunkel') : 'Auto';
-      button.setAttribute(
-        'aria-label',
-        mode === 'dark'
-          ? isEnglish
-            ? 'Dark theme active'
-            : 'Dunkles Theme aktiv'
-          : isEnglish
-            ? 'Automatic theme active'
-            : 'Automatisches Theme aktiv',
-      );
-    };
-
-    const getStoredMode = () => {
-      try {
-        return window.localStorage.getItem(THEME_STORAGE_KEY) === 'dark' ? 'dark' : 'auto';
-      } catch (_error) {
-        return 'auto';
-      }
-    };
-
-    const setStoredMode = (mode) => {
-      try {
-        window.localStorage.setItem(THEME_STORAGE_KEY, mode);
-      } catch (_error) {
-        // Ignore storage errors, mode still applies for current view.
-      }
-    };
-
-    const initialMode = getStoredMode();
-    applyTheme(initialMode);
-
-    button.addEventListener('click', () => {
-      const currentMode = getStoredMode();
-      const nextMode = currentMode === 'dark' ? 'auto' : 'dark';
-      setStoredMode(nextMode);
-      applyTheme(nextMode);
-    });
-
-    navActions.appendChild(button);
+    const target = document.querySelector('.nav-actions') || document.querySelector('.legal-card');
+    if (!target || !window.ASTheme) return;
+    const label = document.createElement('label');
+    label.className = 'theme-control';
+    const text = document.createElement('span');
+    text.className = 'sr-only';
+    text.textContent = ASI18n.t('theme');
+    const select = document.createElement('select');
+    select.className = 'theme-toggle';
+    select.dataset.themeToggle = '';
+    for (const mode of ['auto','light','dark']) {
+      const option = document.createElement('option');
+      option.value = mode; option.textContent = ASI18n.t(mode); select.append(option);
+    }
+    select.value = ASTheme.getMode();
+    select.addEventListener('change', () => ASTheme.setMode(select.value));
+    document.addEventListener('as:theme', () => {select.value = ASTheme.getMode();});
+    label.append(text, select); target.append(label);
   };
 
   const setupLocaleSwitch = () => {
-    document.querySelectorAll('[data-locale-switch]').forEach((link) => {
-      link.addEventListener('click', () => {
-        const locale = String(link.getAttribute('data-locale-switch') || '').trim().toLowerCase();
-        if (locale === 'de' || locale === 'en') {
-          safeStorageSet(LOCALE_STORAGE_KEY, locale);
+    const forms = [...document.querySelectorAll('[data-contact-form], [data-rental-form]')];
+    try {
+      const draft = JSON.parse(sessionStorage.getItem('as_locale_form_draft'));
+      sessionStorage.removeItem('as_locale_form_draft');
+      if (draft && Date.now() - draft.time < 600000 && draft.path === location.pathname) {
+        for(const entry of draft.forms || []) {
+          const form = document.querySelector(entry.selector);
+          for(const [name,value] of Object.entries(entry.values)) {
+            const input = form?.elements.namedItem(name);
+            if (!input || input.type === 'password') continue;
+            if (input.type === 'checkbox') input.checked = value === true; else input.value = value;
+          }
         }
-      });
+      }
+    } catch (_) {}
+    document.addEventListener('click', event => {
+      const link = event.target.closest('[data-locale-switch]'); if(!link || !forms.length) return;
+      const draft = {time: Date.now(),path:new URL(link.href).pathname,forms:forms.map(form => ({
+        selector:form.hasAttribute('data-contact-form') ? '[data-contact-form]' : '[data-rental-form]',
+        values:Object.fromEntries([...form.elements].filter(input => input.name && !['password','hidden','submit'].includes(input.type) && input.name !== 'website').map(input => [input.name,input.type === 'checkbox' ? input.checked : input.value])),
+      }))};
+      try {sessionStorage.setItem('as_locale_form_draft',JSON.stringify(draft));} catch (_) {}
     });
+    const isEnglish = ASI18n.locale === 'en';
+    document.querySelectorAll('a[href]').forEach(link => {
+      const url = new URL(link.href, location.href);
+      if (url.origin !== location.origin) return;
+      if (link.hasAttribute('data-locale-switch')) {
+        const locale = link.dataset.localeSwitch;
+        url.pathname = ASI18n.counterpart(location.pathname, locale);
+        url.search = location.search; url.hash = location.hash;
+        link.href = url.href;
+        link.addEventListener('click', () => safeStorageSet(LOCALE_STORAGE_KEY, locale));
+      } else if (isEnglish && !url.pathname.startsWith('/en/')) {
+        const pair = ASI18n.routes.find(pair => pair[0] === url.pathname.replace(/index\.html$/, ''));
+        if (pair) {url.pathname = pair[1]; link.href = url.href;}
+      }
+    });
+    if (!document.querySelector('[data-locale-switch]')) {
+      const link = document.createElement('a');
+      link.href = ASI18n.counterpart(location.pathname, isEnglish ? 'de' : 'en') + location.search + location.hash;
+      link.textContent = isEnglish ? 'Deutsch' : 'English';
+      link.lang = isEnglish ? 'de' : 'en';
+      link.dataset.localeSwitch = isEnglish ? 'de' : 'en';
+      link.addEventListener('click', () => safeStorageSet(LOCALE_STORAGE_KEY, link.dataset.localeSwitch));
+      (document.querySelector('.nav-actions') || document.querySelector('.legal-card'))?.append(link);
+    }
   };
 
   const setContactStatus = (node, text, type = 'is-info') => {
@@ -351,7 +360,7 @@ const setupPage = () => {
           });
         }
       } catch (_error) {
-        setContactStatus(statusNode, 'Sicherheitsprüfung konnte nicht geladen werden.', 'is-error');
+        setContactStatus(statusNode, ASI18n.t('securityError'), 'is-error');
       }
     }
 
@@ -365,28 +374,28 @@ const setupPage = () => {
       const name = [firstName, lastName].filter(Boolean).join(' ') || fallbackName;
       const email = String(formData.get('email') || '').trim();
       const phone = String(formData.get('phone') || '').trim();
-      const subject = String(formData.get('subject') || '').trim() || 'Kontaktanfrage';
+      const subject = String(formData.get('subject') || '').trim() || ASI18n.t('contactSubject');
       const message = String(formData.get('message') || '').trim();
       const honeypotValue = String(honeypotInput?.value || '').trim();
       const turnstileToken = String(tokenInput?.value || '').trim();
 
       if (!name || !EMAIL_PATTERN.test(email) || message.length < 10) {
         contactForm.reportValidity();
-        setContactStatus(statusNode, 'Bitte alle Pflichtfelder korrekt ausfüllen.', 'is-error');
+        setContactStatus(statusNode, ASI18n.t('invalidForm'), 'is-error');
         return;
       }
 
       if (!privacyConsent || !privacyConsent.checked) {
-        setContactStatus(statusNode, 'Bitte stimmen Sie der Datenschutzerklärung zu.', 'is-error');
+        setContactStatus(statusNode, ASI18n.t('privacy'), 'is-error');
         return;
       }
 
       if (turnstileSiteKey && !turnstileToken) {
-        setContactStatus(statusNode, 'Bitte bestätigen Sie die Sicherheitsprüfung.', 'is-error');
+        setContactStatus(statusNode, ASI18n.t('security'), 'is-error');
         return;
       }
 
-      setContactStatus(statusNode, 'Nachricht wird gesendet...', 'is-info');
+      setContactStatus(statusNode, ASI18n.t('sending'), 'is-info');
       if (submitButton instanceof HTMLButtonElement) submitButton.disabled = true;
 
       try {
@@ -396,6 +405,7 @@ const setupPage = () => {
             'Content-Type': 'application/json',
             Accept: 'application/json',
           },
+          signal: AbortSignal.timeout(15000),
           body: JSON.stringify({
             name,
             email,
@@ -412,7 +422,7 @@ const setupPage = () => {
         const payload = await response.json().catch(() => null);
 
         if (!response.ok || !payload?.success) {
-          const errorMessage = payload?.message || 'Anfrage konnte nicht gesendet werden.';
+          const errorMessage = ASI18n.t('failed');
           setContactStatus(statusNode, errorMessage, 'is-error');
           return;
         }
@@ -429,7 +439,7 @@ const setupPage = () => {
           window.turnstile.reset(turnstileWidgetId);
         }
       } catch (_error) {
-        setContactStatus(statusNode, 'Backend nicht erreichbar. Bitte später erneut versuchen.', 'is-error');
+        setContactStatus(statusNode, ASI18n.t('network'), 'is-error');
       } finally {
         if (submitButton instanceof HTMLButtonElement) submitButton.disabled = false;
       }
@@ -455,14 +465,13 @@ const setupPage = () => {
     if (!hasTargets) return;
 
     try {
-      const response = await fetch(`${getApiBase()}/public/site-config`, {
+      window.ASSiteConfigPromise = window.ASSiteConfigPromise || fetch(`${getApiBase()}/public/site-config?locale=${ASI18n.locale}`, {
         headers: {
           Accept: 'application/json',
         },
-      });
+      }).then(response => {if(!response.ok) throw new Error('config'); return response.json();});
 
-      if (!response.ok) return;
-      const payload = await response.json();
+      const payload = await window.ASSiteConfigPromise;
       const data = payload?.data;
       if (!data) return;
 
@@ -573,9 +582,54 @@ const setupPage = () => {
     });
   }
 
-  if (searchForm) {
-    searchForm.addEventListener('submit', (event) => {
-      event.preventDefault();
+  if (search && searchForm && searchInput) {
+    search.setAttribute('role', 'dialog');
+    search.setAttribute('aria-modal', 'true');
+    search.setAttribute('aria-labelledby', 'search-title');
+    const panel = document.createElement('div'); panel.className = 'search-panel';
+    const heading = document.createElement('h2'); heading.id = 'search-title'; heading.textContent = ASI18n.t('searchTitle');
+    const hint = document.createElement('p'); hint.id = 'search-hint'; hint.textContent = ASI18n.t('searchHint');
+    const feedback = document.createElement('p'); feedback.className = 'search-feedback'; feedback.setAttribute('role', 'status');
+    feedback.setAttribute('aria-live','polite'); feedback.textContent = ASI18n.t('searchReady');
+    const results = document.createElement('ul'); results.className = 'search-results';
+    const browse = document.createElement('a'); browse.href = ASI18n.locale === 'en' ? '/en/catalog/' : '/sortiment/'; browse.textContent = ASI18n.t('catalog');
+    searchInput.placeholder = ASI18n.t('searchPlaceholder');
+    searchInput.setAttribute('aria-describedby', 'search-hint');
+    closeSearchBtn?.setAttribute('aria-label', ASI18n.t('close'));
+    panel.append(heading, hint, searchForm, feedback, results, browse);
+    if (closeSearchBtn) panel.prepend(closeSearchBtn);
+    search.append(panel);
+    let timer, controller, sequence = 0;
+    const runSearch = async () => {
+      const query = searchInput.value.trim(); const id = ++sequence;
+      controller?.abort(); results.replaceChildren();
+      if (!query) {feedback.textContent = ASI18n.t('searchReady'); return;}
+      controller = new AbortController();
+      feedback.textContent = ASI18n.t('searchLoading');
+      try {
+        const response = await fetch(`${getApiBase()}/catalog/products?search=${encodeURIComponent(query)}&locale=${ASI18n.locale}&limit=12`, {signal: AbortSignal.any([controller.signal, AbortSignal.timeout(10000)])});
+        if (!response.ok) throw new Error('search');
+        const data = await response.json();
+        if (id !== sequence) return;
+        for (const product of (data.data || []).slice(0,12)) {
+          const li = document.createElement('li'); const link = document.createElement('a');
+          link.href = `${ASI18n.locale === 'en' ? '/en/catalog/product.html' : '/sortiment/produkt-hilti-sf-6-a22.html'}?slug=${encodeURIComponent(product.slug)}`;
+          const title = document.createElement('strong'); title.textContent = product.title;
+          const category = document.createElement('small'); category.textContent = product.category?.name || '';
+          link.append(title, category); li.append(link); results.append(li);
+        }
+        feedback.textContent = results.children.length ? `${data.total || results.children.length} ${ASI18n.t('searchCount')}` : ASI18n.t('searchEmpty');
+      } catch (error) {
+        if (id === sequence && error.name !== 'AbortError') feedback.textContent = ASI18n.t('searchError');
+      }
+    };
+    searchInput.addEventListener('input', () => {clearTimeout(timer); timer = setTimeout(runSearch, 180);});
+    searchForm.addEventListener('submit', event => {event.preventDefault(); const first = results.querySelector('a'); if (first) first.click(); else {clearTimeout(timer); runSearch();}});
+    search.addEventListener('keydown', event => {
+      if (!['ArrowDown','ArrowUp'].includes(event.key)) return;
+      const links = [...results.querySelectorAll('a')]; if (!links.length) return;
+      event.preventDefault(); const index = links.indexOf(document.activeElement);
+      links[(index + (event.key === 'ArrowDown' ? 1 : -1) + links.length) % links.length].focus();
     });
   }
 
@@ -649,9 +703,7 @@ const setupPage = () => {
   });
 
   window.addEventListener('resize', () => {
-    if (window.innerWidth > 1023 && menu) {
-      setMenuState(false);
-    }
+    if (menu) setMenuState(window.innerWidth > 1023 ? false : menu.classList.contains('open'));
   });
 
   setupThemeToggle();

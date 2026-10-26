@@ -7,11 +7,14 @@ import { PricingValidationError } from '../utils/pricing'
 
 const requestSchema = z
   .object({
-    productId: z.string().min(1).optional(),
-    productSlug: z.string().min(1).optional(),
-    name: z.string().min(2),
-    email: z.string().email(),
-    phone: z.string().optional(),
+    productId: z.string().min(1).max(120).optional(),
+    productSlug: z.string().min(1).max(120).optional(),
+    name: z.string().trim().min(2).max(140),
+    email: z.string().trim().email().max(180),
+    phone: z.string().trim().max(80).optional(),
+    consentPrivacy: z.literal(true),
+    locale: z.enum(['de', 'en']).default('de'),
+    quantity: z.literal(1).default(1),
     startDate: z.string().optional(),
     endDate: z.string().optional(),
     rentalDays: z.number().int().positive().optional(),
@@ -55,6 +58,9 @@ export const createRequestWithPricing = async (args: {
     productId: input.productId,
     productSlug: input.productSlug,
   })
+  if ((product as { availabilityStatus?: string }).availabilityStatus === 'unavailable') {
+    throw new PricingValidationError('Produkt ist aktuell nicht verfügbar.')
+  }
 
   const pricing = await calculatePricingForProduct({
     payload,
@@ -99,6 +105,7 @@ export const createRequestWithPricing = async (args: {
   })
 
   const mail = buildRequestMail({
+    locale: input.locale,
     customerName: input.name,
     customerEmail: input.email,
     customerPhone: input.phone,
@@ -122,7 +129,7 @@ export const createRequestWithPricing = async (args: {
     }
   }
 
-  await (payload as any).update({
+  try { await (payload as any).update({
     collection: 'requests',
     id: requestDoc.id,
     req,
@@ -131,7 +138,10 @@ export const createRequestWithPricing = async (args: {
     data: {
       emailResult,
     },
-  })
+  }) } catch {
+    // The inquiry is already durable. Do not invite duplicate submissions on a mail-status error.
+    payload.logger?.error('Could not persist inquiry notification status')
+  }
 
   return {
     request: {

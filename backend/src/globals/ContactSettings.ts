@@ -4,7 +4,7 @@ export const ContactSettings: GlobalConfig = {
   slug: 'contact-settings',
   label: 'Kontakt-Einstellungen',
   access: {
-    read: () => true,
+    read: ({ req }) => Boolean(req.user),
     update: ({ req }) => Boolean(req.user),
   },
   fields: [
@@ -13,7 +13,7 @@ export const ContactSettings: GlobalConfig = {
       label: 'Rechtlicher Name',
       type: 'text',
       required: true,
-      defaultValue: 'Schröder - Alles Saniert (Gesellschaft nach bürgerlichem Recht)',
+      defaultValue: 'Willy Schröder',
     },
     {
       name: 'brandName',

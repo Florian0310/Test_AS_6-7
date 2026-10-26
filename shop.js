@@ -31,7 +31,7 @@
       noToolsCategory: 'Keine Werkzeuge für diese Kategorie gefunden.',
       noToolsFilter: 'Keine Werkzeuge gefunden. Bitte Filter zurücksetzen.',
       loadingTools: 'Lade Werkzeuge aus dem CMS...',
-      backendUnavailable: 'Backend nicht erreichbar. Bitte Payload starten und URL prüfen.',
+      backendUnavailable: 'Der Katalog ist gerade nicht erreichbar. Bitte später erneut versuchen.',
       productsLoadError: 'Produkte konnten nicht geladen werden.',
       searchError: 'Unbekannter Fehler',
       fromPrice: 'Ab',
@@ -42,20 +42,20 @@
       popularEmpty: 'Noch keine beliebten Produkte im CMS ausgewählt.',
       openProduct: 'Zum Produkt',
       productUnavailable: 'Aktuell ausgebucht',
-      productAvailable: 'Verfügbar ab heute',
+      productAvailable: 'Auf Anfrage verfügbar',
       loadingProduct: 'Werkzeug wird geladen...',
       productNotFound: 'Werkzeug nicht gefunden.',
       invalidSlug: 'Kein Werkzeug-Slug übergeben.',
       productLoaded: 'Werkzeugdaten geladen.',
       periodHint: 'Bitte gültigen Zeitraum und Menge eingeben.',
-      availableWindow: (qty, startDate, endDate) => `Verfügbar: ${qty} Stück im Zeitraum ${startDate} bis ${endDate}.`,
+      availableWindow: () => 'Zeitraum anfragbar. Die Verfügbarkeit wird persönlich bestätigt.',
       unavailableWindow: (qty) => `Nicht verfügbar. Nur ${qty} Stück verfügbar.`,
       availabilityError: 'Verfügbarkeit konnte nicht geladen werden.',
       invalidName: 'Bitte gültigen Namen eingeben.',
       invalidEmail: 'Bitte gültige E-Mail eingeben.',
       invalidDates: 'Bitte gültigen Zeitraum wählen.',
       invalidEndDate: 'Das Enddatum muss am oder nach dem Startdatum liegen.',
-      invalidQuantity: 'Bitte gültige Menge eingeben.',
+      invalidQuantity: 'Pro Anfrage kann ein Gerät angefragt werden.',
       privacyRequired: 'Bitte Datenschutzerklärung bestätigen.',
       requestSending: 'Anfrage wird gesendet...',
       requestSuccess: 'Vielen Dank! Ihre Anfrage wurde als „Offen“ gespeichert.',
@@ -79,7 +79,7 @@
       noToolsCategory: 'No tools found for this category.',
       noToolsFilter: 'No tools found. Please reset filters.',
       loadingTools: 'Loading tools from CMS...',
-      backendUnavailable: 'Backend unavailable. Please start Payload and verify URL.',
+      backendUnavailable: 'The catalog is currently unavailable. Please try again later.',
       productsLoadError: 'Products could not be loaded.',
       searchError: 'Unknown error',
       fromPrice: 'From',
@@ -90,20 +90,20 @@
       popularEmpty: 'No popular products selected in CMS yet.',
       openProduct: 'Open product',
       productUnavailable: 'Currently unavailable',
-      productAvailable: 'Available from today',
+      productAvailable: 'Availability on request',
       loadingProduct: 'Loading tool...',
       productNotFound: 'Tool not found.',
       invalidSlug: 'No tool slug provided.',
       productLoaded: 'Tool data loaded.',
       periodHint: 'Please enter a valid date range and quantity.',
-      availableWindow: (qty, startDate, endDate) => `Available: ${qty} item(s) from ${startDate} to ${endDate}.`,
+      availableWindow: () => 'You can request this period. Availability will be confirmed personally.',
       unavailableWindow: (qty) => `Not available. Only ${qty} item(s) available.`,
       availabilityError: 'Availability could not be loaded.',
       invalidName: 'Please enter a valid name.',
       invalidEmail: 'Please enter a valid email.',
       invalidDates: 'Please select a valid rental period.',
       invalidEndDate: 'End date must be on or after start date.',
-      invalidQuantity: 'Please enter a valid quantity.',
+      invalidQuantity: 'Please request one item per inquiry.',
       privacyRequired: 'Please accept the privacy policy.',
       requestSending: 'Sending request...',
       requestSuccess: 'Thank you. Your request has been saved as "Open".',
@@ -147,7 +147,7 @@
   const sanitizeRelativePath = (value) => {
     const path = String(value || '').trim();
     if (!path.startsWith('/')) return '';
-    if (/[\u0000-\u001F]/.test(path)) return '';
+    if ([...path].some(character => character.charCodeAt(0) < 32)) return '';
     return path;
   };
 
@@ -192,7 +192,7 @@
 
   const toSafeProductLink = (slug) => {
     const safeSlug = clampText(slug, 120);
-    const baseLink = toSiteRootLink('sortiment/produkt-hilti-sf-6-a22.html');
+    const baseLink = toSiteRootLink(IS_EN ? 'en/catalog/product.html' : 'sortiment/produkt-hilti-sf-6-a22.html');
     return `${baseLink}?slug=${encodeURIComponent(safeSlug)}`;
   };
 
@@ -274,7 +274,7 @@
     const image = entry && typeof entry === 'object' ? entry : null;
     if (!image) return null;
 
-    const rawUrl = image.url || image.sizes?.card?.url || image.sizes?.thumb?.url || image.formats?.large?.url || '';
+    const rawUrl = image.sizes?.card?.url || image.url || image.sizes?.thumb?.url || image.formats?.large?.url || '';
 
     if (!rawUrl) return null;
 
@@ -337,6 +337,7 @@
       category: normalizeCategory(tool.category),
       images,
       seo: tool.seo || null,
+      specifications: Array.isArray(tool.specifications) ? tool.specifications : [],
       availabilityStatus: availabilityStatus || 'available',
     };
   };
@@ -361,7 +362,9 @@
   };
 
   const apiRequest = async (path, options = {}) => {
-    const requestUrl = `${API_BASE}${path.startsWith('/') ? path : `/${path}`}`;
+    const url = new URL(`${API_BASE}${path.startsWith('/') ? path : `/${path}`}`);
+    url.searchParams.set('locale', IS_EN ? 'en' : 'de');
+    const requestUrl = url.href;
 
     const requestOptions = {
       method: options.method || 'GET',
@@ -371,6 +374,7 @@
         ...(options.headers || {}),
       },
       body: options.body ? JSON.stringify(options.body) : undefined,
+      signal: AbortSignal.timeout(15000),
     };
 
     let response;
@@ -378,7 +382,7 @@
     try {
       response = await fetch(requestUrl, requestOptions);
     } catch (networkError) {
-      throw new Error(t('backendUnavailable'));
+      throw new Error(t('backendUnavailable'), { cause: networkError });
     }
 
     let payload = null;
@@ -393,12 +397,14 @@
     }
 
     if (!response.ok) {
-      throw new Error(parseErrorMessage(payload, `API Fehler (${response.status})`));
+      throw new Error(IS_EN ? (response.status === 429 ? 'Too many requests. Please try again later.' : 'The request could not be processed. Please check your entries and try again.') : parseErrorMessage(payload, `API Fehler (${response.status})`));
     }
 
     return payload;
   };
 
+  const readCache = new Map();
+  const cachedRead = (key, load) => {if(!readCache.has(key)) readCache.set(key, load().catch(error => {readCache.delete(key); throw error;})); return readCache.get(key);};
   const RentalApi = {
     async getTools({ category = '', search = '' } = {}) {
       const params = new URLSearchParams();
@@ -406,10 +412,11 @@
       if (search) params.set('search', search);
 
       const query = params.toString();
-      const payload = await apiRequest(`/catalog/products${query ? `?${query}` : ''}`);
-      const source = getPayloadData(payload);
-      const list = Array.isArray(source) ? source : [];
-      return list.map(normalizeTool).filter(Boolean);
+      return cachedRead(`tools:${query}`, async () => {
+        const list = []; let page = 1, payload;
+        do {payload = await apiRequest(`/catalog/products?${query}${query ? '&' : ''}page=${page++}`); list.push(...(getPayloadData(payload) || []));} while(payload.hasNextPage && page <= 100);
+        return list.map(normalizeTool).filter(Boolean);
+      });
     },
 
     async getToolBySlug(slug) {
@@ -418,7 +425,7 @@
     },
 
     async getCategories() {
-      const payload = await apiRequest('/catalog/categories');
+      const payload = await cachedRead('categories', () => apiRequest('/catalog/categories'));
       const source = getPayloadData(payload);
       const list = Array.isArray(source) ? source : [];
       return list.map(normalizeCategory).filter(Boolean);
@@ -439,7 +446,7 @@
     },
 
     async getPublicSiteConfig() {
-      const payload = await apiRequest('/public/site-config');
+      const payload = await cachedRead('site', () => window.ASSiteConfigPromise || apiRequest('/public/site-config'));
       const source = getPayloadData(payload);
       if (!source) return null;
 
@@ -455,7 +462,7 @@
       };
     },
 
-    async checkAvailability({ toolId, startDate, endDate, quantity }) {
+    async checkAvailability({ toolId, startDate, endDate }) {
       const payload = await apiRequest('/catalog/pricing/calculate', {
         method: 'POST',
         body: {
@@ -487,6 +494,9 @@
           startDate: input.startDate,
           endDate: input.endDate,
           message: input.notes,
+          consentPrivacy: input.privacyConsent,
+          quantity: input.quantity,
+          locale: IS_EN ? 'en' : 'de',
         },
       });
     },
@@ -585,7 +595,8 @@
         button.type = 'button';
         button.className = 'category-btn';
         button.setAttribute('data-category', slug);
-        button.textContent = name;
+        button.setAttribute('aria-pressed', String(isActive));
+        const label = document.createElement('span'); label.className = 'category-label'; label.textContent = name; button.append(label);
         item.appendChild(button);
 
         const meta = document.createElement('span');
@@ -599,7 +610,7 @@
         icon.className = 'ri-arrow-right-s-line';
         icon.setAttribute('aria-hidden', 'true');
         meta.appendChild(icon);
-        item.appendChild(meta);
+        button.appendChild(meta);
 
         categoriesList.appendChild(item);
       };
@@ -608,7 +619,7 @@
         {
           slug: '',
           name: t('allProducts'),
-          toolCount: NaN,
+          toolCount: categories.reduce((sum, category) => sum + category.toolCount, 0),
         },
         !activeCategory
       );
@@ -676,7 +687,7 @@
         const productLink = toSafeProductLink(tool.slug);
         const categoryName = clampText(tool.category?.name, 120) || t('toolFallback');
         const location = clampText(tool.location, 160) || t('onRequest');
-        const availability = String(toNonNegativeInteger(tool.calculatedAvailability, 0));
+        const availability = tool.calculatedAvailability > 0 ? t('onRequest') : t('productUnavailable');
 
         const card = document.createElement('article');
         card.className = 'shop-product-card';
@@ -878,7 +889,7 @@
       return t('invalidEndDate');
     }
 
-    if (!Number.isInteger(payload.quantity) || payload.quantity < 1) {
+    if (!Number.isInteger(payload.quantity) || payload.quantity !== 1) {
       return t('invalidQuantity');
     }
 
@@ -937,7 +948,9 @@
 
     const metaTags = tool.tags && typeof tool.tags === 'object' ? tool.tags : {};
 
-    document.title = `${clampText(tool.name, 120) || t('toolFallback')} | Sortiment`;
+    document.title = `${clampText(tool.name, 120) || t('toolFallback')} | ${IS_EN ? 'Catalog' : 'Sortiment'}`;
+    const meta = document.querySelector('meta[name="description"]'); if(meta) meta.content = tool.shortDescription;
+    const canonical = document.querySelector('link[rel="canonical"]'); if(canonical) canonical.href = `https://www.allessaniert.at${IS_EN ? '/en/catalog/product.html' : '/sortiment/produkt-hilti-sf-6-a22.html'}?slug=${encodeURIComponent(tool.slug)}`;
     if (breadcrumbToolName) breadcrumbToolName.textContent = clampText(tool.name, 160) || t('toolFallback');
     if (titleNode) titleNode.textContent = clampText(tool.name, 160) || t('toolFallback');
     if (subtitleNode) subtitleNode.textContent = clampText(tool.shortDescription || tool.category?.name, 200) || t('toolFallback');
@@ -958,6 +971,8 @@
     if (specSpeedNode) specSpeedNode.textContent = metaTags.speed || '-';
     if (specChuckNode) specChuckNode.textContent = metaTags.chuck || '-';
 
+    const specs = page.querySelector('[data-product-specs]');
+    if (specs) {specs.replaceChildren(); for(const spec of tool.specifications){const row=document.createElement('div'),key=document.createElement('dt'),value=document.createElement('dd');key.textContent=IS_EN ? (spec.keyEn || 'Specification') : spec.key;value.textContent=spec.value;row.append(key,value);specs.append(row);} if(!specs.children.length) {const row=document.createElement('div'),dt=document.createElement('dt'),dd=document.createElement('dd');dt.textContent=IS_EN?'Details':'Details';dd.textContent=IS_EN?'Available on request.':'Auf Anfrage.';row.append(dt,dd);specs.append(row);}}
     renderToolImages(tool, mainImageNode, thumbsNode);
     setStatus(feedbackNode, t('productLoaded'), 'is-success');
 
@@ -1002,6 +1017,11 @@
           quantity,
         });
 
+        const quote = page.querySelector('[data-pricing-summary]');
+        const totals = availability.pricing?.subtotals;
+        if (quote && totals) quote.textContent = IS_EN
+          ? `Rental ${formatCurrency(totals.rentalSubtotal)} · insurance ${formatCurrency(totals.insuranceSubtotal)} · cleaning ${formatCurrency(totals.cleaningFee)} · deposit ${formatCurrency(totals.deposit)} · total ${formatCurrency(totals.totalWithDeposit)}`
+          : `Miete ${formatCurrency(totals.rentalSubtotal)} · Versicherung ${formatCurrency(totals.insuranceSubtotal)} · Reinigung ${formatCurrency(totals.cleaningFee)} · Kaution ${formatCurrency(totals.deposit)} · Gesamt ${formatCurrency(totals.totalWithDeposit)}`;
         if (availability.isAvailable) {
           setStatus(availabilityInfo, t('availableWindow', availability.availableQuantity, startDate, endDate), 'is-success');
         } else {
@@ -1034,6 +1054,7 @@
     rentForm.addEventListener('submit', async (event) => {
       event.preventDefault();
 
+      if (rentForm.dataset.submitting === 'true') return;
       const formData = new FormData(rentForm);
       const payload = {
         tool: tool.id,
@@ -1060,13 +1081,15 @@
       }
 
       setStatus(requestFeedback, t('requestSending'), 'is-info');
+      rentForm.dataset.submitting = 'true';
+      const submit = rentForm.querySelector('[type=submit]'); if (submit) submit.disabled = true;
 
       try {
         await RentalApi.createRentalRequest(payload);
         setStatus(requestFeedback, t('requestSuccess'), 'is-success');
       } catch (error) {
         setStatus(requestFeedback, clampText(error?.message, 220) || t('requestFail'), 'is-error');
-      }
+      } finally {rentForm.dataset.submitting = 'false'; if (submit) submit.disabled = false;}
     });
 
     const relatedGrid = page.querySelector('[data-related-tools]');
@@ -1204,8 +1227,8 @@
       const settings = await RentalApi.getSiteSettings();
       if (!settings) return;
 
-      if (headlineNode && settings.heroHeadline) headlineNode.textContent = settings.heroHeadline;
-      if (textNode && settings.heroText) textNode.textContent = settings.heroText;
+      if (!IS_EN && headlineNode && settings.heroHeadline) headlineNode.textContent = settings.heroHeadline;
+      if (!IS_EN && textNode && settings.heroText) textNode.textContent = settings.heroText;
       if (badgeNode) badgeNode.textContent = settings.companyName || t('homepageDefaultBadge');
 
       const homepage = settings.homepage || {};

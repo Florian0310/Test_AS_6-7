@@ -15,7 +15,7 @@ const parseISODateOnly = (value: string, fieldName: string): Date => {
   }
 
   const parsed = new Date(`${value}T00:00:00Z`)
-  if (Number.isNaN(parsed.getTime())) {
+  if (Number.isNaN(parsed.getTime()) || parsed.toISOString().slice(0, 10) !== value) {
     throw new PricingValidationError(`${fieldName} ist kein gueltiges Datum.`)
   }
 
@@ -26,6 +26,7 @@ const toMoney = (value: number): number => Math.round((value + Number.EPSILON) *
 
 export const resolveRentalDays = (input: RentalBasisInput): number => {
   const { startDate, endDate, rentalDays } = input
+  if (Boolean(startDate) !== Boolean(endDate)) throw new PricingValidationError('Mietbeginn und Mietende sind gemeinsam erforderlich.')
 
   if (startDate && endDate) {
     const start = parseISODateOnly(startDate, 'Mietbeginn')
@@ -36,7 +37,7 @@ export const resolveRentalDays = (input: RentalBasisInput): number => {
     }
 
     const diffDays = Math.floor((end.getTime() - start.getTime()) / DAY_IN_MS) + 1
-    if (diffDays <= 0) {
+    if (diffDays <= 0 || diffDays > 3660) {
       throw new PricingValidationError('Mietdauer muss mindestens 1 Tag betragen.')
     }
 
@@ -47,9 +48,9 @@ export const resolveRentalDays = (input: RentalBasisInput): number => {
     throw new PricingValidationError('Bitte Mietdauer in Tagen oder einen gueltigen Zeitraum angeben.')
   }
 
-  const normalizedDays = Math.floor(rentalDays)
+  const normalizedDays = rentalDays
 
-  if (normalizedDays <= 0) {
+  if (!Number.isInteger(normalizedDays) || normalizedDays <= 0 || normalizedDays > 3660) {
     throw new PricingValidationError('Mietdauer muss mindestens 1 Tag betragen.')
   }
 

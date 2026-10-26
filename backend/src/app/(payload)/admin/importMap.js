@@ -27,6 +27,7 @@ import { DashboardStats as DashboardStats_43f39d7ec3eb00999a978dbbe3d42f75 } fro
 import { DashboardIntro as DashboardIntro_7922862fb310db576f85bffb2844b16c } from '../../../components/admin/DashboardIntro'
 import { CollectionCards as CollectionCards_f9c02e79a4aed9a3924487c0cd4cafb1 } from '@payloadcms/next/rsc'
 
+/** @type import('payload').ImportMap */
 export const importMap = {
   "@payloadcms/richtext-lexical/rsc#RscEntryLexicalCell": RscEntryLexicalCell_44fe37237e0ebf4470c9990d8cb7b07e,
   "@payloadcms/richtext-lexical/rsc#RscEntryLexicalField": RscEntryLexicalField_44fe37237e0ebf4470c9990d8cb7b07e,

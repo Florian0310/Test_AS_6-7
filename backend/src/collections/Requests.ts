@@ -1,5 +1,6 @@
 ﻿import type { CollectionConfig, FieldHook } from 'payload'
 import { isAuthenticated } from '../utils/access'
+import { randomUUID } from 'node:crypto'
 
 const requestNumberHook: FieldHook = ({ value }) => {
   if (typeof value === 'string' && value.trim()) {
@@ -9,7 +10,7 @@ const requestNumberHook: FieldHook = ({ value }) => {
   const now = new Date()
   const stamp = `${now.getUTCFullYear()}${String(now.getUTCMonth() + 1).padStart(2, '0')}${String(now.getUTCDate()).padStart(2, '0')}${String(now.getUTCHours()).padStart(2, '0')}${String(now.getUTCMinutes()).padStart(2, '0')}${String(now.getUTCSeconds()).padStart(2, '0')}`
 
-  return `ANF-${stamp}`
+  return `ANF-${stamp}-${randomUUID().slice(0, 8)}`
 }
 
 export const Requests: CollectionConfig = {

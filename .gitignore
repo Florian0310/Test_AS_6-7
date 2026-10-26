@@ -27,3 +27,10 @@ backend/.env
 .DS_Store
 Thumbs.db
 .vscode/
+
+# Audit/browser outputs and public deployment export
+artifacts/
+test-results/
+playwright-report/
+dist/
+*.tsbuildinfo

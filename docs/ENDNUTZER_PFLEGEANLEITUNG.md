@@ -1,3 +1,5 @@
+> Aktueller Auditstand vom 26.10.2026: [Go-live-Checkliste](../GO_LIVE_CHECKLIST.md) und [Auditbericht](../AUDIT_REPORT.md). Die nachfolgenden historischen Betriebsangaben vor Nutzung mit dem aktuellen Stand abgleichen.
+
 # Endnutzer-Pflegeanleitung (Admin)
 
 ## 1) Anmeldung

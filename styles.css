@@ -1,4 +1,10 @@
 :root {
+  --surface: #ffffff;
+  --surface-soft: #eef2f7;
+  --border: #c5ceda;
+  --link: #001489;
+  --positive: #166534;
+  --negative: #991b1b;
   --brand-orange: #ed8b00;
   --brand-blue: #001489;
   --brand-blue-soft: #17306f;
@@ -296,7 +302,7 @@ img {
   min-height: 640px;
   background-image:
     linear-gradient(115deg, rgba(0, 20, 137, 0.9), rgba(0, 20, 137, 0.58), rgba(0, 20, 137, 0.35)),
-    url("assets/images/bannerBackground.jpg");
+    url("assets/images/bannerBackground.webp");
   background-size: cover;
   background-position: center;
   position: relative;
@@ -436,7 +442,7 @@ img {
 .page-hero {
   background:
     linear-gradient(to right, rgba(0, 20, 137, 0.92), rgba(0, 20, 137, 0.55)),
-    url("assets/images/bannerBackground.jpg");
+    url("assets/images/bannerBackground.webp");
   background-size: cover;
   background-position: center;
   color: #fff;
@@ -802,7 +808,7 @@ img {
 .forestry-hero {
   background-image:
     linear-gradient(to bottom, rgba(0, 0, 0, 0), 15%, rgb(0, 0, 0)),
-    url("assets/images/forestryWorkBackground.jpg");
+    url("assets/images/forestryWorkBackground.webp");
   background-repeat: no-repeat;
   background-attachment: fixed;
   background-size: cover;
@@ -851,7 +857,7 @@ img {
   min-height: 420px;
   background-image:
     linear-gradient(to right, rgba(0, 20, 137, 0.88), rgba(0, 20, 137, 0.62), rgba(0, 20, 137, 0.24)),
-    url("assets/images/forestryWorkBackground.jpg");
+    url("assets/images/forestryWorkBackground.webp");
   background-size: cover;
   background-position: center;
   display: flex;
@@ -2336,6 +2342,12 @@ img {
 }
 
 :root[data-theme='dark'] {
+  --surface: #111a2d;
+  --surface-soft: #0f1729;
+  --border: #3a4a67;
+  --link: #b4caff;
+  --positive: #86efac;
+  --negative: #fca5a5;
   --bg-light: #0b1220;
   --text-dark: #e5e7eb;
   --text-muted: #9aa8bd;
@@ -2580,339 +2592,7 @@ img {
   border-color: rgba(148, 163, 184, 0.28);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --bg-light: #0b1220;
-    --text-dark: #e5e7eb;
-    --text-muted: #9aa8bd;
-  }
 
-  body {
-    background: #0b1220;
-    color: #e5e7eb;
-  }
-
-  .header {
-    background: rgba(8, 12, 22, 0.88);
-    border-bottom-color: rgba(71, 85, 105, 0.45);
-    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4);
-  }
-
-  .icon-btn {
-    color: #e5e7eb;
-    border-color: #334155;
-    background: #0f1729;
-  }
-
-  .icon-btn:hover {
-    background: rgba(226, 232, 240, 0.12);
-    border-color: #64748b;
-  }
-
-  .theme-toggle {
-    background: #0f1729;
-    border-color: #334155;
-    color: #e5e7eb;
-  }
-
-  .theme-toggle:hover {
-    border-color: #64748b;
-    color: #dbe7ff;
-  }
-
-  .nav-link {
-    color: #e5e7eb;
-  }
-
-  .search {
-    background-color: rgba(2, 6, 23, 0.54);
-  }
-
-  .search-form {
-    background: #111c31;
-    border: 1px solid #32425f;
-  }
-
-  .search-form i,
-  .search-input {
-    color: #e2e8f0;
-  }
-
-  .search-input::placeholder {
-    color: #90a1bc;
-  }
-
-  .shop-search-form input {
-    background: #0f1729;
-    border-color: #334155;
-    color: #e2e8f0;
-  }
-
-  .shop-search-form input::placeholder {
-    color: #90a1bc;
-  }
-
-  .section-soft {
-    background: linear-gradient(180deg, #111a2d 0%, #0b1220 100%);
-  }
-
-  .section-subtitle,
-  .section-subtitle.center,
-  .shop-breadcrumb,
-  .shop-head p,
-  .about-text p,
-  .contact-intro p,
-  .product-content p,
-  .step-card p,
-  .meta-item p,
-  .product-summary-card > p,
-  .summary-note,
-  .reservation-summary dt,
-  .contact-form-wrap > p {
-    color: #9db0c8;
-  }
-
-  .content-card,
-  .meta-item,
-  .product-card,
-  .step-card,
-  .benefit,
-  .shop-categories,
-  .shop-strip,
-  .shop-products-wrap,
-  .shop-product-card,
-  .product-gallery-card,
-  .product-summary-card,
-  .rent-box,
-  .related-grid article,
-  .reservation-steps,
-  .reservation-delivery,
-  .reservation-summary,
-  .dialog-card {
-    background: #111a2d;
-    border-color: #2e3c55;
-    box-shadow: 0 12px 28px rgba(0, 0, 0, 0.32);
-    color: #e5e7eb;
-  }
-
-  .contact-right {
-    background: #111a2d;
-  }
-
-  .contact-left {
-    background: linear-gradient(180deg, #041d78 0%, #071653 100%);
-  }
-
-  .product-image-wrap,
-  .shop-product-image,
-  .shop-mini-grid article,
-  .product-main-image,
-  .product-spec-grid article,
-  .rent-date-grid div,
-  .delivery-option .icon,
-  .view360 {
-    background: #0f1729;
-    border-color: #334155;
-    color: #e5e7eb;
-  }
-
-  .product-category,
-  .shop-product-card dt,
-  .shop-product-card h3 a,
-  .shop-back-link,
-  .product-summary-card h1,
-  .product-data-grid h2,
-  .shop-categories h2,
-  .forestry-panel h2,
-  .inline-link,
-  .consent-link {
-    color: #93b5ff;
-  }
-
-  .product-footer small,
-  .shop-product-card dd,
-  .shop-mini-grid span,
-  .shop-categories li,
-  .category-meta small,
-  .product-summary-card h1 span,
-  .product-rating,
-  .product-spec-grid small,
-  .rent-box-head small,
-  .product-tabs a,
-  .reservation-steps h2,
-  .consent,
-  .consent span,
-  .contact-info-item span,
-  .contact-info-item small {
-    color: #a9b7ca;
-  }
-
-  .product-footer strong,
-  .shop-strip-head h2,
-  .shop-head h1,
-  .shop-product-card p,
-  .related-grid h3,
-  .reservation-delivery h3,
-  .reservation-summary h3,
-  .content-card h2,
-  .about h1,
-  .about h2,
-  .service-card h3,
-  .field span,
-  .contact-form-wrap h2,
-  .contact-info-item strong {
-    color: #e5e7eb;
-  }
-
-  .product-cart {
-    background: #1f325d;
-  }
-
-  .field input,
-  .field textarea,
-  .field select {
-    background: #0f1729;
-    border-color: #3a4a67;
-    color: #e5e7eb;
-  }
-
-  .field-inline span {
-    color: #b6c5d9;
-  }
-
-  .field-inline input,
-  .field-inline textarea {
-    background: #0f1729;
-    border-color: #3a4a67;
-    color: #e5e7eb;
-  }
-
-  .field input::placeholder,
-  .field textarea::placeholder,
-  .field-inline input::placeholder,
-  .field-inline textarea::placeholder {
-    color: #8fa0bb;
-  }
-
-  .btn-secondary {
-    background: #17253e;
-    color: #dbe6f6;
-    border-color: #3a4a67;
-  }
-
-  .btn-secondary:hover {
-    background: #213250;
-  }
-
-  .shop-categories li.active,
-  .shop-categories li:hover,
-  .delivery-option.active {
-    background: rgba(147, 181, 255, 0.12);
-    border-color: rgba(147, 181, 255, 0.5);
-    color: #dbe7ff;
-  }
-
-  .product-tabs {
-    border-bottom-color: #334155;
-  }
-
-  .product-tabs a.active {
-    color: #dbe7ff;
-  }
-
-  .product-data-grid dl div,
-  .reservation-summary dl div,
-  .reservation-steps article,
-  .shop-product-card,
-  .delivery-option {
-    border-color: #324055;
-  }
-
-  .service-card {
-    background: linear-gradient(180deg, #122038 0%, #0f1a2f 100%);
-    border-color: #30425d;
-  }
-
-  .service-card .service-icon {
-    background: rgba(147, 181, 255, 0.2);
-    color: #b4caff;
-  }
-
-  .service-card p {
-    color: #a9b7ca;
-  }
-
-  .forestry-panel {
-    border-color: #30425d;
-    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.45);
-  }
-
-  .benefit img {
-    filter: brightness(0) invert(1) saturate(0) contrast(1.05);
-  }
-
-  .dialog {
-    background: rgba(1, 4, 11, 0.68);
-  }
-
-  .dialog-card {
-    background: #101a2c;
-    border: 1px solid #334155;
-  }
-
-  .cookie-banner__content,
-  .legal-card,
-  .consent-settings__row {
-    background: #111a2d;
-    border-color: #324055;
-    color: #e5e7eb;
-  }
-
-  .cookie-banner__content h2,
-  .legal-card h1,
-  .legal-card h2 {
-    color: #e5e7eb;
-  }
-
-  .cookie-banner__content p,
-  .legal-card p,
-  .legal-card li,
-  .consent-settings__meta,
-  .contact-status,
-  .consent-meta {
-    color: #b8c6da;
-  }
-
-  .dialog-card h4,
-  .dialog-card p {
-    color: #e5e7eb;
-  }
-
-  .dialog-close {
-    background: var(--brand-orange);
-    color: #fff;
-  }
-
-  .tool-empty,
-  .shop-feedback.is-info,
-  .rent-availability.is-info,
-  .rent-feedback.is-info {
-    color: #9db0c8;
-  }
-
-  .shop-feedback.is-success,
-  .rent-availability.is-success,
-  .rent-feedback.is-success {
-    color: #22c55e;
-  }
-
-  .shop-feedback.is-error,
-  .rent-availability.is-error,
-  .rent-feedback.is-error,
-  .availability.is-out {
-    color: #f87171;
-  }
-}
 
 @media (max-width: 1320px) {
   .about {
@@ -3364,30 +3044,60 @@ img {
   }
 }
 
-@media (prefers-color-scheme: dark) and (max-width: 1023px) {
-  .nav-menu {
-    background: #0f1729;
-    border-top: 1px solid #334155;
-  }
-
-  .icon-btn {
-    color: #e5e7eb;
-  }
-
-  .icon-btn:hover {
-    background: rgba(226, 232, 240, 0.12);
-  }
-
-  .nav-link,
-  .nav-link:hover,
-  .nav-link.active {
-    color: #e5e7eb;
-  }
-
-  .nav-close {
-    color: #e5e7eb;
-  }
-}
 
 
 
+
+
+/* Shared interactive surfaces use the resolved theme, including Auto. */
+.sr-only { position: absolute; width: 1px; height: 1px; padding: 0; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+[hidden] { display: none !important; }
+:focus-visible { outline: 3px solid var(--focus-ring); outline-offset: 4px; }
+.btn-primary, .btn-price, .btn-hero { color: #151515; }
+.btn-primary:hover, .btn-price:hover { color: #151515; }
+.theme-toggle { min-height: 44px; max-width: 130px; padding: 8px 12px; color: var(--text-dark); background: var(--surface); border: 1px solid var(--border); cursor: pointer; }
+.theme-control { display: inline-flex; align-items: center; }
+.nav-actions { flex-shrink: 0; }
+.benefit img { filter: brightness(0); }
+:root[data-theme='dark'] .benefit img { filter: brightness(0) invert(1); }
+.product-category, .product-footer small, .shop-breadcrumb, .shop-head p { color: var(--text-muted); }
+:root[data-theme='dark'] .nav-link.active { color: #ffbf66; }
+.shop-categories li { display: block; position: static; padding: 0; }
+.shop-categories .category-btn { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center; width: 100%; padding: 12px; gap: 14px; line-height: 1.45; min-height: 48px; color: inherit; border-radius: 8px; }
+.category-label { min-width: 0; overflow-wrap: anywhere; hyphens: auto; text-align: left; }
+.category-meta { display: grid; grid-template-columns: minmax(2ch,auto) 16px; gap: 10px; align-items: center; position: static; flex-shrink: 0; }
+.category-meta small { text-align: right; font-variant-numeric: tabular-nums; }
+.category-btn[aria-pressed='true'] { background: var(--surface-soft); box-shadow: inset 3px 0 var(--brand-orange); }
+.category-btn:hover { background: var(--surface-soft); }
+.search { display: none; padding: max(24px, 8vh) 16px 24px; background: rgba(5,12,30,.65); backdrop-filter: blur(6px); overflow-y: auto; }
+.search.active { display: block; }
+.search-panel { position: relative; width: min(660px,100%); margin: 0 auto; max-height: 85dvh; overflow: auto; padding: 28px; border: 1px solid var(--border); border-radius: 18px; background: var(--surface); color: var(--text-dark); box-shadow: 0 24px 80px #0005; }
+.search-panel h2 { margin: 0 48px 6px 0; font-size: 1.55rem; }
+.search-panel p { margin: 0 0 16px; color: var(--text-muted); }
+.search-panel .search-close { position: absolute; top: 16px; right: 16px; color: var(--text-dark); }
+.search-panel .search-form { max-width: none; margin: 20px 0 12px; padding: 12px; background: var(--surface-soft); border: 1px solid var(--border); transform: none; }
+.search-panel .search-form i, .search-panel .search-input { color: var(--text-dark); }
+.search-panel .search-input { min-width: 0; min-height: 32px; }
+.search-panel > a { color: var(--link); display: inline-block; min-height: 44px; padding-top: 12px; text-decoration: underline; }
+.search-results { list-style: none; padding: 0; margin: 0; }
+.search-results a { display: flex; flex-direction: column; gap: 4px; padding: 14px 12px; border-radius: 8px; color: var(--text-dark); text-decoration: none; border-bottom: 1px solid var(--border); }
+.search-results a:hover, .search-results a:focus-visible { background: var(--surface-soft); }
+.search-results small { color: var(--text-muted); }
+.cookie-banner .btn-primary, .cookie-banner .btn-secondary { background: var(--surface-soft); color: var(--text-dark); border: 1px solid var(--border); box-shadow: none; min-height: 44px; }
+.cookie-banner { max-height: 65dvh; overflow: auto; }
+.consent-settings input[type='checkbox'] { width: 24px; height: 24px; flex-shrink: 0; accent-color: var(--brand-blue); }
+.consent-settings__row label { cursor: pointer; }
+.consent-back { display: inline-block; margin-top: 18px; padding: 10px 0; color: var(--link); text-decoration: underline; }
+.contact-status.is-error, .rent-feedback.is-error, .rent-availability.is-error { color: var(--negative); background: var(--surface-soft); }
+.contact-status.is-success, .rent-feedback.is-success, .rent-availability.is-success { color: var(--positive); background: var(--surface-soft); }
+@media (max-width: 600px) { .search-panel { padding: 22px 16px; } .nav-actions { gap: 4px; } .brand-logo { min-width: 0; } .brand-text strong { font-size: 1rem; } .brand-text small { font-size: .62rem; } .theme-toggle { max-width: 108px; font-size: .85rem; padding: 6px; } .shop-layout > * { min-width: 0; } .legal-card { overflow-wrap: anywhere; } }
+.product-detail-layout { display: grid; grid-template-columns: minmax(0,1fr) minmax(280px,.8fr); gap: 24px; margin: 24px 0; } .catalog-main-photo { display: block; width: 100%; height: auto; aspect-ratio: 4/3; object-fit: contain; } [data-product-specs] div { display: flex; justify-content: space-between; gap: 16px; } @media(max-width:768px) { .product-detail-layout { grid-template-columns: minmax(0,1fr); } }
+:root[data-theme='light'] .nav-link.active { color: #934600; }
+.shop-search-form button { color: #151515; }
+[data-reset-filter] { background: var(--surface-soft); color: var(--text-dark); border: 1px solid var(--border); }
+:root[data-theme='dark'] .field-inline span, :root[data-theme='dark'] .tool-empty { color: var(--text-muted); }
+[data-tool-feedback], [data-availability-status] { color: var(--text-dark); background: var(--surface-soft); padding: 10px; border-radius: 8px; }
+@media(max-width:1023px) { .nav-menu { transition: transform .25s ease, opacity .2s ease; } }
+@media(max-width:1023px) { .icon-btn.nav-close { display: inline-flex; } }
+.benefit img { object-fit: contain; }
+@media(max-width:600px) { .hero { background-image: linear-gradient(115deg,rgba(0,20,137,.9),rgba(0,20,137,.58),rgba(0,20,137,.35)),url("assets/images/bannerBackground-mobile.webp"); } }

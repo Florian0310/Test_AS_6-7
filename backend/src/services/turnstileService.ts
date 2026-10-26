@@ -17,7 +17,7 @@ export const verifyTurnstileToken = async (args: {
 }): Promise<TurnstileVerificationResult> => {
   const secret = String(process.env.TURNSTILE_SECRET_KEY || '').trim()
   const bypassForDev =
-    toBoolean(process.env.TURNSTILE_BYPASS_FOR_DEV) || process.env.NODE_ENV !== 'production'
+    process.env.NODE_ENV !== 'production' && toBoolean(process.env.TURNSTILE_BYPASS_FOR_DEV)
 
   if (!secret) {
     if (bypassForDev) {
@@ -60,6 +60,7 @@ export const verifyTurnstileToken = async (args: {
         'Content-Type': 'application/x-www-form-urlencoded',
       },
       body: payload,
+      signal: AbortSignal.timeout(8000),
     })
   } catch (_error) {
     return {

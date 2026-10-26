@@ -4,7 +4,7 @@ export const RentalSettings: GlobalConfig = {
   slug: 'rental-settings',
   label: 'Vermietungs-Einstellungen',
   access: {
-    read: () => true,
+    read: ({ req }) => Boolean(req.user),
     update: ({ req }) => Boolean(req.user),
   },
   fields: [

@@ -1,3 +1,5 @@
+import { parsePublicBody, guardPublicPost, PublicHttpError, header, clientKey } from '../utils/http'
+import { localizeProduct, categoryEnglish, normalizeSearch } from '../utils/catalogLocale'
 import type { Endpoint, PayloadRequest } from 'payload'
 import { z } from 'zod'
 
@@ -5,27 +7,10 @@ import { createRequestWithPricing } from '../services/requestService'
 import { sendRequestNotification } from '../services/emailService'
 import { calculatePricingForProduct, findProductForRequest } from '../services/pricingService'
 import { verifyTurnstileToken } from '../services/turnstileService'
-import { createInMemoryRateLimiter } from '../utils/rateLimit'
 import { PricingValidationError } from '../utils/pricing'
 
-const parseBody = async <T = Record<string, unknown>>(req: PayloadRequest): Promise<T> => {
-  if (typeof req.json === 'function') {
-    return (await req.json()) as T
-  }
-
-  const fallbackBody = (req as { body?: unknown; data?: unknown }).body || (req as { data?: unknown }).data
-  return (fallbackBody || {}) as T
-}
-
-const toFiniteNumber = (value: string | undefined, fallback: number): number => {
-  const parsed = Number(value)
-  return Number.isFinite(parsed) ? parsed : fallback
-}
-
-const contactRateLimiter = createInMemoryRateLimiter({
-  windowMs: Math.max(toFiniteNumber(process.env.CONTACT_RATE_LIMIT_WINDOW_MS, 10 * 60 * 1000), 60_000),
-  maxRequests: Math.max(toFiniteNumber(process.env.CONTACT_RATE_LIMIT_MAX, 8), 1),
-})
+const parseBody = parsePublicBody
+const isEnglish = (req: PayloadRequest) => req.query?.locale === 'de' ? false : req.query?.locale === 'en' || header(req, 'accept-language').startsWith('en')
 
 const contactInquirySchema = z
   .object({
@@ -40,40 +25,11 @@ const contactInquirySchema = z
     website: z.string().trim().max(200).optional().or(z.literal('')),
   })
   .refine((value) => value.consentPrivacy, {
-    message: 'Datenschutz-Einwilligung ist erforderlich.',
+    message: 'Bitte die Datenschutzhinweise bestätigen.',
     path: ['consentPrivacy'],
   })
 
-const getHeaderValue = (req: PayloadRequest, key: string): string => {
-  const headers = (req as { headers?: unknown }).headers
-
-  if (!headers) return ''
-
-  if (typeof (headers as Headers).get === 'function') {
-    return String((headers as Headers).get(key) || '')
-  }
-
-  if (typeof headers === 'object') {
-    const source = headers as Record<string, string | string[] | undefined>
-    const direct = source[key] || source[key.toLowerCase()]
-    if (Array.isArray(direct)) return String(direct[0] || '')
-    return String(direct || '')
-  }
-
-  return ''
-}
-
-const getClientIp = (req: PayloadRequest): string => {
-  const forwarded = getHeaderValue(req, 'x-forwarded-for')
-  if (forwarded) {
-    return forwarded.split(',')[0].trim()
-  }
-
-  const realIp = getHeaderValue(req, 'x-real-ip')
-  if (realIp) return realIp.trim()
-
-  return 'unknown'
-}
+const getClientIp = clientKey
 
 const repairTextEncoding = (value: unknown): string => {
   if (typeof value !== 'string') return String(value || '')
@@ -108,7 +64,9 @@ const repairTextEncoding = (value: unknown): string => {
   return normalized
 }
 
-const formatProduct = (doc: any) => ({
+const formatProduct = (source: any, en = false) => {
+  const doc = localizeProduct(source, en)
+  return ({
   id: doc.id,
   title: repairTextEncoding(doc.title),
   slug: doc.slug,
@@ -132,7 +90,7 @@ const formatProduct = (doc: any) => ({
           image && typeof image === 'object'
             ? {
                 id: image.id,
-                url: image.url,
+                url: image.sizes?.card?.url || image.url,
                 alt: repairTextEncoding(image.alt),
               }
             : null,
@@ -142,6 +100,7 @@ const formatProduct = (doc: any) => ({
   specifications: doc.specifications || [],
   seo: doc.seo || null,
 })
+}
 
 const countDocuments = async (
   req: PayloadRequest,
@@ -181,15 +140,15 @@ const countDocuments = async (
 }
 
 const errorResponse = (error: unknown, fallbackMessage: string) => {
-  const status = error instanceof PricingValidationError ? 400 : 500
-  const message = error instanceof Error ? error.message : fallbackMessage
+  const status = error instanceof PublicHttpError ? error.status : error instanceof PricingValidationError ? 400 : 500
+  const message = status < 500 && error instanceof Error ? error.message : fallbackMessage
   return Response.json({ success: false, message }, { status })
 }
 
 export const listProductsHandler: Endpoint['handler'] = async (req) => {
   try {
     const categorySlug = typeof req.query?.category === 'string' ? req.query.category.trim() : ''
-    const searchTerm = typeof req.query?.search === 'string' ? req.query.search.trim() : ''
+    const searchTerm = typeof req.query?.search === 'string' ? req.query.search.trim().slice(0,120) : ''
 
     let categoryID: number | string | undefined
 
@@ -227,27 +186,33 @@ export const listProductsHandler: Endpoint['handler'] = async (req) => {
       }
     }
 
-    if (searchTerm) {
-      where.or = [
-        { title: { like: searchTerm } },
-        { shortDescription: { like: searchTerm } },
-        { articleNumber: { like: searchTerm } },
-      ]
-    }
-
+    const page = Math.max(1, Math.min(10000, Number(req.query?.page) || 1))
+    const limit = Math.max(1, Math.min(100, Number(req.query?.limit) || 100))
+    const en = isEnglish(req)
     const products = await req.payload.find({
       collection: 'products',
       depth: 1,
-      limit: 100,
+      limit: searchTerm ? 1000 : limit,
+      page: searchTerm ? 1 : page,
       req,
+      overrideAccess: false,
       where,
       sort: ['title'],
     })
 
+    const terms = normalizeSearch(searchTerm).split(/\s+/).filter(Boolean)
+    const filtered = searchTerm ? products.docs.filter((doc: any) => {
+      const localized = localizeProduct(doc,en)
+      const haystack = normalizeSearch([doc.title,doc.shortDescription,doc.articleNumber,JSON.stringify(doc.longDescription || ''),doc.category?.name,
+        localized.title,localized.shortDescription,localized.category?.name].join(' '))
+      return terms.every(term => haystack.includes(term))
+    }) : products.docs
     return Response.json({
       success: true,
-      data: products.docs.map(formatProduct),
-      total: products.totalDocs,
+      data: (searchTerm ? filtered.slice((page-1)*limit,page*limit) : filtered).map(doc => formatProduct(doc,en)),
+      total: searchTerm ? filtered.length : products.totalDocs,
+      hasNextPage: searchTerm ? page*limit < filtered.length : products.hasNextPage || false,
+      searchTruncated: Boolean(searchTerm && products.totalDocs > 1000),
     })
   } catch (error) {
     return errorResponse(error, 'Produkte konnten nicht geladen werden.')
@@ -263,7 +228,7 @@ export const getProductBySlugHandler: Endpoint['handler'] = async (req) => {
     }
 
     const product = await findProductForRequest(req.payload, req, { productSlug: slug })
-    return Response.json({ success: true, data: formatProduct(product) })
+    return Response.json({ success: true, data: formatProduct(product, isEnglish(req)) })
   } catch (error) {
     if (error instanceof PricingValidationError) {
       return Response.json({ success: false, message: error.message }, { status: 404 })
@@ -288,54 +253,24 @@ export const listCategoriesHandler: Endpoint['handler'] = async (req) => {
       sort: ['sortOrder', 'name'],
     })
 
-    const categoryData = await Promise.all(
-      categories.docs.map(async (category: any) => {
-        let toolCount = 0
-
-        if (typeof (req.payload as { count?: unknown }).count === 'function') {
-          const countResult = await (req.payload as any).count({
-            collection: 'products',
-            req,
-            where: {
-              isActive: {
-                equals: true,
-              },
-              category: {
-                equals: category.id,
-              },
-            },
-          })
-
-          toolCount = Number(countResult?.totalDocs || 0)
-        } else {
-          const docsResult = await req.payload.find({
-            collection: 'products',
-            depth: 0,
-            limit: 0,
-            req,
-            where: {
-              isActive: {
-                equals: true,
-              },
-              category: {
-                equals: category.id,
-              },
-            },
-          })
-
-          toolCount = Number(docsResult?.totalDocs || 0)
-        }
-
-        return {
-          id: category.id,
-          name: repairTextEncoding(category.name),
-          slug: category.slug,
-          description: repairTextEncoding(category.description),
-          sortOrder: category.sortOrder,
-          toolCount,
-        }
-      }),
-    )
+    const products = await req.payload.find({
+      collection: 'products', depth: 0, pagination: false, limit: 0, req, overrideAccess: false,
+      select: { category: true }, where: { isActive: { equals: true } },
+    })
+    const counts = new Map<string,number>()
+    for (const product of products.docs) {
+      const relation = product.category
+      const id = String(typeof relation === 'object' ? relation?.id : relation)
+      counts.set(id,(counts.get(id)||0)+1)
+    }
+    const categoryData = categories.docs.map((category: any) => ({
+      id:category.id,
+      name:isEnglish(req) ? category.english?.title || categoryEnglish[category.slug] || 'Tools' : repairTextEncoding(category.name),
+      slug:category.slug,
+      description:isEnglish(req) ? category.english?.description || '' : repairTextEncoding(category.description),
+      sortOrder:category.sortOrder,
+      toolCount:counts.get(String(category.id)) || 0,
+    }))
 
     return Response.json({
       success: true,
@@ -348,6 +283,7 @@ export const listCategoriesHandler: Endpoint['handler'] = async (req) => {
 
 export const calculatePricingHandler: Endpoint['handler'] = async (req) => {
   try {
+    guardPublicPost(req, 'pricing')
     const body = await parseBody<{
       productId?: string
       productSlug?: string
@@ -375,7 +311,7 @@ export const calculatePricingHandler: Endpoint['handler'] = async (req) => {
     return Response.json({
       success: true,
       data: {
-        product: formatProduct(product),
+        product: formatProduct(product, isEnglish(req)),
         pricing,
       },
     })
@@ -386,6 +322,7 @@ export const calculatePricingHandler: Endpoint['handler'] = async (req) => {
 
 export const submitRequestHandler: Endpoint['handler'] = async (req) => {
   try {
+    guardPublicPost(req, 'request')
     const body = await parseBody(req)
     const result = await createRequestWithPricing({
       payload: req.payload,
@@ -401,7 +338,7 @@ export const submitRequestHandler: Endpoint['handler'] = async (req) => {
           requestNumber: result.request.requestNumber,
           status: result.request.status,
           pricing: result.pricing,
-          emailResult: result.emailResult,
+          notificationStatus: result.emailResult.mode === 'sent' ? 'sent' : 'pending',
         },
       },
       { status: 201 },
@@ -480,7 +417,7 @@ export const siteConfigHandler: Endpoint['handler'] = async (req) => {
         sort: ['title'],
       })
 
-      const mappedProducts = productResult.docs.map(formatProduct)
+      const mappedProducts = productResult.docs.map(doc => formatProduct(doc, isEnglish(req)))
       const orderMap = new Map(popularProductIDs.map((id, index) => [String(id), index]))
       popularProducts = mappedProducts.sort((a, b) => {
         const orderA = orderMap.get(String(a.id)) ?? Number.MAX_SAFE_INTEGER
@@ -529,7 +466,7 @@ export const siteConfigHandler: Endpoint['handler'] = async (req) => {
             ),
             introEn: repairTextEncoding(
               siteSettings?.catalog?.introEn ||
-              'All content is loaded from Payload CMS. You can filter by category and search terms directly.',
+              'Find the right equipment by category or search term.',
             ),
             searchPlaceholderDe: repairTextEncoding(siteSettings?.catalog?.searchPlaceholderDe || 'Werkzeug suchen...'),
             searchPlaceholderEn: repairTextEncoding(siteSettings?.catalog?.searchPlaceholderEn || 'Search tools...'),
@@ -604,6 +541,7 @@ export const adminStatisticsHandler: Endpoint['handler'] = async (req) => {
 
 export const submitContactInquiryHandler: Endpoint['handler'] = async (req) => {
   try {
+    guardPublicPost(req, 'contact')
     const body = await parseBody(req)
     const parsed = contactInquirySchema.safeParse(body)
 
@@ -625,18 +563,6 @@ export const submitContactInquiryHandler: Endpoint['handler'] = async (req) => {
     }
 
     const clientIp = getClientIp(req)
-    const rateLimit = contactRateLimiter.consume(clientIp)
-
-    if (!rateLimit.allowed) {
-      return Response.json(
-        {
-          success: false,
-          message: 'Zu viele Anfragen in kurzer Zeit. Bitte spaeter erneut versuchen.',
-        },
-        { status: 429 },
-      )
-    }
-
     const turnstileResult = await verifyTurnstileToken({
       token: input.turnstileToken,
       remoteIp: clientIp === 'unknown' ? undefined : clientIp,
@@ -687,7 +613,6 @@ export const submitContactInquiryHandler: Endpoint['handler'] = async (req) => {
       'Nachricht:',
       input.message,
       '',
-      `IP (zur Missbrauchspraevention): ${clientIp}`,
     ].join('\n')
 
     const mailResult = await sendRequestNotification({
@@ -696,17 +621,14 @@ export const submitContactInquiryHandler: Endpoint['handler'] = async (req) => {
       text: mailText,
     })
 
+    if (mailResult.mode !== 'sent') throw new PublicHttpError(503, 'Contact delivery is not configured.')
+
     return Response.json(
       {
         success: true,
         message: locale === 'en' ? 'Your request has been sent.' : 'Ihre Anfrage wurde gesendet.',
         data: {
-          emailResult: mailResult,
-          security: {
-            turnstile: turnstileResult.mode,
-            rateLimitRemaining: rateLimit.remaining,
-            rateLimitResetAt: rateLimit.resetAt,
-          },
+          notificationStatus: mailResult.mode === 'sent' ? 'sent' : 'pending',
         },
       },
       { status: 201 },

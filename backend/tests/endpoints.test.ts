@@ -152,6 +152,7 @@ describe('API Endpoints', () => {
       payload,
       json: async () => ({
         productId: 'prod-1',
+        consentPrivacy: true,
         rentalDays: 10,
       }),
     } as any)
@@ -169,6 +170,7 @@ describe('API Endpoints', () => {
       payload,
       json: async () => ({
         productId: 'prod-1',
+        consentPrivacy: true,
         email: 'max@example.com',
       }),
     } as any)
@@ -183,6 +185,7 @@ describe('API Endpoints', () => {
       payload,
       json: async () => ({
         productId: 'prod-1',
+        consentPrivacy: true,
         name: 'Max Mustermann',
         email: 'max@example.com',
         rentalDays: 4,

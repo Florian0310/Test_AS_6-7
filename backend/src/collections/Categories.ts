@@ -1,6 +1,7 @@
 ﻿import type { CollectionConfig } from 'payload'
 import { isAuthenticated, isAuthenticatedOrActiveFilter } from '../utils/access'
 import { slugFieldHook } from '../utils/slug'
+import { englishFields } from '../utils/catalogLocale'
 
 export const Categories: CollectionConfig = {
   slug: 'categories',
@@ -19,6 +20,7 @@ export const Categories: CollectionConfig = {
     defaultColumns: ['name', 'slug', 'sortOrder', 'isActive', 'updatedAt'],
   },
   fields: [
+    englishFields('English category content'),
     {
       name: 'name',
       label: 'Name',

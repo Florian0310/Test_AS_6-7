@@ -147,6 +147,7 @@ export interface User {
   resetPasswordExpiration?: string | null;
   salt?: string | null;
   hash?: string | null;
+  resetPasswordRequestedAt?: string | null;
   loginAttempts?: number | null;
   lockUntil?: string | null;
   sessions?:
@@ -203,6 +204,10 @@ export interface Media {
  */
 export interface Category {
   id: number;
+  english?: {
+    title?: string | null;
+    description?: string | null;
+  };
   name: string;
   slug: string;
   description?: string | null;
@@ -217,6 +222,10 @@ export interface Category {
  */
 export interface Product {
   id: number;
+  english?: {
+    title?: string | null;
+    description?: string | null;
+  };
   title: string;
   slug: string;
   articleNumber: string;
@@ -415,6 +424,7 @@ export interface UsersSelect<T extends boolean = true> {
   resetPasswordExpiration?: T;
   salt?: T;
   hash?: T;
+  resetPasswordRequestedAt?: T;
   loginAttempts?: T;
   lockUntil?: T;
   sessions?:
@@ -473,6 +483,12 @@ export interface MediaSelect<T extends boolean = true> {
  * via the `definition` "categories_select".
  */
 export interface CategoriesSelect<T extends boolean = true> {
+  english?:
+    | T
+    | {
+        title?: T;
+        description?: T;
+      };
   name?: T;
   slug?: T;
   description?: T;
@@ -486,6 +502,12 @@ export interface CategoriesSelect<T extends boolean = true> {
  * via the `definition` "products_select".
  */
 export interface ProductsSelect<T extends boolean = true> {
+  english?:
+    | T
+    | {
+        title?: T;
+        description?: T;
+      };
   title?: T;
   slug?: T;
   articleNumber?: T;

@@ -64,6 +64,7 @@ Ersetzt durch Payload:
 ```powershell
 cd backend
 Copy-Item .env.example .env
+# In .env ein eigenes PAYLOAD_SECRET setzen. Bootstrap nur einmal bewusst aktivieren.
 npm install
 npm run generate:types
 npm run migrate
@@ -86,7 +87,8 @@ Option B (statisches Frontend aus diesem Repo):
 
 ```powershell
 cd ..
-python -m http.server 8000
+npm ci
+npm run dev
 ```
 
 Dann im Backend `.env` setzen:
@@ -112,15 +114,16 @@ npm test
 ## ENV Variablen (Auszug)
 
 ```env
-PAYLOAD_SECRET=change-me-in-production
+PAYLOAD_SECRET=<unique-random-secret-at-least-32-characters>
 DATABASE_URI=file:./data/payload.sqlite
 PAYLOAD_PUBLIC_SERVER_URL=http://localhost:3001
 FRONTEND_PUBLIC_URL=http://localhost:3000
 FRONTEND_PREVIEW_URL=http://localhost:3000
 FRONTEND_ALLOWED_ORIGINS=http://localhost:3000,http://127.0.0.1:3000,http://localhost:8000,http://127.0.0.1:8000
 
-PAYLOAD_ADMIN_EMAIL=admin@example.com
-PAYLOAD_ADMIN_PASSWORD=ChangeMe123!
+BOOTSTRAP_ADMIN=false
+PAYLOAD_ADMIN_EMAIL=<admin-email>
+PAYLOAD_ADMIN_PASSWORD=<unique-password-at-least-16-characters>
 
 REQUEST_NOTIFICATION_EMAIL=office@allessaniert.at
 ENABLE_EMAIL_SENDING=false
@@ -237,3 +240,15 @@ Folgende grosse Artefakte sollten nicht ins Repository:
 - `docs/BACKEND_DOKUMENTATION.md`
 - `docs/ENDNUTZER_PFLEGEANLEITUNG.md`
 - `docs/GO_LIVE_CHECKLISTE.md`
+
+## Audit und Produktionsvorbereitung (26.10.2026)
+
+Das Frontend wird ausschließlich mit dem begrenzten Server `npm run dev` im Repository-Root gestartet. Nicht das gesamte Repository über einen allgemeinen Dateiserver veröffentlichen. Node-Version: `.nvmrc` (24.22.1).
+
+- Frontend-Prüfungen: `npm run lint`, `npm run test:static`, `npm run test:e2e` (lokale Dienste müssen laufen; Chrome erforderlich).
+- Backend-Prüfungen: `npm --prefix backend test`, `npm --prefix backend run typecheck`, `npm --prefix backend run build`. Der Produktionsbuild erfordert ein starkes PAYLOAD_SECRET; die aktuelle lokale Entwicklungskonfiguration wird dabei bewusst abgelehnt, falls unsicher.
+- Statische DE/EN-Inhalte: `locales/de.json` / `locales/en.json`, danach `npm run build:content`. CMS-Produkte und Kategorien haben eigene optionale englische Felder. Gemeinsame interaktive Texte stehen in `i18n.js`, Katalogtexte in `shop.js`, Consent-Texte in `consent.js`.
+- Öffentliches Frontend-Paket: tatsächliche HTTPS-Backendadresse als `BACKEND_PUBLIC_URL` setzen, dann `npm run export`. Nur `dist/` hosten.
+- Standalone-Backend: `npm --prefix backend run build` bereitet statische Dateien vor und entfernt dotenv-Dateien aus dem Paket. Runtime-Secrets, DATABASE_URI und MEDIA_DIR separat bereitstellen. `npm --prefix backend start` setzt standardmäßig Port 3001 und bindet an Loopback.
+- Migrationen: `backend/src/migrations/` enthält eine additive Baseline für neue und bestehende Datenbanken. Vor dem ersten produktiven Lauf Backup und Test an einer Kopie; keine `migrate:fresh`-Befehle auf vorhandenen Nutzdaten. Entwicklungsschema nur lokal automatisch; Produktion migriert explizit.
+- Siehe [AUDIT_REPORT.md](AUDIT_REPORT.md), [SECURITY_REPORT.md](SECURITY_REPORT.md), [PERFORMANCE_REPORT.md](PERFORMANCE_REPORT.md), [LEGAL_COMPLIANCE_REPORT.md](LEGAL_COMPLIANCE_REPORT.md), [TEST_REPORT.md](TEST_REPORT.md) und [GO_LIVE_CHECKLIST.md](GO_LIVE_CHECKLIST.md).

@@ -39,6 +39,7 @@
     "src/**/*.tsx",
     "tests/**/*.ts",
     "vitest.config.ts",
+    "payload.config.ts",
     ".next/types/**/*.ts",
     ".next/dev/types/**/*.ts"
   ],

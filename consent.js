@@ -1,300 +1,142 @@
 (function () {
-  const STORAGE_KEY = 'as_cookie_consent_v1';
-  const APP_CONFIG = window.APP_CONFIG || {};
-  const dataLayer = (window.dataLayer = window.dataLayer || []);
-
-  const TEXT = {
-    de: {
-      title: 'Cookie-Einstellungen',
-      text:
-        'Wir verwenden notwendige Cookies fuer den Betrieb der Website. Analytics wird erst nach Ihrer Einwilligung geladen.',
-      necessary: 'Notwendig',
-      analytics: 'Analytics',
-      acceptAll: 'Alle akzeptieren',
-      acceptNecessary: 'Nur notwendige',
-      settings: 'Einstellungen',
-      save: 'Auswahl speichern',
-      revoke: 'Einwilligung widerrufen',
-      provider: 'Anbieter',
-      purpose: 'Zweck',
-      duration: 'Speicherdauer',
-      changed: 'Cookie-Einwilligung aktualisiert.',
-    },
-    en: {
-      title: 'Cookie Settings',
-      text:
-        'We use necessary cookies to operate the website. Analytics is only loaded after your consent.',
-      necessary: 'Necessary',
-      analytics: 'Analytics',
-      acceptAll: 'Accept all',
-      acceptNecessary: 'Necessary only',
-      settings: 'Settings',
-      save: 'Save choices',
-      revoke: 'Withdraw consent',
-      provider: 'Provider',
-      purpose: 'Purpose',
-      duration: 'Storage duration',
-      changed: 'Cookie consent updated.',
-    },
+  const KEY = 'as_cookie_consent_v2', LEGACY = 'as_cookie_consent_v1';
+  const MAX_AGE = 180 * 86400000;
+  const en = document.documentElement.lang.startsWith('en');
+  const t = en ? {
+    title:'Cookie settings', text:'Optional usage analytics is loaded only with your consent and when configured. Withdraw consent at any time in Cookie settings.',
+    accept:'Accept optional analytics', reject:'Reject optional analytics', settings:'Settings', saved:'Your choices have been saved.', revoked:'Your consent has been withdrawn. Optional analytics is disabled.',
+    back:'Back to website', necessary:'Necessary preferences', analytics:'Optional analytics', storage:'Your choice applies to this visit. Browser storage is unavailable.',
+  } : {
+    title:'Cookie-Einstellungen', text:'Optionale Reichweitenmessung wird nur mit Ihrer Einwilligung und bei entsprechender Konfiguration geladen. Sie können jederzeit in den Cookie-Einstellungen widerrufen.',
+    accept:'Optionale Analyse akzeptieren', reject:'Optionale Analyse ablehnen', settings:'Einstellungen', saved:'Ihre Auswahl wurde gespeichert.', revoked:'Ihre Einwilligung wurde widerrufen. Optionale Analyse ist deaktiviert.',
+    back:'Zurück zur Website', necessary:'Notwendige Einstellungen', analytics:'Optionale Analyse', storage:'Ihre Auswahl gilt für diesen Besuch. Der Browserspeicher ist nicht verfügbar.',
   };
-
-  const toLocale = () =>
-    document.documentElement.lang && document.documentElement.lang.toLowerCase().startsWith('en') ? 'en' : 'de';
-
-  const i18n = () => TEXT[toLocale()];
-
-  const parse = (value) => {
-    if (!value) return null;
+  const config = window.APP_CONFIG || {};
+  const gaID = /^G-[A-Z0-9]+$/.test(config.GA4_MEASUREMENT_ID || '') ? config.GA4_MEASUREMENT_ID : '';
+  const gtmID = /^GTM-[A-Z0-9]+$/.test(config.GTM_ID || '') ? config.GTM_ID : '';
+  const dataLayer = window.dataLayer = window.dataLayer || [];
+  const gtag = function () {dataLayer.push(arguments);};
+  const read = () => {
     try {
-      const parsed = JSON.parse(value);
-      if (!parsed || typeof parsed !== 'object') return null;
-      return parsed;
-    } catch (_error) {
-      return null;
+      const value = JSON.parse(localStorage.getItem(KEY));
+      if (value?.version !== 2 || typeof value.analytics !== 'boolean' || !Number.isFinite(Date.parse(value.updatedAt))) return null;
+      const age = Date.now() - Date.parse(value.updatedAt);
+      if (age < 0 || age >= MAX_AGE) {localStorage.removeItem(KEY); return null;}
+      return value;
+    } catch (_) {return null;}
+  };
+  // Old grants require a new informed choice. Never coerce strings such as "false" to a grant.
+  let state = read();
+  try {
+    const legacy = JSON.parse(localStorage.getItem(LEGACY));
+    if (!state && legacy?.analytics === false) {
+      state = {version:2, necessary:true, analytics:false, updatedAt:new Date().toISOString()};
+      localStorage.setItem(KEY,JSON.stringify(state));
     }
+    localStorage.removeItem(LEGACY);
+  } catch (_) {}
+  let loaded = false, loading = null, persistent = true;
+  const denied = {analytics_storage:'denied',ad_storage:'denied',ad_user_data:'denied',ad_personalization:'denied'};
+  gtag('consent','default',denied);
+  const sync = () => {
+    document.querySelectorAll('[data-consent-analytics]').forEach(input => {input.checked = state?.analytics === true;});
+    document.dispatchEvent(new CustomEvent('as:consent-updated',{detail:{necessary:true,analytics:state?.analytics === true}}));
   };
-
-  const nowIso = () => new Date().toISOString();
-
-  const getStoredConsent = () => {
-    let fromStorage = null;
-    try {
-      fromStorage = parse(window.localStorage.getItem(STORAGE_KEY));
-    } catch (_error) {
-      fromStorage = null;
-    }
-    if (!fromStorage) return null;
-
-    return {
-      necessary: true,
-      analytics: Boolean(fromStorage.analytics),
-      updatedAt: fromStorage.updatedAt || nowIso(),
-      source: 'stored',
-    };
-  };
-
-  const storeConsent = (state) => {
-    const payload = {
-      necessary: true,
-      analytics: Boolean(state.analytics),
-      updatedAt: nowIso(),
-    };
-
-    try {
-      window.localStorage.setItem(STORAGE_KEY, JSON.stringify(payload));
-    } catch (_error) {
-      // If storage is blocked, consent still applies for current session.
-    }
-    return payload;
-  };
-
-  const gtag = function () {
-    dataLayer.push(arguments);
-  };
-
-  let analyticsLoaded = false;
-
-  const loadScript = (src) =>
-    new Promise((resolve, reject) => {
-      const existing = document.querySelector(`script[src="${src}"]`);
-      if (existing) {
-        resolve(true);
-        return;
+  const load = src => new Promise((resolve,reject) => {
+    const script = document.createElement('script'); script.async = true; script.src = src;
+    script.dataset.optionalAnalytics = ''; script.onload = resolve; script.onerror = reject; document.head.append(script);
+  });
+  const apply = () => {
+    window[`ga-disable-${gaID}`] = state?.analytics !== true;
+    if (state?.analytics !== true) return;
+    gtag('consent','update',{...denied,analytics_storage:'granted'});
+    if (loaded || loading || (!gaID && !gtmID)) return;
+    // Configure GA directly OR through GTM, avoiding duplicate page views.
+    loaded = true;
+    loading = (async () => {
+      if (gtmID) {
+        dataLayer.push({'gtm.start':Date.now(),event:'gtm.js'});
+        await load(`https://www.googletagmanager.com/gtm.js?id=${encodeURIComponent(gtmID)}`);
+      } else if (gaID) {
+        await load(`https://www.googletagmanager.com/gtag/js?id=${encodeURIComponent(gaID)}`);
+        if (state?.analytics !== true) return;
+        gtag('js',new Date());
+        gtag('config',gaID,{allow_google_signals:false,allow_ad_personalization_signals:false});
       }
-
-      const script = document.createElement('script');
-      script.src = src;
-      script.async = true;
-      script.onload = () => resolve(true);
-      script.onerror = () => reject(new Error(`Script konnte nicht geladen werden: ${src}`));
-      document.head.appendChild(script);
-    });
-
-  const loadAnalytics = async () => {
-    if (analyticsLoaded) return;
-
-    const gtmId = String(APP_CONFIG.GTM_ID || '').trim();
-    const ga4Id = String(APP_CONFIG.GA4_MEASUREMENT_ID || '').trim();
-
-    if (!gtmId && !ga4Id) {
-      analyticsLoaded = true;
-      return;
-    }
-
-    if (gtmId) {
-      const gtmSrc = `https://www.googletagmanager.com/gtm.js?id=${encodeURIComponent(gtmId)}`;
-      await loadScript(gtmSrc);
-      dataLayer.push({ event: 'gtm.js', 'gtm.start': Date.now() });
-    }
-
-    if (ga4Id) {
-      const gaSrc = `https://www.googletagmanager.com/gtag/js?id=${encodeURIComponent(ga4Id)}`;
-      await loadScript(gaSrc);
-
-      gtag('js', new Date());
-      gtag('config', ga4Id, {
-        anonymize_ip: true,
-        allow_google_signals: false,
-        allow_ad_personalization_signals: false,
-      });
-    }
-
-    analyticsLoaded = true;
+    })().catch(()=>{});
   };
-
-  const applyConsentMode = async (state) => {
-    gtag('consent', 'default', {
-      analytics_storage: 'denied',
-      ad_storage: 'denied',
-      ad_user_data: 'denied',
-      ad_personalization: 'denied',
-      functionality_storage: 'granted',
-      security_storage: 'granted',
-      wait_for_update: 500,
-    });
-
-    const analytics = state && state.analytics;
-
-    gtag('consent', 'update', {
-      analytics_storage: analytics ? 'granted' : 'denied',
-      ad_storage: 'denied',
-      ad_user_data: 'denied',
-      ad_personalization: 'denied',
-      functionality_storage: 'granted',
-      security_storage: 'granted',
-    });
-
-    if (analytics) {
-      try {
-        await loadAnalytics();
-      } catch (_error) {
-        // Fail-safe: Seite bleibt ohne Tracking nutzbar.
-      }
-    }
-
-    document.dispatchEvent(
-      new CustomEvent('as:consent-updated', {
-        detail: {
-          necessary: true,
-          analytics: Boolean(analytics),
-        },
-      }),
-    );
-  };
-
-  const removeBanner = () => {
-    const existing = document.querySelector('[data-consent-banner]');
-    if (existing) {
-      existing.remove();
+  const clearAnalyticsCookies = () => {
+    const domains = [null,location.hostname], parts = location.hostname.split('.');
+    for (let i=0;i<parts.length-1;i++) domains.push('.'+parts.slice(i).join('.'));
+    const paths = ['/'], segments = location.pathname.split('/').filter(Boolean);
+    for (let i=1;i<=segments.length;i++) paths.push('/'+segments.slice(0,i).join('/'));
+    for (const entry of document.cookie.split(';')) {
+      const name = entry.split('=')[0].trim();
+      if (!/^(_ga|_gid|_gat|_gcl_)/.test(name)) continue;
+      for (const domain of domains) for (const path of paths) document.cookie = `${name}=; Max-Age=0; path=${path}${domain ? '; domain='+domain : ''}; SameSite=Lax`;
     }
   };
-
-  const consentPath = () => (toLocale() === 'en' ? '/en/cookie-settings/' : '/cookie-einstellungen/');
-
-  const createBanner = () => {
-    if (document.querySelector('[data-consent-banner]')) return;
-
-    const t = i18n();
-
-    const banner = document.createElement('aside');
-    banner.className = 'cookie-banner';
-    banner.setAttribute('data-consent-banner', 'true');
-    banner.setAttribute('role', 'region');
-    banner.setAttribute('aria-label', t.title);
-
-    banner.innerHTML =
-      '<div class="cookie-banner__content">' +
-      `<h2>${t.title}</h2>` +
-      `<p>${t.text}</p>` +
-      '<div class="cookie-banner__actions">' +
-      `<button type="button" class="btn-primary" data-consent-accept-all>${t.acceptAll}</button>` +
-      `<button type="button" class="btn-secondary" data-consent-accept-necessary>${t.acceptNecessary}</button>` +
-      `<a class="btn-secondary" href="${consentPath()}">${t.settings}</a>` +
-      '</div>' +
-      '</div>';
-
-    document.body.appendChild(banner);
-
-    const acceptAll = banner.querySelector('[data-consent-accept-all]');
-    const acceptNecessary = banner.querySelector('[data-consent-accept-necessary]');
-
-    acceptAll?.addEventListener('click', async () => {
-      const saved = storeConsent({ analytics: true });
-      await applyConsentMode(saved);
-      removeBanner();
-    });
-
-    acceptNecessary?.addEventListener('click', async () => {
-      const saved = storeConsent({ analytics: false });
-      await applyConsentMode(saved);
-      removeBanner();
-    });
+  const update = analytics => {
+    const mustReload = loaded && !analytics;
+    state = {version:2,necessary:true,analytics:analytics === true,updatedAt:new Date().toISOString()};
+    try {localStorage.setItem(KEY,JSON.stringify(state));} catch (_) {persistent = false;}
+    document.querySelector('[data-consent-banner]')?.remove(); sync();
+    if (!state.analytics) {window[`ga-disable-${gaID}`] = true; clearAnalyticsCookies();}
+    if (mustReload) {
+      // A fresh document is required to stop listeners and timers of already loaded trackers.
+      try {sessionStorage.setItem('as_consent_confirmation',t.revoked);} catch (_) {}
+      location.reload(); return state;
+    }
+    apply(); return state;
   };
-
-  const bindConsentSettingsForm = () => {
+  const settingsPath = en ? '/en/cookie-settings/' : '/cookie-einstellungen/';
+  const init = () => {
     const form = document.querySelector('[data-consent-settings-form]');
-    if (!form) return;
-
-    const analyticsCheckbox = form.querySelector('[data-consent-analytics]');
-    const saveButton = form.querySelector('[data-consent-save]');
-    const revokeButton = form.querySelector('[data-consent-revoke]');
-    const statusNode = form.querySelector('[data-consent-status]');
-
-    const current = getStoredConsent();
-    if (analyticsCheckbox) {
-      analyticsCheckbox.checked = Boolean(current?.analytics);
+    if (!state && !form) {
+      const banner=document.createElement('aside'); banner.className='cookie-banner'; banner.dataset.consentBanner=''; banner.setAttribute('aria-label',t.title);
+      const content=document.createElement('div'); content.className='cookie-banner__content';
+      const title=document.createElement('h2'); title.textContent=t.title;
+      const text=document.createElement('p'); text.textContent=t.text;
+      const actions=document.createElement('div'); actions.className='cookie-banner__actions';
+      for (const [name,grant] of [[t.accept,true],[t.reject,false]]) {
+        const button=document.createElement('button'); button.type='button'; button.className='btn-secondary'; button.textContent=name;
+        button.setAttribute(grant?'data-consent-accept-all':'data-consent-accept-necessary','');
+        button.addEventListener('click',()=>update(grant)); actions.append(button);
+      }
+      const settings=document.createElement('a'); settings.href=settingsPath; settings.className='btn-secondary'; settings.textContent=t.settings;
+      actions.append(settings); content.append(title,text,actions); banner.append(content); document.body.append(banner);
     }
-
-    const setStatus = (text) => {
-      if (!statusNode) return;
-      statusNode.textContent = text;
-    };
-
-    saveButton?.addEventListener('click', async () => {
-      const saved = storeConsent({ analytics: Boolean(analyticsCheckbox?.checked) });
-      await applyConsentMode(saved);
-      setStatus(i18n().changed);
-    });
-
-    revokeButton?.addEventListener('click', async () => {
-      const saved = storeConsent({ analytics: false });
-      if (analyticsCheckbox) analyticsCheckbox.checked = false;
-      await applyConsentMode(saved);
-      setStatus(i18n().changed);
-    });
-  };
-
-  const init = async () => {
-    const current = getStoredConsent();
-
-    if (current) {
-      await applyConsentMode(current);
-    } else {
-      await applyConsentMode({ analytics: false });
-      createBanner();
+    if (form) {
+      const status=form.querySelector('[data-consent-status]'), checkbox=form.querySelector('[data-consent-analytics]');
+      form.querySelector('input[disabled]')?.setAttribute('aria-label',t.necessary);
+      checkbox?.setAttribute('aria-label',t.analytics);
+      const commit=analytics=>{update(analytics); if(status) status.textContent = (analytics ? t.saved : t.revoked) + (persistent?'':' '+t.storage);};
+      form.addEventListener('submit',e=>{e.preventDefault(); commit(checkbox?.checked===true);});
+      form.querySelector('[data-consent-save]')?.addEventListener('click',()=>commit(checkbox?.checked===true));
+      form.querySelector('[data-consent-revoke]')?.addEventListener('click',()=>commit(false));
+      const back=document.createElement('a'); back.className='consent-back'; back.textContent=t.back; back.href=en?'/en/':'/';
+      try {
+        const previous=new URL(sessionStorage.getItem('as_consent_return')||'',location.href);
+        if (previous.origin===location.origin && !previous.pathname.includes('cookie-')) back.href=previous.href;
+        const confirmation=sessionStorage.getItem('as_consent_confirmation');
+        if (confirmation && status) {status.textContent=confirmation; sessionStorage.removeItem('as_consent_confirmation');}
+      } catch (_) {}
+      form.append(back);
     }
-
-    bindConsentSettingsForm();
+    sync(); apply();
+    document.addEventListener('click',e=>{
+      const link=e.target.closest('a[href]'); if (!link) return;
+      if (new URL(link.href,location.href).pathname.replace(/index\.html$/,'')===settingsPath && !form) {
+        try {sessionStorage.setItem('as_consent_return',location.href);} catch (_) {}
+      }
+    });
   };
-
-  window.ASConsent = {
-    getState: getStoredConsent,
-    update: async (analyticsEnabled) => {
-      const saved = storeConsent({ analytics: Boolean(analyticsEnabled) });
-      await applyConsentMode(saved);
-      removeBanner();
-      return saved;
-    },
-    reset: async () => {
-      const saved = storeConsent({ analytics: false });
-      await applyConsentMode(saved);
-      return saved;
-    },
-  };
-
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', init);
-  } else {
-    init();
-  }
+  window.addEventListener('storage',e=>{
+    if (e.key!==KEY && e.key!==null) return;
+    const previous=state; state=read();
+    if (loaded && !state?.analytics) {clearAnalyticsCookies(); location.reload(); return;}
+    sync(); apply(); if (!state && previous) location.reload();
+  });
+  window.ASConsent={getState:()=>state,update:enabled=>update(enabled===true),reset:()=>update(false)};
+  if (document.readyState==='loading') document.addEventListener('DOMContentLoaded',init); else init();
 })();

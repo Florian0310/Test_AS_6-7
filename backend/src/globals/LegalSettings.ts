@@ -1,12 +1,12 @@
 import type { GlobalConfig } from 'payload'
 
-const defaultImpressumDe = `Firmenname: Schröder - Alles Saniert (Gesellschaft nach bürgerlichem Recht)
+const defaultImpressumDe = `Firmenname: Willy Schröder
 Adresse: Fotzebenweg 3, 2763 Pernitz, Österreich
 Telefon: +43 650 3021328
 E-Mail: office@allessaniert.at
 Tätigkeit: Werkzeugverleih sowie Dienstleistungen inklusive Forstarbeiten`
 
-const defaultImpressumEn = `Company: Schröder - Alles Saniert (civil law partnership)
+const defaultImpressumEn = `Company: Willy Schröder
 Address: Fotzebenweg 3, 2763 Pernitz, Austria
 Phone: +43 650 3021328
 Email: office@allessaniert.at
@@ -40,7 +40,7 @@ export const LegalSettings: GlobalConfig = {
   slug: 'legal-settings',
   label: 'Rechtstexte',
   access: {
-    read: () => true,
+    read: ({ req }) => Boolean(req.user),
     update: ({ req }) => Boolean(req.user),
   },
   fields: [

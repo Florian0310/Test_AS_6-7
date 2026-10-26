@@ -18,6 +18,7 @@ export const buildRequestMail = (args: {
   rentalStart?: string
   rentalEnd?: string
   totalWithDeposit: number
+  locale?: 'de' | 'en'
 }): PreparedMail => {
   const {
     customerName,
@@ -31,6 +32,20 @@ export const buildRequestMail = (args: {
     rentalEnd,
     totalWithDeposit,
   } = args
+  if (args.locale === 'en') {
+    return {
+      to: process.env.REQUEST_NOTIFICATION_EMAIL || 'office@allessaniert.at',
+      subject: `New rental inquiry: ${productTitle} (${productArticleNumber})`,
+      text: [
+        'Non-binding rental inquiry (preferred language: English)',
+        `Product: ${productTitle} (${productArticleNumber})`,
+        `Rental period: ${rentalStart || '-'} to ${rentalEnd || '-'} (${rentalDays} days)`,
+        `Total including deposit: ${new Intl.NumberFormat('en-AT',{style:'currency',currency:'EUR'}).format(totalWithDeposit)}`,
+        `Name: ${customerName}`, `Email: ${customerEmail}`, `Phone: ${customerPhone || '-'}`,
+        'Message:', message || '-',
+      ].join('\n'),
+    }
+  }
 
   const subject = `Neue Mietanfrage: ${productTitle} (${productArticleNumber})`
   const lines = [
@@ -84,6 +99,9 @@ export const sendRequestNotification = async (mail: PreparedMail): Promise<MailR
     host,
     port,
     secure,
+    requireTLS: process.env.NODE_ENV === 'production' && !secure,
+    connectionTimeout: 10000,
+    socketTimeout: 15000,
     auth: user && pass ? { user, pass } : undefined,
   })
 

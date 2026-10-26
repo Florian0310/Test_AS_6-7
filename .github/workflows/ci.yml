@@ -1,0 +1,37 @@
+name: Website quality
+on: [push, pull_request]
+permissions:
+  contents: read
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    env:
+      # Disposable CI data only; never use this value in production.
+      PAYLOAD_SECRET: ci-isolated-database-only-7db828fad8391ac9c95a62815
+      DATABASE_URI: file:./data/ci.sqlite
+      BOOTSTRAP_ADMIN: 'false'
+      ENABLE_EMAIL_SENDING: 'false'
+      TURNSTILE_BYPASS_FOR_DEV: 'true'
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
+        with:
+          node-version: '24.22.1'
+          cache: npm
+          cache-dependency-path: |
+            package-lock.json
+            backend/package-lock.json
+      - run: npm ci
+      - run: npm ci
+        working-directory: backend
+      - run: npm run lint && npm run test:static
+      - run: npm test && npm run typecheck && npm run build && npm run migrate && npm run seed
+        working-directory: backend
+      - run: npm audit --audit-level=moderate && npm --prefix backend audit --audit-level=moderate
+      - run: npx playwright install --with-deps chrome
+      - name: Start isolated local services
+        run: |
+          npm run dev > frontend.log 2>&1 &
+          npm --prefix backend run dev > backend.log 2>&1 &
+          node -e "(async()=>{for(let i=0;i<90;i++){try{if((await fetch('http://localhost:3001/api/catalog/products')).ok)return}catch{}await new Promise(r=>setTimeout(r,1000))}process.exit(1)})()"
+      - run: npm run test:e2e
